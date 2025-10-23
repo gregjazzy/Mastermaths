@@ -11,6 +11,8 @@ interface Lesson {
   type: string
   order: number
   vimeoVideoId: string | null
+  countForReporting?: boolean
+  isOptional?: boolean
   subChapter: {
     title: string
     chapter: {
