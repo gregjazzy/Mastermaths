@@ -129,6 +129,8 @@ export default function LessonsAdminPage() {
       linkedExerciseId: '',
       prerequisiteLessonId: '',
       parentLessonId: '',
+      countForReporting: lesson.countForReporting ?? true,
+      isOptional: lesson.isOptional ?? false,
       content: ''
     })
     setShowForm(true)
