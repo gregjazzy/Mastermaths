@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --master-dark: #1E3A5F;
+    --master-blue: #2C5F8D;
+    --master-turquoise: #00BCD4;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  /* Boutons principaux */
+  .btn-primary {
+    @apply bg-master-turquoise hover:bg-master-turquoise-dark text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-master-dark hover:bg-master-blue text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-master-turquoise text-master-turquoise hover:bg-master-turquoise hover:text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+  }
+  
+  /* Cartes */
+  .card {
+    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-6;
+  }
+  
+  /* Inputs */
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-master-turquoise focus:border-transparent transition-all duration-200;
+  }
+  
+  /* Formules mathématiques */
+  .math-formula {
+    @apply font-serif text-lg bg-gray-100 px-2 py-1 rounded;
+  }
+  
+  /* Progression */
+  .progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2.5;
+  }
+  
+  .progress-fill {
+    @apply bg-master-turquoise h-2.5 rounded-full transition-all duration-300;
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply text-gray-700 hover:text-master-turquoise hover:bg-master-turquoise/10 px-4 py-2 rounded-lg transition-all duration-200;
+  }
+  
+  .nav-link-active {
+    @apply text-master-turquoise bg-master-turquoise/10 px-4 py-2 rounded-lg;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
