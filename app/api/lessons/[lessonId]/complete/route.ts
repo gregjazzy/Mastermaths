@@ -21,6 +21,16 @@ export async function POST(
     const body = await req.json()
     const { score } = body // Score du QCM (0-100)
 
+    // Récupérer la performance existante
+    const existingPerformance = await prisma.performance.findUnique({
+      where: {
+        userId_lessonId: {
+          userId: user.id,
+          lessonId: lessonId,
+        }
+      }
+    })
+
     // Mettre à jour ou créer la performance
     const performance = await prisma.performance.upsert({
       where: {
@@ -32,7 +42,7 @@ export async function POST(
       update: {
         isCompleted: true,
         lastAccessedAt: new Date(),
-        bestScore: score ? Math.max(score, performance?.bestScore || 0) : undefined
+        bestScore: score ? Math.max(score, existingPerformance?.bestScore || 0) : undefined
       },
       create: {
         userId: user.id,

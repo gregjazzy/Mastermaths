@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
+import BadgePopup, { BadgeEarned } from './BadgePopup'
 
 interface QcmQuestion {
   id: string
@@ -26,6 +27,7 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
   const [score, setScore] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [badgeEarned, setBadgeEarned] = useState<BadgeEarned | null>(null)
 
   useEffect(() => {
     fetchQuestions()
@@ -88,8 +90,8 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
 
       const scorePercent = (correct / questions.length) * 100
 
-      // Envoyer le score à l'API
-      await fetch(`/api/lessons/${lessonId}/qcm-score`, {
+      // Envoyer le score à l'API complete (qui attribue les badges)
+      const response = await fetch(`/api/lessons/${lessonId}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -97,6 +99,20 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
           answers: answers 
         }),
       })
+
+      const result = await response.json()
+
+      // Afficher le badge si gagné
+      if (result.badges?.lesson) {
+        const badge = result.badges.lesson
+        setBadgeEarned({
+          type: badge.type,
+          level: badge.level,
+          entityName: badge.entityName,
+          pmuAwarded: badge.level === 'GOLD' ? 60 : badge.level === 'SILVER' ? 40 : 20,
+          score: badge.score
+        })
+      }
 
       setScore(scorePercent)
       setSubmitted(true)
@@ -300,6 +316,12 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
       <div className="text-center text-sm text-gray-600">
         {Object.keys(answers).length} / {questions.length} questions répondues
       </div>
+
+      {/* Badge Popup */}
+      <BadgePopup 
+        badge={badgeEarned} 
+        onClose={() => setBadgeEarned(null)} 
+      />
     </div>
   )
 }
