@@ -177,7 +177,12 @@ export class MasteryPointsService {
     
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { currentTitle: true }
+      select: { 
+        currentTitle: true,
+        email: true,
+        name: true,
+        emailsNotification: true
+      }
     })
 
     if (user && user.currentTitle !== newTitle) {
@@ -187,6 +192,20 @@ export class MasteryPointsService {
       })
 
       console.log(`[TITRE] Nouveau titre pour ${userId}: ${newTitle}`)
+
+      // Envoyer un email de félicitations pour le nouveau titre
+      try {
+        const { EmailService } = await import('./email-service')
+        await EmailService.sendTitleUnlocked(
+          user.email || '',
+          user.name || 'Élève',
+          newTitle,
+          totalPMU,
+          user.emailsNotification || []
+        )
+      } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'email de nouveau titre:', error)
+      }
     }
   }
 
