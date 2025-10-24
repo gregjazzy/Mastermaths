@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/access-control'
 import { MasteryBadgeService } from '@/lib/mastery-badge-service'
+export const dynamic = 'force-dynamic'
+
 
 export async function POST(
   req: Request,

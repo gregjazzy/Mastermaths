@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/access-control'
 import { ConnectionService } from '@/lib/connection-service'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser()

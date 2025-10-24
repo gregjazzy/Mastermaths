@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { MasteryPointsService } from '@/lib/mastery-points-service'
+export const dynamic = 'force-dynamic'
+
 
 /**
  * GET /api/leaderboard/weekly

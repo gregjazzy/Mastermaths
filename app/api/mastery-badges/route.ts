@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/access-control'
 import { MasteryBadgeService } from '@/lib/mastery-badge-service'
+export const dynamic = 'force-dynamic'
+
 
 /**
  * GET /api/mastery-badges

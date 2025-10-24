@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { MasteryPointsService } from '@/lib/mastery-points-service'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/leaderboard/monthly
  * Récupère le Hall of Fame mensuel (Top 100 du mois)

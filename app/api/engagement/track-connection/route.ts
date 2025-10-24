@@ -5,6 +5,8 @@ import { ConnectionService } from '@/lib/connection-service'
 import { EmailService } from '@/lib/email-service'
 import { prisma } from '@/lib/prisma'
 import { headers } from 'next/headers'
+export const dynamic = 'force-dynamic'
+
 
 export async function POST(req: Request) {
   try {

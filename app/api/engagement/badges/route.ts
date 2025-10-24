@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/access-control'
 import { BadgeService } from '@/lib/badge-service'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser()
