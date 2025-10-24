@@ -18,14 +18,13 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, description, accessLevel, order } = body
+    const { title, description, order } = body
 
     const course = await prisma.course.update({
       where: { id: params.id },
       data: {
         title,
         description: description || null,
-        accessLevel,
         order
       }
     })

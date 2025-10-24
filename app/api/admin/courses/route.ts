@@ -42,13 +42,12 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { title, description, accessLevel, order } = body
+    const { title, description, order } = body
 
     const course = await prisma.course.create({
       data: {
         title,
         description: description || null,
-        accessLevel,
         order: order || 1
       }
     })

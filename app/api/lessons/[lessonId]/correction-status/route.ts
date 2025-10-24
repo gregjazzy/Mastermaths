@@ -23,13 +23,7 @@ export async function GET(
       where: { id: lessonId },
       select: { 
         type: true,
-        correctionVideos: {
-          where: { isCorrectionVideo: true },
-          select: {
-            id: true,
-            contentUrl: true
-          }
-        }
+        id: true
       }
     })
 
@@ -39,6 +33,22 @@ export async function GET(
         { status: 200 }
       )
     }
+
+    // Chercher les corrections liées à cette leçon
+    const correctionLessons = await prisma.lesson.findMany({
+      where: {
+        linkedExerciseId: lessonId,
+        OR: [
+          { type: 'CORRECTION_VIDEO' },
+          { type: 'CORRECTION_DOCUMENT' }
+        ]
+      },
+      select: {
+        id: true,
+        type: true,
+        contentUrl: true
+      }
+    })
 
     // Récupérer la performance de l'utilisateur pour ce QCM
     const performance = await prisma.performance.findUnique({
@@ -58,12 +68,12 @@ export async function GET(
       performance && 
       performance.quizScorePercent !== null && 
       performance.quizScorePercent < 100 &&
-      lesson.correctionVideos.length > 0
+      correctionLessons.length > 0
 
     return NextResponse.json({
       shouldShowCorrection,
-      correctionVideoUrl: shouldShowCorrection ? lesson.correctionVideos[0].contentUrl : null,
-      correctionVideoId: shouldShowCorrection ? lesson.correctionVideos[0].id : null,
+      correctionVideoUrl: shouldShowCorrection ? correctionLessons[0].contentUrl : null,
+      correctionVideoId: shouldShowCorrection ? correctionLessons[0].id : null,
     })
   } catch (error) {
     console.error('Erreur lors de la vérification de la correction:', error)

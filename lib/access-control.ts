@@ -18,6 +18,7 @@ export async function getCurrentUser() {
       name: true,
       status: true,
       isSubscribed: true,
+      stripeCustomerId: true,
     }
   })
   

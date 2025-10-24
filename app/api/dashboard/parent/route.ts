@@ -45,86 +45,71 @@ export async function GET() {
         totalMasteryPoints: true,
         monthlyMasteryPoints: true,
         weeklyMasteryPoints: true,
-        connectionStreak: true,
-        bestStreak: true,
-        badgesUnlocked: true,
+        currentStreak: true,
+        longestStreak: true,
         lastConnectionDate: true,
+      },
+      include: {
         performances: {
           select: {
-            courseId: true,
+            id: true,
+            lessonId: true,
             videoProgressPercent: true,
             isCompleted: true
           }
         },
         connectionLogs: {
           orderBy: {
-            connectedAt: 'desc'
+            connectionDate: 'desc'
           },
-          take: 1
+          take: 30
+        },
+        userBadges: {
+          select: {
+            id: true
+          }
         }
       }
     })
 
     // Calculer les statistiques pour chaque enfant
-    const childrenWithStats = await Promise.all(
-      children.map(async (child) => {
-        // Compter les cours uniques
-        const uniqueCourses = new Set(child.performances.map(p => p.courseId))
-        const coursesEnrolled = uniqueCourses.size
+    const childrenWithStats = children.map((child) => {
+      // Calculer la progression moyenne
+      const totalProgress = child.performances.reduce((sum: number, perf: any) => {
+        if (perf.isCompleted) return sum + 100
+        return sum + perf.videoProgressPercent
+      }, 0)
+      const averageCompletion = child.performances.length > 0
+        ? Math.round(totalProgress / child.performances.length)
+        : 0
 
-        // Calculer la progression moyenne
-        const totalProgress = child.performances.reduce((sum, perf) => {
-          if (perf.isCompleted) return sum + 100
-          return sum + perf.videoProgressPercent
-        }, 0)
-        const averageCompletion = child.performances.length > 0
-          ? Math.round(totalProgress / child.performances.length)
-          : 0
+      // Temps total de connexion (ce mois)
+      const now = new Date()
+      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+      
+      const monthlyConnectionMinutes = child.connectionLogs
+        .filter(log => new Date(log.connectionDate) >= thisMonthStart)
+        .reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
 
-        // Dernière connexion
-        const lastConnection = child.connectionLogs[0]?.connectedAt || child.lastConnectionDate || new Date()
-
-        // Temps total de connexion (ce mois)
-        const now = new Date()
-        const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-        
-        const monthlyConnectionLogs = await prisma.connectionLog.findMany({
-          where: {
-            userId: child.id,
-            connectedAt: {
-              gte: thisMonthStart
-            }
-          },
-          select: {
-            durationMinutes: true
-          }
-        })
-
-        const monthlyConnectionMinutes = monthlyConnectionLogs.reduce(
-          (sum, log) => sum + (log.durationMinutes || 0), 
-          0
-        )
-
-        return {
-          childId: child.id,
-          childName: child.name || 'Sans nom',
-          childEmail: child.email,
-          status: child.status,
-          currentTitle: child.currentTitle,
-          totalMasteryPoints: child.totalMasteryPoints,
-          monthlyMasteryPoints: child.monthlyMasteryPoints,
-          weeklyMasteryPoints: child.weeklyMasteryPoints,
-          connectionStreak: child.connectionStreak,
-          bestStreak: child.bestStreak,
-          badgesUnlocked: child.badgesUnlocked.length,
-          coursesEnrolled,
-          averageCompletion,
-          lastConnection,
-          monthlyConnectionMinutes,
-          monthlyConnectionHours: Math.floor(monthlyConnectionMinutes / 60)
-        }
-      })
-    )
+      return {
+        childId: child.id,
+        childName: child.name || 'Sans nom',
+        childEmail: child.email,
+        status: child.status,
+        currentTitle: child.currentTitle,
+        totalMasteryPoints: child.totalMasteryPoints,
+        monthlyMasteryPoints: child.monthlyMasteryPoints,
+        weeklyMasteryPoints: child.weeklyMasteryPoints,
+        connectionStreak: child.currentStreak,
+        bestStreak: child.longestStreak,
+        badgesUnlocked: child.userBadges.length,
+        coursesEnrolled: 0, // TODO: calculer depuis les lessons
+        averageCompletion,
+        lastConnection: child.lastConnectionDate || new Date(),
+        monthlyConnectionMinutes,
+        monthlyConnectionHours: Math.floor(monthlyConnectionMinutes / 60)
+      }
+    })
 
     // Trier par PMU total (du plus élevé au plus faible)
     childrenWithStats.sort((a, b) => b.totalMasteryPoints - a.totalMasteryPoints)
@@ -158,5 +143,4 @@ export async function GET() {
     )
   }
 }
-
 
