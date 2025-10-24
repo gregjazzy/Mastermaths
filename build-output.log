@@ -1,0 +1,241 @@
+
+> master-maths@1.0.0 build
+> next build
+
+   ▲ Next.js 14.0.4
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/40) ...
+[PARENT DASHBOARD ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at c (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/dashboard/parent/route.js:1:1262)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[USER STATS ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at p (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/dashboard/user-stats/route.js:1:1262)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Erreur lors de la récupération des stats de streak: o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at n (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/courses/[courseId]/hierarchy/route.js:1:3469)
+    at c (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/engagement/streak-stats/route.js:1:1240)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[SUBCHAPTERS GET ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/admin/subchapters/route.js:1:1262)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Erreur lors de la récupération de l'historique: o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at o (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/engagement/connection-history/route.js:10:988)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/engagement/connection-history/route.js:1:1239)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (10/40) 
+[LEADERBOARD WEEKLY ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/leaderboard/weekly/route.js:1:1264)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[ADMIN STATS ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/admin/stats/route.js:1:1261)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Erreur lors de la récupération des performances: o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at n (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/lessons/[lessonId]/video-progress/route.js:1:2604)
+    at c (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/dashboard/performance/route.js:1:1238)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[LEADERBOARD MONTHLY ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/leaderboard/monthly/route.js:1:1264)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[LEADERBOARD HISTORICAL ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/leaderboard/historical/route.js:1:1263)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Erreur lors de la récupération des badges: o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at l (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/mastery-badges/route.js:1:2480)
+    at c (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/mastery-badges/route.js:1:1239)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (20/40) 
+[TIME STATS ERROR] o [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at i (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:3732)
+    at d (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/2455.js:1:1107)
+    at s (/Users/gregorymittelette/Documents/MasterMaths/.next/server/chunks/7382.js:30:20515)
+    at c (/Users/gregorymittelette/Documents/MasterMaths/.next/server/app/api/engagement/time-stats/route.js:1:1263)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41966
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854) {
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (30/40) 
+ ✓ Generating static pages (40/40) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                    Size     First Load JS
+┌ λ /                                          186 B          93.8 kB
+├ λ /_not-found                                869 B          82.8 kB
+├ λ /admin                                     3.14 kB        91.8 kB
+├ λ /admin-dev                                 3.62 kB        92.3 kB
+├ λ /admin/chapters                            3.58 kB        92.3 kB
+├ λ /admin/courses                             3.43 kB        92.1 kB
+├ λ /admin/lessons                             5.6 kB         94.3 kB
+├ λ /admin/qcm/[lessonId]                      3.95 kB        92.6 kB
+├ λ /api/admin/chapters                        0 B                0 B
+├ λ /api/admin/chapters/[id]                   0 B                0 B
+├ λ /api/admin/courses                         0 B                0 B
+├ λ /api/admin/courses/[id]                    0 B                0 B
+├ λ /api/admin/lessons                         0 B                0 B
+├ λ /api/admin/lessons/[id]                    0 B                0 B
+├ λ /api/admin/lessons/create-sequence         0 B                0 B
+├ λ /api/admin/qcm/[lessonId]                  0 B                0 B
+├ λ /api/admin/qcm/question/[questionId]       0 B                0 B
+├ λ /api/admin/stats                           0 B                0 B
+├ λ /api/admin/subchapters                     0 B                0 B
+├ λ /api/auth/[...nextauth]                    0 B                0 B
+├ λ /api/auth/register                         0 B                0 B
+├ λ /api/courses/[courseId]/hierarchy          0 B                0 B
+├ λ /api/cron/send-reminders                   0 B                0 B
+├ λ /api/dashboard/parent                      0 B                0 B
+├ λ /api/dashboard/performance                 0 B                0 B
+├ λ /api/dashboard/user-stats                  0 B                0 B
+├ λ /api/engagement/badges                     0 B                0 B
+├ λ /api/engagement/connection-history         0 B                0 B
+├ λ /api/engagement/disconnect                 0 B                0 B
+├ λ /api/engagement/heartbeat                  0 B                0 B
+├ λ /api/engagement/streak-stats               0 B                0 B
+├ λ /api/engagement/time-stats                 0 B                0 B
+├ λ /api/engagement/track-connection           0 B                0 B
+├ λ /api/leaderboard/historical                0 B                0 B
+├ λ /api/leaderboard/monthly                   0 B                0 B
+├ λ /api/leaderboard/weekly                    0 B                0 B
+├ λ /api/lessons/[lessonId]                    0 B                0 B
+├ λ /api/lessons/[lessonId]/complete           0 B                0 B
+├ λ /api/lessons/[lessonId]/correction-status  0 B                0 B
+├ λ /api/lessons/[lessonId]/qcm                0 B                0 B
+├ λ /api/lessons/[lessonId]/qcm-score          0 B                0 B
+├ λ /api/lessons/[lessonId]/unlock-status      0 B                0 B
+├ λ /api/lessons/[lessonId]/video-progress     0 B                0 B
+├ λ /api/mastery-badges                        0 B                0 B
+├ λ /api/stripe/create-checkout-session        0 B                0 B
+├ λ /api/stripe/webhook                        0 B                0 B
+├ λ /auth/login                                1.74 kB         105 kB
+├ λ /auth/register                             2.02 kB         106 kB
+├ λ /cours                                     2.63 kB         106 kB
+├ λ /cours/[courseId]/lecon/[lessonId]         24.1 kB         128 kB
+├ λ /dashboard                                 9.25 kB         113 kB
+├ λ /dashboard/parent                          3.67 kB        92.4 kB
+├ λ /hall-of-fame                              2.83 kB        84.8 kB
+└ λ /upgrade                                   4.36 kB        86.3 kB
++ First Load JS shared by all                  81.9 kB
+  ├ chunks/938-d59c40ac607119c1.js             26.7 kB
+  ├ chunks/fd9d1056-a95c00c251bf8e01.js        53.3 kB
+  ├ chunks/main-app-f938272488d2bddf.js        220 B
+  └ chunks/webpack-109f01f2ae42ef11.js         1.74 kB
+
+
+ƒ Middleware                                   72.8 kB
+
+λ  (Dynamic)  server-rendered on demand using Node.js
+
