@@ -327,16 +327,17 @@ export class MasteryPointsService {
       ...top5PercentUsers.map(u => u.id)
     ])
 
+    // TODO: Réactiver quand le champ hasFreeCourseReward sera ajouté au schéma
     // Mettre à jour tous les utilisateurs
-    await prisma.user.updateMany({
-      where: { id: { in: Array.from(eligibleUserIds) } },
-      data: { hasFreeCourseReward: true }
-    })
+    // await prisma.user.updateMany({
+    //   where: { id: { in: Array.from(eligibleUserIds) } },
+    //   data: { hasFreeCourseReward: true }
+    // })
 
-    await prisma.user.updateMany({
-      where: { id: { notIn: Array.from(eligibleUserIds) } },
-      data: { hasFreeCourseReward: false }
-    })
+    // await prisma.user.updateMany({
+    //   where: { id: { notIn: Array.from(eligibleUserIds) } },
+    //   data: { hasFreeCourseReward: false }
+    // })
 
     return {
       eligible: eligibleUserIds.size,

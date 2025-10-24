@@ -54,8 +54,54 @@ export class BadgeService {
         continue
       }
 
-      // TODO: Implémenter l'évaluation des critères de badges
-      // Pour l'instant, les badges sont attribués manuellement ou via le système de maîtrise
+      // Si le badge n'a pas de critères, ignorer
+      if (!badge.criteria) {
+        continue
+      }
+
+      // Évaluer les critères
+      const criteria = badge.criteria as BadgeCriteria
+      const unlocked = this.evaluateCriteria(criteria, stats)
+
+      if (unlocked) {
+        // Ajouter le badge à l'utilisateur via la table user_badges
+        await prisma.user_badges.create({
+          data: {
+            id: `${userId}_${badge.id}`,
+            userId: userId,
+            badgeId: badge.id
+          }
+        })
+
+        const updatedUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            email: true,
+            name: true,
+            emailsNotification: true
+          }
+        })
+
+        if (!updatedUser) continue
+
+        newBadges.push(badge.id)
+
+        // Envoyer un email de félicitations pour le nouveau badge
+        try {
+          await EmailService.sendBadgeUnlocked(
+            updatedUser.email || '',
+            updatedUser.name || 'Élève',
+            badge.name,
+            badge.description || '',
+            badge.icon || '',
+            badge.rarity,
+            badge.masteryPoints || 0,
+            updatedUser.emailsNotification || []
+          )
+        } catch (error) {
+          console.error('Erreur lors de l\'envoi de l\'email de badge:', error)
+        }
+      }
     }
 
     return newBadges
@@ -74,6 +120,15 @@ export class BadgeService {
       where: { userId },
       include: { lesson: true }
     })
+
+    // Compter les jours de connexion uniques
+    const connectionLogs = await prisma.connectionLog.findMany({
+      where: { userId },
+      select: { connectionDate: true }
+    })
+    const uniqueConnectionDays = new Set(
+      connectionLogs.map(log => log.connectionDate.toISOString().split('T')[0])
+    ).size
 
     // Calculer les statistiques
     const totalLessons = performances.length
@@ -95,7 +150,7 @@ export class BadgeService {
       : 0
 
     return {
-      connection_days_count: user?.connectionDaysCount || 0,
+      connection_days_count: uniqueConnectionDays,
       lessons_completed: completedLessons,
       quiz_success_rate: avgQcmScore,
       perfect_qcm_count: perfectQcms,
@@ -187,25 +242,17 @@ export class BadgeService {
    * Récupère les badges d'un utilisateur avec leurs détails
    */
   static async getUserBadges(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { badgesUnlocked: true }
-    })
-
-    if (!user || user.badgesUnlocked.length === 0) {
-      return []
-    }
-
-    const badges = await prisma.badge.findMany({
-      where: {
-        id: {
-          in: user.badgesUnlocked
-        }
+    const userBadges = await prisma.user_badges.findMany({
+      where: { userId },
+      include: {
+        badges: true
       },
-      orderBy: { order: 'asc' }
+      orderBy: {
+        unlockedAt: 'desc'
+      }
     })
 
-    return badges
+    return userBadges.map(ub => ub.badges)
   }
 }
 

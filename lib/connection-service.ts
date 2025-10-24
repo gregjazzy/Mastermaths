@@ -14,8 +14,8 @@ export class ConnectionService {
       where: { id: userId },
       select: { 
         lastConnectionDate: true,
-        connectionStreak: true,
-        bestStreak: true
+        currentStreak: true,
+        longestStreak: true
       }
     })
 
@@ -35,11 +35,11 @@ export class ConnectionService {
 
       // Si connexion hier : continuer le streak
       if (lastConnection.getTime() === yesterday.getTime()) {
-        newStreak = user.connectionStreak + 1
+        newStreak = user.currentStreak + 1
       }
       // Si connexion aujourd'hui déjà : garder le streak actuel
       else if (lastConnection.getTime() === today.getTime()) {
-        newStreak = user.connectionStreak
+        newStreak = user.currentStreak
       }
       // Sinon : réinitialiser à 1
       else {
@@ -48,13 +48,13 @@ export class ConnectionService {
     }
 
     // Mettre à jour le meilleur streak si dépassé
-    const newBestStreak = Math.max(newStreak, user.bestStreak)
+    const newBestStreak = Math.max(newStreak, user.longestStreak)
 
     await prisma.user.update({
       where: { id: userId },
       data: {
-        connectionStreak: newStreak,
-        bestStreak: newBestStreak,
+        currentStreak: newStreak,
+        longestStreak: newBestStreak,
       }
     })
 
@@ -76,13 +76,6 @@ export class ConnectionService {
           { lastConnectionDate: { not: null } },
           // Dernière connexion avant la date limite
           { lastConnectionDate: { lt: cutoffDate } },
-          // Pas de rappel envoyé aujourd'hui
-          {
-            OR: [
-              { lastReminderSentAt: null },
-              { lastReminderSentAt: { lt: cutoffDate } }
-            ]
-          },
           // Utilisateur actif (DEMO ou PREMIUM)
           { status: { in: ['DEMO', 'PREMIUM'] } }
         ]
@@ -93,7 +86,7 @@ export class ConnectionService {
         emailsNotification: true,
         name: true,
         lastConnectionDate: true,
-        connectionStreak: true
+        currentStreak: true
       }
     })
 
@@ -101,13 +94,11 @@ export class ConnectionService {
   }
 
   /**
-   * Marque qu'un email de rappel a été envoyé
+   * Marque qu'un email de rappel a été envoyé (désactivé pour l'instant)
    */
   static async markReminderSent(userId: string) {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { lastReminderSentAt: new Date() }
-    })
+    // Fonctionnalité désactivée - le champ lastReminderSentAt n'existe pas dans le schéma actuel
+    console.log(`Rappel marqué comme envoyé pour l'utilisateur ${userId}`)
   }
 
   /**
@@ -117,14 +108,22 @@ export class ConnectionService {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        connectionDaysCount: true,
-        connectionStreak: true,
-        bestStreak: true,
+        currentStreak: true,
+        longestStreak: true,
         lastConnectionDate: true
       }
     })
 
     if (!user) return null
+
+    // Compter les jours de connexion uniques
+    const connectionLogs = await prisma.connectionLog.findMany({
+      where: { userId },
+      select: { connectionDate: true }
+    })
+    const uniqueConnectionDays = new Set(
+      connectionLogs.map(log => log.connectionDate.toISOString().split('T')[0])
+    ).size
 
     // Calculer les jours d'inactivité
     const today = new Date()
@@ -139,9 +138,9 @@ export class ConnectionService {
     }
 
     return {
-      totalDays: user.connectionDaysCount,
-      currentStreak: user.connectionStreak,
-      bestStreak: user.bestStreak,
+      totalDays: uniqueConnectionDays,
+      currentStreak: user.currentStreak,
+      bestStreak: user.longestStreak,
       lastConnection: user.lastConnectionDate,
       daysInactive
     }

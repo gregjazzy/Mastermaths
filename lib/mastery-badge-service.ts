@@ -161,7 +161,7 @@ export class MasteryBadgeService {
       select: {
         lessonId: true,
         isCompleted: true,
-        bestScore: true
+        quizScorePercent: true
       }
     })
 
@@ -172,7 +172,7 @@ export class MasteryBadgeService {
     if (!allCompleted) return null
 
     // Vérifier si toutes sont maîtrisées (score >= 100)
-    const allMastered = performances.every(p => (p.bestScore || 0) >= 100)
+    const allMastered = performances.every(p => (p.quizScorePercent || 0) >= 100)
 
     const badgeType = allMastered ? 'MASTERED' : 'COMPLETED'
     const pmuBonus = allMastered ? 200 : 100
@@ -247,7 +247,7 @@ export class MasteryBadgeService {
       select: {
         lessonId: true,
         isCompleted: true,
-        bestScore: true
+        quizScorePercent: true
       }
     })
 
@@ -258,7 +258,7 @@ export class MasteryBadgeService {
     if (!allCompleted) return null
 
     // Vérifier si toutes sont maîtrisées (score >= 100)
-    const allMastered = performances.every(p => (p.bestScore || 0) >= 100)
+    const allMastered = performances.every(p => (p.quizScorePercent || 0) >= 100)
 
     const badgeType = allMastered ? 'EXCELLENCE' : 'GRADUATE'
     const pmuBonus = allMastered ? 1000 : 500
@@ -298,7 +298,7 @@ export class MasteryBadgeService {
       },
       select: {
         lessonId: true,
-        bestScore: true,
+        quizScorePercent: true,
         lesson: {
           select: {
             title: true,
@@ -309,11 +309,11 @@ export class MasteryBadgeService {
     })
 
     const badges: MasteryBadge[] = performances
-      .filter(p => (p.bestScore || 0) >= 80)
+      .filter(p => (p.quizScorePercent || 0) >= 80)
       .map(p => {
         let level: MasteryLevel
-        if ((p.bestScore || 0) >= 100) level = MasteryLevel.GOLD
-        else if ((p.bestScore || 0) >= 90) level = MasteryLevel.SILVER
+        if ((p.quizScorePercent || 0) >= 100) level = MasteryLevel.GOLD
+        else if ((p.quizScorePercent || 0) >= 90) level = MasteryLevel.SILVER
         else level = MasteryLevel.BRONZE
 
         return {
@@ -321,7 +321,7 @@ export class MasteryBadgeService {
           level,
           entityId: p.lessonId,
           entityName: p.lesson.title,
-          score: p.bestScore || 0,
+          score: p.quizScorePercent || 0,
           earnedAt: new Date() // TODO: stocker la vraie date
         }
       })
