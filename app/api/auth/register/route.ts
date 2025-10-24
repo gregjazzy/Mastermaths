@@ -30,13 +30,14 @@ export async function POST(req: Request) {
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Créer l'utilisateur avec le statut FREE par défaut
+    // Créer l'utilisateur avec le statut DEMO par défaut
+    // (permet d'accéder au contenu de démonstration)
     const user = await prisma.user.create({
       data: {
         email,
         name,
         hashedPassword,
-        status: 'FREE',
+        status: 'DEMO', // Changé de FREE à DEMO
         isSubscribed: false,
       },
       select: {

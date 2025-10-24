@@ -72,7 +72,25 @@ export default function Navbar() {
                 </p>
               </div>
               <button
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={async () => {
+                  // Finaliser la session de tracking avant de se déconnecter
+                  const sessionId = sessionStorage.getItem('activeSessionId')
+                  if (sessionId) {
+                    try {
+                      await fetch('/api/engagement/disconnect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId }),
+                        keepalive: true
+                      })
+                      sessionStorage.removeItem('activeSessionId')
+                    } catch (error) {
+                      console.error('Erreur finalisation session:', error)
+                    }
+                  }
+                  // Déconnexion NextAuth
+                  await signOut({ callbackUrl: '/' })
+                }}
                 className="p-2 text-gray-600 hover:text-master-turquoise hover:bg-gray-100 rounded-lg transition-colors"
                 title="Se déconnecter"
               >

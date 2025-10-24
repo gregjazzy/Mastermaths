@@ -34,10 +34,10 @@ model User {
   updatedAt             DateTime        @updatedAt
   accounts              Account[]
   connectionLogs        ConnectionLog[]
+  masteryBadges         MasteryBadge[]
   performances          Performance[]
   sessions              Session[]
   user_badges           user_badges[]
-  masteryBadges         MasteryBadge[]
 
   @@map("users")
 }
@@ -102,6 +102,7 @@ model Chapter {
   description                 String?
   order                       Int          @default(0)
   courseId                    String
+  isDemoContent               Boolean      @default(false)
   mentalMapUrl                String?
   mentalMapTitle              String?
   mentalMapDescription        String?
@@ -117,86 +118,97 @@ model Chapter {
 }
 
 model SubChapter {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  order       Int      @default(0)
-  chapterId   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  lessons     Lesson[]
-  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  order         Int      @default(0)
+  chapterId     String
+  isDemoContent Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lessons       Lesson[]
+  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@map("subchapters")
 }
 
 model Lesson {
-  id                                         String        @id @default(cuid())
-  title                                      String
-  subChapterId                               String
-  type                                       LessonType
-  contentUrl                                 String?
-  isCorrectionVideo                          Boolean       @default(false)
-  isCorrectionDocument                       Boolean       @default(false)
-  linkedQcmId                                String?
-  linkedExerciseId                           String?
-  prerequisiteLessonId                       String?
-  parentLessonId                             String?
-  countForReporting                          Boolean       @default(true)
-  isOptional                                 Boolean       @default(false)
-  order                                      Int           @default(0)
-  createdAt                                  DateTime      @default(now())
-  updatedAt                                  DateTime      @updatedAt
-  linkedExercise                             Lesson?       @relation("ExerciseCorrection", fields: [linkedExerciseId], references: [id])
-  corrections                                Lesson[]      @relation("ExerciseCorrection")
-  lessons_lessons_linkedQcmIdTolessons       Lesson?       @relation("lessons_linkedQcmIdTolessons", fields: [linkedQcmId], references: [id])
-  other_lessons_lessons_linkedQcmIdTolessons Lesson[]      @relation("lessons_linkedQcmIdTolessons")
-  parentLesson                               Lesson?       @relation("LessonHierarchy", fields: [parentLessonId], references: [id])
-  childLessons                               Lesson[]      @relation("LessonHierarchy")
-  prerequisiteLesson                         Lesson?       @relation("LessonPrerequisite", fields: [prerequisiteLessonId], references: [id])
-  dependentLessons                           Lesson[]      @relation("LessonPrerequisite")
-  subChapter                                 SubChapter    @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
-  performances                               Performance[]
-  qcmQuestions                               QcmQuestion[]
+  id                String        @id @default(cuid())
+  title             String
+  subChapterId      String
+  type              LessonType
+  contentUrl        String?
+  isDemoContent     Boolean       @default(false)
+  countForReporting Boolean       @default(true)
+  isOptional        Boolean       @default(false)
+  order             Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  exercises         Exercise[]
+  subChapter        SubChapter    @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
+  performances      Performance[]
+  qcmQuestions      QcmQuestion[] @relation("LessonQcm")
 
-  @@index([linkedExerciseId], map: "Lesson_linkedExerciseId_idx")
-  @@index([parentLessonId], map: "Lesson_parentLessonId_idx")
-  @@index([prerequisiteLessonId], map: "Lesson_prerequisiteLessonId_idx")
   @@map("lessons")
 }
 
+model Exercise {
+  id                    String        @id @default(cuid())
+  title                 String
+  lessonId              String
+  order                 Int           @default(0)
+  isDemoContent         Boolean       @default(false)
+  exerciseUrl           String?
+  correctionVideoUrl    String?
+  correctionDocumentUrl String?
+  createdAt             DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt             DateTime      @default(now()) @updatedAt @db.Timestamp(6)
+  lesson                Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  performances          Performance[]
+  qcmQuestions          QcmQuestion[] @relation("ExerciseQcm")
+
+  @@index([lessonId])
+  @@map("exercises")
+}
+
 model QcmQuestion {
-  id               String   @id @default(cuid())
-  lessonId         String
+  id               String    @id @default(cuid())
+  lessonId         String?
   question         String
   options          String[]
   correctAnswer    Int?
   correctAnswers   Int[]
-  isMultipleChoice Boolean  @default(false)
+  isMultipleChoice Boolean   @default(false)
   explanation      String?
-  order            Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  lesson           Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  order            Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  exerciseId       String?
+  exercise         Exercise? @relation("ExerciseQcm", fields: [exerciseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  lesson           Lesson?   @relation("LessonQcm", fields: [lessonId], references: [id], onDelete: Cascade)
 
+  @@index([exerciseId])
   @@map("qcm_questions")
 }
 
 model Performance {
-  id                   String   @id @default(cuid())
+  id                   String    @id @default(cuid())
   userId               String
-  lessonId             String
-  videoProgressPercent Float    @default(0)
+  lessonId             String?
+  videoProgressPercent Float     @default(0)
   quizScorePercent     Float?
-  isCompleted          Boolean  @default(false)
-  hasViewedCorrection  Boolean  @default(false)
-  lastAccessedAt       DateTime @default(now())
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-  lesson               Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isCompleted          Boolean   @default(false)
+  hasViewedCorrection  Boolean   @default(false)
+  lastAccessedAt       DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  exerciseId           String?
+  exercises            Exercise? @relation(fields: [exerciseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  lesson               Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
+  @@index([exerciseId])
   @@map("performances")
 }
 
@@ -207,10 +219,10 @@ model Badge {
   icon                  String
   rarity                String
   masteryPointsRequired Int           @default(0)
+  createdAt             DateTime      @default(now())
   masteryPoints         Int           @default(0)
   order                 Int           @default(0)
   criteria              Json?
-  createdAt             DateTime      @default(now())
   user_badges           user_badges[]
 
   @@map("badges")
@@ -235,6 +247,23 @@ model verification_tokens {
   @@unique([identifier, token])
 }
 
+model MasteryBadge {
+  id         String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  userId     String
+  type       String
+  level      String
+  entityId   String
+  entityName String
+  score      Int?
+  pmuAwarded Int
+  earnedAt   DateTime @default(now()) @db.Timestamp(6)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "mastery_badges_userid_fkey")
+
+  @@unique([userId, type, entityId, level], map: "mastery_badges_unique")
+  @@index([userId], map: "mastery_badges_userid_idx")
+  @@map("mastery_badges")
+}
+
 enum UserStatus {
   FREE
   DEMO
@@ -250,21 +279,4 @@ enum LessonType {
   DS
   CARTOGRAPHIE
   METHODE
-}
-
-model MasteryBadge {
-  id          String   @id @default(cuid())
-  userId      String
-  type        String   // 'LESSON', 'CHAPTER', 'COURSE'
-  level       String   // 'BRONZE', 'SILVER', 'GOLD', 'COMPLETED', 'MASTERED', 'GRADUATE', 'EXCELLENCE'
-  entityId    String   // ID de la leçon, chapitre ou cours
-  entityName  String   // Nom pour affichage
-  score       Int?     // Score du QCM (pour les badges de leçon)
-  pmuAwarded  Int      // PMU gagnés pour ce badge
-  earnedAt    DateTime @default(now())
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, type, entityId, level]) // Un badge unique par combinaison
-  @@map("mastery_badges")
 }

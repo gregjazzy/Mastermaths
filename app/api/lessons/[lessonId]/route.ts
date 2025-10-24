@@ -40,7 +40,8 @@ export async function GET(
               select: { title: true }
             }
           }
-        }
+        },
+        qcmQuestions: true  // Inclure les questions QCM
       }
     })
 

@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-export const dynamic = 'force-dynamic'
 
+export const dynamic = 'force-dynamic'
 
 export async function PUT(
   request: Request,
@@ -17,32 +17,29 @@ export async function PUT(
 
     const body = await request.json()
     const { 
-      subChapterId, 
+      lessonId, 
       title, 
-      type, 
       order, 
-      vimeoVideoId,
-      contentUrl,
-      countForReporting, 
-      isOptional 
+      exerciseUrl, 
+      correctionVideoUrl, 
+      correctionDocumentUrl
     } = body
 
-    const lesson = await prisma.lesson.update({
+    const exercise = await prisma.exercise.update({
       where: { id: params.id },
       data: {
-        subChapterId,
+        lessonId,
         title,
-        type,
         order,
-        contentUrl: vimeoVideoId || contentUrl || null,
-        countForReporting: countForReporting !== undefined ? countForReporting : true,
-        isOptional: isOptional || false
+        exerciseUrl: exerciseUrl || null,
+        correctionVideoUrl: correctionVideoUrl || null,
+        correctionDocumentUrl: correctionDocumentUrl || null
       }
     })
 
-    return NextResponse.json({ lesson, success: true })
+    return NextResponse.json({ exercise, success: true })
   } catch (error) {
-    console.error('[LESSON PUT ERROR]', error)
+    console.error('[EXERCISE PUT ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -57,13 +54,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
-    await prisma.lesson.delete({
+    await prisma.exercise.delete({
       where: { id: params.id }
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[LESSON DELETE ERROR]', error)
+    console.error('[EXERCISE DELETE ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

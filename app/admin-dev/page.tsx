@@ -1,192 +1,271 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { BookOpen, FileText, Users, BarChart3, Settings, Video } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import AdminNav from '@/components/AdminNav'
+import { ChevronDown, ChevronRight, Plus, Edit, Trash2, Video, FileText, CheckSquare } from 'lucide-react'
 
-export default function AdminDashboard() {
-  const [stats] = useState({
-    totalCourses: 0,
-    totalStudents: 0,
-    totalLessons: 0,
-    completionRate: 0
-  })
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-master-dark">
-            🎓 Admin Master Maths
-          </h1>
-          <Link href="/" className="text-master-turquoise hover:text-master-turquoise-dark">
-            ← Retour au site
-          </Link>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Alert - Base de données requise */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">
-                Base de données non configurée
-              </h3>
-              <div className="mt-2 text-sm text-yellow-700">
-                <p>Pour utiliser l'interface admin, vous devez d'abord configurer une base de données.</p>
-                <p className="mt-2 font-semibold">Options :</p>
-                <ul className="list-disc ml-5 mt-1">
-                  <li>Supabase (gratuit) : Voir <code className="bg-yellow-100 px-1 rounded">DEPLOIEMENT_SUPABASE_NETLIFY.md</code></li>
-                  <li>PostgreSQL local : <code className="bg-yellow-100 px-1 rounded">createdb mastermaths</code></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Cours</p>
-                <p className="text-3xl font-bold text-master-dark">{stats.totalCourses}</p>
-              </div>
-              <BookOpen className="w-12 h-12 text-master-turquoise opacity-50" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Étudiants</p>
-                <p className="text-3xl font-bold text-master-dark">{stats.totalStudents}</p>
-              </div>
-              <Users className="w-12 h-12 text-master-turquoise opacity-50" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Leçons</p>
-                <p className="text-3xl font-bold text-master-dark">{stats.totalLessons}</p>
-              </div>
-              <FileText className="w-12 h-12 text-master-turquoise opacity-50" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Taux de complétion</p>
-                <p className="text-3xl font-bold text-master-dark">{stats.completionRate}%</p>
-              </div>
-              <BarChart3 className="w-12 h-12 text-master-turquoise opacity-50" />
-            </div>
-          </div>
-        </div>
-
-        {/* Actions Grid */}
-        <h2 className="text-xl font-bold text-master-dark mb-4">Gestion du contenu</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Cours */}
-          <Link href="/admin/courses" className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent hover:border-master-turquoise">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-master-turquoise/10 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-master-turquoise" />
-              </div>
-              <h3 className="text-lg font-semibold text-master-dark">Cours</h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              Créer et gérer les cours (Première, Terminale, etc.)
-            </p>
-          </Link>
-
-          {/* Chapitres */}
-          <Link href="/admin/chapters" className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent hover:border-master-turquoise">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-master-turquoise/10 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-master-turquoise" />
-              </div>
-              <h3 className="text-lg font-semibold text-master-dark">Chapitres</h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              Organiser les chapitres et sous-chapitres
-            </p>
-          </Link>
-
-          {/* Leçons */}
-          <Link href="/admin/lessons" className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent hover:border-master-turquoise">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-master-turquoise/10 rounded-lg flex items-center justify-center">
-                <Video className="w-6 h-6 text-master-turquoise" />
-              </div>
-              <h3 className="text-lg font-semibold text-master-dark">Leçons & Exercices</h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              Ajouter des vidéos, exercices, QCM, corrections
-            </p>
-          </Link>
-        </div>
-
-        {/* Guide rapide */}
-        <div className="mt-8 bg-master-dark rounded-lg shadow-lg p-6 text-white">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Settings className="w-6 h-6" />
-            Guide de configuration
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold mb-2">1. Configurer la base de données</h3>
-              <p className="text-white/80 text-sm">
-                Créez un fichier <code className="bg-white/20 px-2 py-1 rounded">.env</code> avec :
-              </p>
-              <pre className="bg-black/30 p-3 rounded mt-2 text-xs overflow-x-auto">
-{`DATABASE_URL="postgresql://user:password@host:5432/mastermaths"
-NEXTAUTH_SECRET="votre-secret-32-caracteres-minimum"
-NEXTAUTH_URL="http://localhost:3002"`}
-              </pre>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-2">2. Appliquer les migrations</h3>
-              <pre className="bg-black/30 p-3 rounded text-xs">
-npx prisma db push
-              </pre>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-2">3. Créer un compte admin</h3>
-              <p className="text-white/80 text-sm">
-                Une fois la base configurée, inscrivez-vous sur <code className="bg-white/20 px-2 py-1 rounded">/auth/register</code>
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-2">4. Ajouter du contenu</h3>
-              <p className="text-white/80 text-sm">
-                Utilisez cette interface pour créer vos cours, chapitres et leçons !
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-white/20">
-            <p className="text-sm text-white/80">
-              📚 Documentation complète : <code className="bg-white/20 px-2 py-1 rounded">ADMIN_GUIDE.md</code>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+interface Lesson {
+  id: string
+  title: string
+  type: string
+  order: number
 }
 
+interface SubChapter {
+  id: string
+  title: string
+  order: number
+  lessons: Lesson[]
+}
 
+interface Chapter {
+  id: string
+  title: string
+  order: number
+  subChapters: SubChapter[]
+}
+
+interface Course {
+  id: string
+  title: string
+  description: string | null
+  order: number
+  chapters: Chapter[]
+}
+
+export default function AdminHierarchyPage() {
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [expandedCourses, setExpandedCourses] = useState<Set<string>>(new Set())
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set())
+  const [expandedSubChapters, setExpandedSubChapters] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    fetchHierarchy()
+  }, [])
+
+  const fetchHierarchy = async () => {
+    try {
+      // Pour l'instant, on charge juste les cours
+      // TODO: Créer une API qui retourne toute la hiérarchie
+      const response = await fetch('/api/admin/courses')
+      if (response.ok) {
+        const data = await response.json()
+        setCourses(data.courses.map((c: any) => ({ ...c, chapters: [] })))
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const toggleCourse = (courseId: string) => {
+    setExpandedCourses(prev => {
+      const next = new Set(prev)
+      if (next.has(courseId)) {
+        next.delete(courseId)
+      } else {
+        next.add(courseId)
+      }
+      return next
+    })
+  }
+
+  const toggleChapter = (chapterId: string) => {
+    setExpandedChapters(prev => {
+      const next = new Set(prev)
+      if (next.has(chapterId)) {
+        next.delete(chapterId)
+      } else {
+        next.add(chapterId)
+      }
+      return next
+    })
+  }
+
+  const toggleSubChapter = (subChapterId: string) => {
+    setExpandedSubChapters(prev => {
+      const next = new Set(prev)
+      if (next.has(subChapterId)) {
+        next.delete(subChapterId)
+      } else {
+        next.add(subChapterId)
+      }
+      return next
+    })
+  }
+
+  if (loading) {
+    return (
+      <>
+        <AdminNav />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-master-turquoise"></div>
+        </div>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <AdminNav />
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-master-dark">
+                🗂️ Vue Hiérarchique Complète
+              </h1>
+              <p className="text-gray-600 mt-1">Gérez tout votre contenu depuis une seule page</p>
+            </div>
+            <button className="btn-primary flex items-center gap-2">
+              <Plus className="w-5 h-5" />
+              Nouveau cours
+            </button>
+          </div>
+
+          {/* Hiérarchie */}
+          <div className="space-y-3">
+            {courses.map((course) => {
+              const isExpanded = expandedCourses.has(course.id)
+              
+              return (
+                <div key={course.id} className="card border-2 border-blue-200">
+                  {/* COURS */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => toggleCourse(course.id)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
+                      {isExpanded ? (
+                        <ChevronDown className="w-5 h-5 text-gray-600" />
+                      ) : (
+                        <ChevronRight className="w-5 h-5 text-gray-600" />
+                      )}
+                    </button>
+                    
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-blue-600">
+                        📚 {course.title}
+                      </h3>
+                      {course.description && (
+                        <p className="text-sm text-gray-600">{course.description}</p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button className="btn-outline text-sm py-1 px-3 flex items-center gap-1">
+                        <Plus className="w-4 h-4" />
+                        Chapitre
+                      </button>
+                      <button className="p-2 hover:bg-blue-100 rounded">
+                        <Edit className="w-4 h-4 text-blue-600" />
+                      </button>
+                      <button className="p-2 hover:bg-red-100 rounded">
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* CHAPITRES */}
+                  {isExpanded && (
+                    <div className="ml-8 mt-4 space-y-2">
+                      {course.chapters.length === 0 ? (
+                        <div className="text-gray-500 text-sm py-4 text-center bg-gray-50 rounded border border-dashed">
+                          Aucun chapitre. Cliquez sur "+ Chapitre" pour en créer un.
+                        </div>
+                      ) : (
+                        course.chapters.map((chapter) => {
+                          const isChapterExpanded = expandedChapters.has(chapter.id)
+                          
+                          return (
+                            <div key={chapter.id} className="card bg-green-50 border border-green-200">
+                              <div className="flex items-center gap-3">
+                                <button
+                                  onClick={() => toggleChapter(chapter.id)}
+                                  className="p-1 hover:bg-gray-100 rounded"
+                                >
+                                  {isChapterExpanded ? (
+                                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                                  ) : (
+                                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                                  )}
+                                </button>
+                                
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-green-700">
+                                    📖 {chapter.title}
+                                  </h4>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <button className="btn-outline text-sm py-1 px-2 flex items-center gap-1">
+                                    <Plus className="w-3 h-3" />
+                                    Leçon
+                                  </button>
+                                  <button className="p-1 hover:bg-green-100 rounded">
+                                    <Edit className="w-3 h-3 text-green-600" />
+                                  </button>
+                                  <button className="p-1 hover:bg-red-100 rounded">
+                                    <Trash2 className="w-3 h-3 text-red-600" />
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* SOUS-CHAPITRES ET LEÇONS */}
+                              {isChapterExpanded && (
+                                <div className="ml-6 mt-3 space-y-2">
+                                  {chapter.subChapters.length === 0 ? (
+                                    <div className="text-gray-500 text-sm py-3 text-center bg-white rounded border border-dashed">
+                                      Aucune leçon. Cliquez sur "+ Leçon" pour en créer une.
+                                    </div>
+                                  ) : (
+                                    chapter.subChapters.map((subChapter) => (
+                                      <div key={subChapter.id} className="card bg-purple-50 border border-purple-200 p-3">
+                                        <div className="flex items-center gap-2 mb-2">
+                                          <h5 className="font-semibold text-purple-700 text-sm">
+                                            📂 {subChapter.title}
+                                          </h5>
+                                        </div>
+                                        
+                                        <div className="ml-4 space-y-1">
+                                          {subChapter.lessons.map((lesson) => (
+                                            <div key={lesson.id} className="flex items-center gap-2 text-sm py-1">
+                                              {lesson.type === 'VIDEO' && <Video className="w-4 h-4 text-purple-500" />}
+                                              {lesson.type === 'DOCUMENT' && <FileText className="w-4 h-4 text-purple-500" />}
+                                              {lesson.type === 'QCM' && <CheckSquare className="w-4 h-4 text-purple-500" />}
+                                              <span>{lesson.title}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {courses.length === 0 && (
+            <div className="card text-center py-12">
+              <p className="text-gray-500 mb-4">Aucun cours créé</p>
+              <button className="btn-primary">
+                Créer le premier cours
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { FileText, CheckCircle2, AlertCircle, Lock } from 'lucide-react'
+import { FileText, CheckCircle2, AlertCircle } from 'lucide-react'
 import VimeoPlayer from './VimeoPlayer'
 import QcmComponent from './QcmComponent'
 
@@ -11,24 +11,16 @@ interface Lesson {
   title: string
   type: string
   contentUrl?: string
-  isCorrectionVideo: boolean
-  linkedQcmId?: string
+  exerciseUrl?: string
+  correctionVideoUrl?: string
+  correctionDocumentUrl?: string
   subChapter: {
     title: string
     chapter: {
       title: string
     }
   }
-}
-
-interface UnlockStatus {
-  isUnlocked: boolean
-  prerequisiteRequired: boolean
-  prerequisiteLesson?: {
-    id: string
-    title: string
-    type: string
-  }
+  qcmQuestions?: any[]
 }
 
 interface LessonViewerProps {
@@ -39,53 +31,32 @@ interface LessonViewerProps {
 export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps) {
   const router = useRouter()
   const [lesson, setLesson] = useState<Lesson | null>(null)
-  const [unlockStatus, setUnlockStatus] = useState<UnlockStatus | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
-  const [showCorrectionVideo, setShowCorrectionVideo] = useState(false)
-  const [correctionVideoUrl, setCorrectionVideoUrl] = useState<string | null>(null)
+  const [showCorrections, setShowCorrections] = useState(false)
+  const [qcmCompleted, setQcmCompleted] = useState(false)
 
   useEffect(() => {
-    fetchLessonAndUnlockStatus()
+    fetchLesson()
   }, [lessonId])
 
-  const fetchLessonAndUnlockStatus = async () => {
+  const fetchLesson = async () => {
     try {
-      const [lessonRes, unlockRes] = await Promise.all([
-        fetch(`/api/lessons/${lessonId}`),
-        fetch(`/api/lessons/${lessonId}/unlock-status`)
-      ])
+      console.log('🔍 LessonViewer: Fetching lesson', lessonId)
+      const lessonRes = await fetch(`/api/lessons/${lessonId}`)
+      
+      if (!lessonRes.ok) {
+        console.error('❌ LessonViewer: Failed to fetch lesson', lessonRes.status)
+        return
+      }
       
       const lessonData = await lessonRes.json()
-      const unlockData = await unlockRes.json()
-      
+      console.log('✅ LessonViewer: Lesson fetched successfully', lessonData.title)
       setLesson(lessonData)
-      setUnlockStatus(unlockData)
-
-      // Vérifier si on doit afficher la vidéo de correction
-      if (lessonData.type === 'QCM' && unlockData.isUnlocked) {
-        checkCorrectionVideoAvailability(lessonData.id)
-      }
     } catch (error) {
-      console.error('Erreur lors du chargement de la leçon:', error)
+      console.error('❌ LessonViewer: Error loading lesson:', error)
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const fetchLesson = fetchLessonAndUnlockStatus
-
-  const checkCorrectionVideoAvailability = async (qcmId: string) => {
-    try {
-      const response = await fetch(`/api/lessons/${qcmId}/correction-status`)
-      const data = await response.json()
-      
-      if (data.shouldShowCorrection) {
-        setShowCorrectionVideo(true)
-        setCorrectionVideoUrl(data.correctionVideoUrl)
-      }
-    } catch (error) {
-      console.error('Erreur lors de la vérification de la correction:', error)
     }
   }
 
@@ -120,15 +91,9 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
       console.error('Erreur lors de l\'évaluation des badges:', error)
     }
 
-    // Recharger la leçon pour vérifier si la vidéo de correction doit être affichée
-    // La vidéo de correction s'affiche SEULEMENT si score < 100%
-    if (score < 100 && lesson?.type === 'QCM') {
-      await checkCorrectionVideoAvailability(lesson.id)
-    } else if (score === 100) {
-      // Si score parfait, on s'assure de ne pas afficher la correction
-      setShowCorrectionVideo(false)
-      setCorrectionVideoUrl(null)
-    }
+    // Marquer le QCM comme terminé et afficher les corrections
+    setQcmCompleted(true)
+    setShowCorrections(true)
   }
 
   if (isLoading) {
@@ -148,49 +113,6 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
     )
   }
 
-  // Si la leçon est verrouillée
-  if (unlockStatus && !unlockStatus.isUnlocked) {
-    return (
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-6">
-          <div className="text-sm text-gray-500 mb-2">
-            {lesson.subChapter.chapter.title} / {lesson.subChapter.title}
-          </div>
-          <h1 className="text-3xl font-bold text-master-dark mb-2 flex items-center gap-3">
-            <Lock className="w-8 h-8 text-orange-500" />
-            {lesson.title}
-          </h1>
-          <div className="inline-block px-3 py-1 bg-gray-200 text-gray-600 rounded-full text-sm font-medium">
-            🔒 Leçon verrouillée
-          </div>
-        </div>
-
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-8 text-center">
-          <Lock className="w-16 h-16 text-orange-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-orange-900 mb-4">
-            Cette leçon est verrouillée
-          </h2>
-          <p className="text-gray-700 mb-6">
-            Vous devez d'abord terminer la leçon prérequise :
-          </p>
-          {unlockStatus.prerequisiteLesson && (
-            <div className="bg-white border border-orange-300 rounded-lg p-4 mb-6 inline-block">
-              <p className="font-semibold text-lg text-master-dark">
-                {unlockStatus.prerequisiteLesson.title}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                {getLessonTypeLabel(unlockStatus.prerequisiteLesson.type)}
-              </p>
-            </div>
-          )}
-          <p className="text-sm text-gray-600">
-            💡 Complétez la leçon prérequise pour débloquer celle-ci
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="max-w-5xl mx-auto">
       {/* En-tête */}
@@ -205,7 +127,8 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
       </div>
 
       {/* Contenu dynamique selon le type */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="bg-white rounded-xl shadow-lg p-6 space-y-8">
+        {/* 1. COURS VIDÉO */}
         {lesson.type === 'VIDEO_COURS' && lesson.contentUrl && (
           <VimeoPlayer
             videoUrl={lesson.contentUrl}
@@ -214,168 +137,182 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
           />
         )}
 
-        {lesson.type === 'CORRECTION_VIDEO' && lesson.contentUrl && (
-          <div>
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-orange-900">Vidéo de correction</h3>
-                  <p className="text-sm text-orange-700">
-                    Cette vidéo vous aide à comprendre les erreurs communes et à maîtriser le sujet.
-                  </p>
+        {/* 2. EXERCICE OU DS */}
+        {(lesson.type === 'EXO_ECRIT' || lesson.type === 'DS') && (
+          <div className="space-y-8">
+            {/* Énoncé PDF */}
+            {lesson.exerciseUrl && (
+              <div>
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-blue-600" />
+                  {lesson.type === 'DS' ? '📋 Sujet du Devoir Surveillé' : '📝 Énoncé de l\'exercice'}
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-blue-600" />
+                      <span className="font-medium text-blue-900">Document PDF</span>
+                    </div>
+                    <a
+                      href={lesson.exerciseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-700 underline"
+                    >
+                      Ouvrir dans un nouvel onglet
+                    </a>
+                  </div>
+                  <div className="w-full h-[800px] border rounded-lg overflow-hidden shadow-lg">
+                    <iframe
+                      src={lesson.exerciseUrl.includes('drive.google.com') 
+                        ? lesson.exerciseUrl.replace('/view', '/preview')
+                        : lesson.exerciseUrl}
+                      className="w-full h-full"
+                      title={`Énoncé - ${lesson.title}`}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <VimeoPlayer
-              videoUrl={lesson.contentUrl}
-              lessonId={lesson.id}
-              isCorrectionVideo={true}
-            />
-          </div>
-        )}
+            )}
 
-        {lesson.type === 'QCM' && (
-          <div>
-            <QcmComponent lessonId={lesson.id} onComplete={handleQcmComplete} />
-            
-            {/* Afficher la vidéo de correction si nécessaire */}
-            {showCorrectionVideo && correctionVideoUrl && (
-              <div className="mt-8 border-t pt-8">
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+            {/* QCM intégré */}
+            {lesson.qcmQuestions && lesson.qcmQuestions.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  ✅ QCM de validation
+                </h3>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
+                  <QcmComponent lessonId={lesson.id} onComplete={handleQcmComplete} />
+                </div>
+              </div>
+            )}
+
+            {/* Corrections (après QCM) */}
+            {showCorrections && qcmCompleted && (
+              <div className="space-y-6 border-t-4 border-orange-200 pt-8">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5" />
                     <div>
-                      <h3 className="font-semibold text-orange-900">Vidéo de correction disponible</h3>
-                      <p className="text-sm text-orange-700">
-                        Votre score est inférieur à 100%. Regardez cette vidéo pour comprendre vos erreurs.
+                      <h3 className="font-semibold text-orange-900 text-lg">🎓 Corrections disponibles</h3>
+                      <p className="text-sm text-orange-700 mt-1">
+                        Consultez les corrections ci-dessous pour comprendre la méthode et consolider vos connaissances.
                       </p>
                     </div>
                   </div>
                 </div>
-                <VimeoPlayer
-                  videoUrl={correctionVideoUrl}
-                  lessonId={lessonId}
-                  isCorrectionVideo={true}
-                />
+
+                {/* Vidéo correction */}
+                {lesson.correctionVideoUrl && (
+                  <div>
+                    <h4 className="text-lg font-bold mb-3 flex items-center gap-2">
+                      🎥 Correction en vidéo
+                    </h4>
+                    <VimeoPlayer
+                      videoUrl={lesson.correctionVideoUrl}
+                      lessonId={lesson.id}
+                      isCorrectionVideo={true}
+                    />
+                  </div>
+                )}
+
+                {/* PDF correction */}
+                {lesson.correctionDocumentUrl && (
+                  <div>
+                    <h4 className="text-lg font-bold mb-3 flex items-center gap-2">
+                      📄 Correction PDF
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-5 h-5 text-purple-600" />
+                          <span className="font-medium text-purple-900">Document de correction</span>
+                        </div>
+                        <a
+                          href={lesson.correctionDocumentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-purple-600 hover:text-purple-700 underline"
+                        >
+                          Ouvrir dans un nouvel onglet
+                        </a>
+                      </div>
+                      <div className="w-full h-[800px] border rounded-lg overflow-hidden shadow-lg">
+                        <iframe
+                          src={lesson.correctionDocumentUrl.includes('drive.google.com') 
+                            ? lesson.correctionDocumentUrl.replace('/view', '/preview')
+                            : lesson.correctionDocumentUrl}
+                          className="w-full h-full"
+                          title={`Correction - ${lesson.title}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
 
-        {(lesson.type === 'EXO_ECRIT' || lesson.type === 'DS' || lesson.type === 'CARTOGRAPHIE' || lesson.type === 'METHODE') && (
+        {/* 3. AUTRES TYPES (MÉTHODE, CARTOGRAPHIE) */}
+        {(lesson.type === 'METHODE' || lesson.type === 'CARTOGRAPHIE') && lesson.contentUrl && (
           <div>
-            {lesson.contentUrl && (
-              <div className="mb-6">
-                {/* Si c'est un PDF, l'afficher directement */}
-                {lesson.contentUrl.toLowerCase().includes('.pdf') || 
-                 lesson.contentUrl.includes('drive.google.com') ||
-                 lesson.contentUrl.includes('dropbox.com') ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-blue-600" />
-                        <span className="font-medium text-blue-900">
-                          {lesson.type === 'DS' ? 'Sujet du Devoir Surveillé' : 'Document de l\'exercice'}
-                        </span>
-                      </div>
-                      <a
-                        href={lesson.contentUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-700 underline"
-                      >
-                        Ouvrir dans un nouvel onglet
-                      </a>
-                    </div>
-                    <div className="w-full h-[800px] border rounded-lg overflow-hidden shadow-lg">
-                      <iframe
-                        src={lesson.contentUrl.includes('drive.google.com') 
-                          ? lesson.contentUrl.replace('/view', '/preview')
-                          : lesson.contentUrl}
-                        className="w-full h-full"
-                        title={lesson.title}
-                      />
-                    </div>
+            {lesson.contentUrl.toLowerCase().includes('.pdf') || 
+             lesson.contentUrl.includes('drive.google.com') ||
+             lesson.contentUrl.includes('dropbox.com') ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-blue-900">
+                      {lesson.type === 'METHODE' ? 'Fiche méthode' : 'Carte mentale'}
+                    </span>
                   </div>
-                ) : (
-                  // Sinon, juste un lien de téléchargement
                   <a
                     href={lesson.contentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 btn-primary"
+                    className="text-sm text-blue-600 hover:text-blue-700 underline"
                   >
-                    <FileText className="w-5 h-5" />
-                    Télécharger le document
+                    Ouvrir dans un nouvel onglet
                   </a>
-                )}
+                </div>
+                <div className="w-full h-[800px] border rounded-lg overflow-hidden shadow-lg">
+                  <iframe
+                    src={lesson.contentUrl.includes('drive.google.com') 
+                      ? lesson.contentUrl.replace('/view', '/preview')
+                      : lesson.contentUrl}
+                    className="w-full h-full"
+                    title={lesson.title}
+                  />
+                </div>
               </div>
-            )}
-
-            <div className="bg-gray-50 rounded-lg p-6 text-center mt-6">
-              <FileText className="w-16 h-16 text-master-turquoise mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-master-dark mb-2">
-                {lesson.type === 'EXO_ECRIT' && 'Exercice écrit'}
-                {lesson.type === 'DS' && 'Devoir Surveillé (DS)'}
-                {lesson.type === 'CARTOGRAPHIE' && 'Cartographie'}
-                {lesson.type === 'METHODE' && 'Méthode'}
-              </h3>
-              <p className="text-gray-600 mb-6">
-                {lesson.type === 'DS' 
-                  ? 'Complétez ce devoir surveillé et marquez-le comme terminé une fois que vous avez fini.'
-                  : 'Complétez cet exercice et marquez-le comme terminé une fois que vous avez fini.'}
-              </p>
-              <button
-                onClick={handleMarkComplete}
-                disabled={isCompleting}
-                className="btn-primary inline-flex items-center gap-2"
+            ) : (
+              <a
+                href={lesson.contentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 btn-primary"
               >
-                <CheckCircle2 className="w-5 h-5" />
-                {isCompleting ? 'Enregistrement...' : 'Marquer comme complété'}
-              </button>
-            </div>
+                <FileText className="w-5 h-5" />
+                Télécharger le document
+              </a>
+            )}
           </div>
         )}
 
-        {lesson.type === 'CORRECTION_DOCUMENT' && lesson.contentUrl && (
-          <div>
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-purple-500 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-purple-900">Correction PDF</h3>
-                  <p className="text-sm text-purple-700">
-                    Consultez la correction détaillée de l'exercice.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-blue-900">Correction détaillée</span>
-                </div>
-                <a
-                  href={lesson.contentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:text-blue-700 underline"
-                >
-                  Ouvrir dans un nouvel onglet
-                </a>
-              </div>
-              <div className="w-full h-[800px] border rounded-lg overflow-hidden shadow-lg">
-                <iframe
-                  src={lesson.contentUrl.includes('drive.google.com') 
-                    ? lesson.contentUrl.replace('/view', '/preview')
-                    : lesson.contentUrl}
-                  className="w-full h-full"
-                  title={lesson.title}
-                />
-              </div>
-            </div>
+        {/* Bouton de complétion pour les types simples */}
+        {!['EXO_ECRIT', 'DS'].includes(lesson.type) && (
+          <div className="mt-8 pt-6 border-t">
+            <button
+              onClick={handleMarkComplete}
+              disabled={isCompleting}
+              className="btn-primary w-full flex items-center justify-center gap-2"
+            >
+              <CheckCircle2 className="w-5 h-5" />
+              {isCompleting ? 'Enregistrement...' : 'Marquer comme complété'}
+            </button>
           </div>
         )}
       </div>
@@ -385,14 +322,11 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
 
 function getLessonTypeLabel(type: string): string {
   const labels: Record<string, string> = {
-    VIDEO_COURS: 'Vidéo de cours',
-    QCM: 'Quiz',
-    CORRECTION_VIDEO: 'Correction vidéo',
-    CORRECTION_DOCUMENT: 'Correction PDF',
-    EXO_ECRIT: 'Exercice écrit',
-    DS: 'Devoir Surveillé',
-    CARTOGRAPHIE: 'Cartographie',
-    METHODE: 'Méthode',
+    VIDEO_COURS: '🎥 Cours vidéo',
+    EXO_ECRIT: '📝 Exercice',
+    DS: '📋 Devoir Surveillé',
+    METHODE: '💡 Fiche méthode',
+    CARTOGRAPHIE: '🗺️ Carte mentale',
   }
   return labels[type] || type
 }

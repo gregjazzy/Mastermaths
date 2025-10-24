@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-export const dynamic = 'force-dynamic'
 
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
@@ -12,25 +12,33 @@ export async function GET() {
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
-    const subChapters = await prisma.subChapter.findMany({
+    const exercises = await prisma.exercise.findMany({
       orderBy: [
-        { chapterId: 'asc' },
+        { lessonId: 'asc' },
         { order: 'asc' }
       ],
       include: {
-        chapter: {
+        lesson: {
           include: {
-            course: {
-              select: { title: true }
+            subChapter: {
+              include: {
+                chapter: {
+                  include: {
+                    course: {
+                      select: { title: true }
+                    }
+                  }
+                }
+              }
             }
           }
         }
       }
     })
 
-    return NextResponse.json({ subChapters })
+    return NextResponse.json({ exercises })
   } catch (error) {
-    console.error('[SUBCHAPTERS GET ERROR]', error)
+    console.error('[EXERCISES GET ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -43,20 +51,29 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { chapterId, title, description, order } = body
+    const { 
+      lessonId, 
+      title, 
+      order, 
+      exerciseUrl, 
+      correctionVideoUrl, 
+      correctionDocumentUrl
+    } = body
 
-    const subChapter = await prisma.subChapter.create({
+    const exercise = await prisma.exercise.create({
       data: {
-        chapterId,
+        lessonId,
         title,
-        description: description || null,
-        order: order || 1
+        order: order || 1,
+        exerciseUrl: exerciseUrl || null,
+        correctionVideoUrl: correctionVideoUrl || null,
+        correctionDocumentUrl: correctionDocumentUrl || null
       }
     })
 
-    return NextResponse.json({ subChapter, success: true })
+    return NextResponse.json({ exercise, success: true })
   } catch (error) {
-    console.error('[SUBCHAPTERS POST ERROR]', error)
+    console.error('[EXERCISES POST ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

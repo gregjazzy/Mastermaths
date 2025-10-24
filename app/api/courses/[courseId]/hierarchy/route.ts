@@ -31,34 +31,10 @@ export async function GET(
               orderBy: { order: 'asc' },
               include: {
                 lessons: {
-                  where: { parentLessonId: null }, // Seulement les leçons de niveau 1
                   orderBy: { order: 'asc' },
                   include: {
-                    childLessons: { // Exercices (niveau 2)
-                      orderBy: { order: 'asc' },
-                      include: {
-                        childLessons: { // QCM et Corrections (niveau 3)
-                          orderBy: { order: 'asc' },
-                          include: {
-                            performances: {
-                              where: { userId: user.id },
-                              select: {
-                                videoProgressPercent: true,
-                                quizScorePercent: true,
-                                isCompleted: true,
-                              }
-                            }
-                          }
-                        },
-                        performances: {
-                          where: { userId: user.id },
-                          select: {
-                            videoProgressPercent: true,
-                            quizScorePercent: true,
-                            isCompleted: true,
-                          }
-                        }
-                      }
+                    exercises: {
+                      orderBy: { order: 'asc' }
                     },
                     performances: {
                       where: { userId: user.id },

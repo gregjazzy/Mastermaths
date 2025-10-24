@@ -116,6 +116,20 @@ export default function AdminDashboard() {
             </div>
           </Link>
 
+          {/* Gérer les sous-chapitres */}
+          <Link href="/admin/subchapters" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-teal-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-8 h-8 text-teal-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-master-dark mb-1">Sous-Chapitres</h3>
+                <p className="text-sm text-gray-600">Structurer les sous-chapitres</p>
+              </div>
+              <Plus className="w-6 h-6 text-gray-400" />
+            </div>
+          </Link>
+
           {/* Gérer les leçons */}
           <Link href="/admin/lessons" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
             <div className="flex items-center gap-4">
@@ -124,7 +138,21 @@ export default function AdminDashboard() {
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-lg text-master-dark mb-1">Leçons</h3>
-                <p className="text-sm text-gray-600">Ajouter vidéos et QCM</p>
+                <p className="text-sm text-gray-600">Ajouter vidéos de cours</p>
+              </div>
+              <Plus className="w-6 h-6 text-gray-400" />
+            </div>
+          </Link>
+
+          {/* Gérer les exercices */}
+          <Link href="/admin/exercises" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-pink-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-8 h-8 text-pink-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-master-dark mb-1">Exercices</h3>
+                <p className="text-sm text-gray-600">Ajouter exercices et QCM</p>
               </div>
               <Plus className="w-6 h-6 text-gray-400" />
             </div>

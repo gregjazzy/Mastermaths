@@ -12,9 +12,9 @@ export enum MasteryLevel {
 }
 
 export interface MasteryBadge {
-  type: 'LESSON' | 'CHAPTER' | 'COURSE'
+  type: 'LESSON' | 'EXERCISE' | 'CHAPTER' | 'COURSE'
   level: MasteryLevel | 'COMPLETED' | 'MASTERED' | 'GRADUATE' | 'EXCELLENCE'
-  entityId: string // ID de la leçon, chapitre ou cours
+  entityId: string // ID de la leçon, exercice, chapitre ou cours
   entityName: string
   score?: number
   earnedAt: Date
@@ -114,6 +114,109 @@ export class MasteryBadgeService {
       level,
       entityId: lessonId,
       entityName: lesson.title,
+      score,
+      earnedAt: badge.earnedAt
+    }
+  }
+
+  /**
+   * Attribue un badge de maîtrise pour un exercice selon le score QCM
+   */
+  static async awardExerciseBadge(
+    userId: string,
+    exerciseId: string,
+    score: number
+  ): Promise<MasteryBadge | null> {
+    // Déterminer le niveau de maîtrise
+    let level: MasteryLevel | null = null
+    let pmuBonus = 0
+
+    if (score >= 100) {
+      level = MasteryLevel.GOLD
+      pmuBonus = 60
+    } else if (score >= 90) {
+      level = MasteryLevel.SILVER
+      pmuBonus = 40
+    } else if (score >= 80) {
+      level = MasteryLevel.BRONZE
+      pmuBonus = 20
+    }
+
+    if (!level) return null
+
+    // Récupérer les informations de l'exercice
+    const exercise = await prisma.exercise.findUnique({
+      where: { id: exerciseId },
+      select: { 
+        title: true,
+        lesson: {
+          select: {
+            title: true,
+            subChapter: {
+              select: {
+                title: true,
+                chapter: {
+                  select: {
+                    title: true,
+                    course: {
+                      select: { title: true }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+
+    if (!exercise) return null
+
+    // Vérifier si le badge existe déjà
+    const existingBadge = await prisma.masteryBadge.findUnique({
+      where: {
+        userId_type_entityId_level: {
+          userId,
+          type: 'EXERCISE',
+          entityId: exerciseId,
+          level: level
+        }
+      }
+    })
+
+    if (existingBadge) {
+      // Badge déjà gagné, ne pas le recréer
+      return null
+    }
+
+    // Créer le badge dans la base de données
+    const badge = await prisma.masteryBadge.create({
+      data: {
+        userId,
+        type: 'EXERCISE',
+        level,
+        entityId: exerciseId,
+        entityName: exercise.title,
+        score,
+        pmuAwarded: pmuBonus
+      }
+    })
+
+    // Ajouter les PMU bonus
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        totalMasteryPoints: { increment: pmuBonus },
+        monthlyMasteryPoints: { increment: pmuBonus },
+        weeklyMasteryPoints: { increment: pmuBonus }
+      }
+    })
+
+    return {
+      type: 'EXERCISE',
+      level,
+      entityId: exerciseId,
+      entityName: exercise.title,
       score,
       earnedAt: badge.earnedAt
     }
@@ -288,45 +391,20 @@ export class MasteryBadgeService {
    * Récupère tous les badges de maîtrise d'un utilisateur
    */
   static async getUserMasteryBadges(userId: string): Promise<MasteryBadge[]> {
-    // Pour l'instant, on recalcule depuis les performances
-    // Dans une vraie implémentation, vous pourriez stocker ça dans une table dédiée
-    
-    const performances = await prisma.performance.findMany({
-      where: {
-        userId,
-        isCompleted: true
-      },
-      select: {
-        lessonId: true,
-        quizScorePercent: true,
-        lesson: {
-          select: {
-            title: true,
-            subChapterId: true
-          }
-        }
-      }
+    // Récupérer directement depuis la table mastery_badges
+    const badges = await prisma.masteryBadge.findMany({
+      where: { userId },
+      orderBy: { earnedAt: 'desc' }
     })
 
-    const badges: MasteryBadge[] = performances
-      .filter(p => (p.quizScorePercent || 0) >= 80)
-      .map(p => {
-        let level: MasteryLevel
-        if ((p.quizScorePercent || 0) >= 100) level = MasteryLevel.GOLD
-        else if ((p.quizScorePercent || 0) >= 90) level = MasteryLevel.SILVER
-        else level = MasteryLevel.BRONZE
-
-        return {
-          type: 'LESSON' as const,
-          level,
-          entityId: p.lessonId,
-          entityName: p.lesson.title,
-          score: p.quizScorePercent || 0,
-          earnedAt: new Date() // TODO: stocker la vraie date
-        }
-      })
-
-    return badges
+    return badges.map(badge => ({
+      type: badge.type as 'LESSON' | 'EXERCISE' | 'CHAPTER' | 'COURSE',
+      level: badge.level as MasteryLevel | 'COMPLETED' | 'MASTERED' | 'GRADUATE' | 'EXCELLENCE',
+      entityId: badge.entityId,
+      entityName: badge.entityName,
+      score: badge.score || undefined,
+      earnedAt: badge.earnedAt
+    }))
   }
 }
 

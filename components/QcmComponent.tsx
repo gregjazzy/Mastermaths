@@ -16,11 +16,12 @@ interface QcmQuestion {
 }
 
 interface QcmComponentProps {
-  lessonId: string
+  lessonId?: string
+  exerciseId?: string
   onComplete?: (score: number) => void
 }
 
-export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps) {
+export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmComponentProps) {
   const [questions, setQuestions] = useState<QcmQuestion[]>([])
   const [answers, setAnswers] = useState<Record<string, number | number[]>>({}) // Peut être un nombre ou un tableau
   const [submitted, setSubmitted] = useState(false)
@@ -31,11 +32,16 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
 
   useEffect(() => {
     fetchQuestions()
-  }, [lessonId])
+  }, [lessonId, exerciseId])
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch(`/api/lessons/${lessonId}/qcm`)
+      // Déterminer l'URL en fonction de ce qui est fourni
+      const url = lessonId 
+        ? `/api/lessons/${lessonId}/qcm`
+        : `/api/exercises/${exerciseId}/qcm`
+      
+      const response = await fetch(url)
       const data = await response.json()
       setQuestions(data.questions || [])
     } catch (error) {
@@ -91,7 +97,11 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
       const scorePercent = (correct / questions.length) * 100
 
       // Envoyer le score à l'API complete (qui attribue les badges)
-      const response = await fetch(`/api/lessons/${lessonId}/complete`, {
+      const url = lessonId 
+        ? `/api/lessons/${lessonId}/complete`
+        : `/api/exercises/${exerciseId}/complete`
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -102,16 +112,18 @@ export default function QcmComponent({ lessonId, onComplete }: QcmComponentProps
 
       const result = await response.json()
 
-      // Afficher le badge si gagné
-      if (result.badges?.lesson) {
-        const badge = result.badges.lesson
-        setBadgeEarned({
-          type: badge.type,
-          level: badge.level,
-          entityName: badge.entityName,
-          pmuAwarded: badge.level === 'GOLD' ? 60 : badge.level === 'SILVER' ? 40 : 20,
-          score: badge.score
-        })
+      // Afficher le badge si gagné (pour leçon ou exercice)
+      if (result.badges?.lesson || result.masteryBadge) {
+        const badge = result.badges?.lesson || result.masteryBadge
+        if (badge) {
+          setBadgeEarned({
+            type: badge.type,
+            level: badge.level,
+            entityName: badge.entityName,
+            pmuAwarded: badge.pmuAwarded || (badge.level === 'GOLD' ? 60 : badge.level === 'SILVER' ? 40 : 20),
+            score: badge.score
+          })
+        }
       }
 
       setScore(scorePercent)

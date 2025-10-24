@@ -29,10 +29,22 @@ export default async function CoursesPage() {
       : { isDemoContent: true },
     include: {
       chapters: {
-        include: {
+        select: {
+          id: true,
+          title: true,
+          isDemoContent: true,
           subChapters: {
-            include: {
-              lessons: true
+            select: {
+              id: true,
+              title: true,
+              isDemoContent: true,
+              lessons: {
+                select: {
+                  id: true,
+                  title: true,
+                  isDemoContent: true
+                }
+              }
             }
           }
         }
@@ -74,10 +86,61 @@ export default async function CoursesPage() {
               ), 0
             )
 
+            console.log(`🔍 Processing course: ${course.title}`, {
+              userStatus: user.status,
+              nbChapters: course.chapters.length
+            })
+
+            // Trouver la première leçon accessible (entièrement DEMO si nécessaire)
+            let firstAccessibleLesson = null
+            for (const chapter of course.chapters) {
+              console.log(`  📖 Chapter: ${chapter.title}, isDemoContent: ${chapter.isDemoContent}`)
+              
+              // Si l'utilisateur est DEMO, vérifier que le chapitre est DEMO
+              if (user.status === 'DEMO' && !chapter.isDemoContent) {
+                console.log(`    ❌ Skipping chapter (not DEMO)`)
+                continue
+              }
+              
+              for (const subChapter of chapter.subChapters) {
+                console.log(`    📑 SubChapter: ${subChapter.title}, isDemoContent: ${subChapter.isDemoContent}`)
+                
+                // Si l'utilisateur est DEMO, vérifier que le sous-chapitre est DEMO
+                if (user.status === 'DEMO' && !subChapter.isDemoContent) {
+                  console.log(`      ❌ Skipping subchapter (not DEMO)`)
+                  continue
+                }
+                
+                for (const lesson of subChapter.lessons) {
+                  console.log(`      📝 Lesson: ${lesson.title}, isDemoContent: ${lesson.isDemoContent}`)
+                  
+                  // Si l'utilisateur est DEMO, vérifier que la leçon est DEMO
+                  if (user.status === 'DEMO' && !lesson.isDemoContent) {
+                    console.log(`        ❌ Skipping lesson (not DEMO)`)
+                    continue
+                  }
+                  
+                  firstAccessibleLesson = lesson.id
+                  console.log(`        ✅ Found first accessible lesson: ${lesson.id}`)
+                  break
+                }
+                if (firstAccessibleLesson) break
+              }
+              if (firstAccessibleLesson) break
+            }
+
+            // Si aucune leçon accessible, ne pas afficher le cours
+            if (!firstAccessibleLesson) {
+              console.log(`❌ No accessible lesson found for course ${course.title}`)
+              return null
+            }
+
+            console.log(`✅ Will redirect to: /cours/${course.id}/lecon/${firstAccessibleLesson}`)
+
             return (
               <Link
                 key={course.id}
-                href={`/cours/${course.id}/lecon/${course.chapters[0]?.subChapters[0]?.lessons[0]?.id || ''}`}
+                href={`/cours/${course.id}/lecon/${firstAccessibleLesson}`}
                 className="card hover:shadow-xl transition-all group"
               >
                 <div className="flex items-start justify-between mb-4">

@@ -47,7 +47,16 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { subChapterId, title, type, order, vimeoVideoId, documentUrl, linkedExerciseId, prerequisiteLessonId, parentLessonId, countForReporting, isOptional } = body
+    const { 
+      subChapterId, 
+      title, 
+      type, 
+      order, 
+      vimeoVideoId,
+      contentUrl,
+      countForReporting, 
+      isOptional 
+    } = body
 
     const lesson = await prisma.lesson.create({
       data: {
@@ -55,14 +64,9 @@ export async function POST(request: Request) {
         title,
         type,
         order: order || 1,
-        contentUrl: vimeoVideoId || documentUrl || null,
-        linkedExerciseId: linkedExerciseId || null,
-        prerequisiteLessonId: prerequisiteLessonId || null,
-        parentLessonId: parentLessonId || null,
+        contentUrl: vimeoVideoId || contentUrl || null,
         countForReporting: countForReporting !== undefined ? countForReporting : true,
-        isOptional: isOptional || false,
-        isCorrectionVideo: type === 'CORRECTION_VIDEO',
-        isCorrectionDocument: type === 'CORRECTION_DOCUMENT'
+        isOptional: isOptional || false
       }
     })
 

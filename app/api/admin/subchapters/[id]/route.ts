@@ -4,7 +4,6 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
-
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -16,33 +15,21 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { 
-      subChapterId, 
-      title, 
-      type, 
-      order, 
-      vimeoVideoId,
-      contentUrl,
-      countForReporting, 
-      isOptional 
-    } = body
+    const { chapterId, title, description, order } = body
 
-    const lesson = await prisma.lesson.update({
+    const subChapter = await prisma.subChapter.update({
       where: { id: params.id },
       data: {
-        subChapterId,
+        chapterId,
         title,
-        type,
-        order,
-        contentUrl: vimeoVideoId || contentUrl || null,
-        countForReporting: countForReporting !== undefined ? countForReporting : true,
-        isOptional: isOptional || false
+        description: description || null,
+        order
       }
     })
 
-    return NextResponse.json({ lesson, success: true })
+    return NextResponse.json({ subChapter, success: true })
   } catch (error) {
-    console.error('[LESSON PUT ERROR]', error)
+    console.error('[SUBCHAPTER PUT ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -57,13 +44,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
-    await prisma.lesson.delete({
+    await prisma.subChapter.delete({
       where: { id: params.id }
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[LESSON DELETE ERROR]', error)
+    console.error('[SUBCHAPTER DELETE ERROR]', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

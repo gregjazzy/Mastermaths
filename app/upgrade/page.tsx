@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Sparkles, Zap, Crown } from 'lucide-react'
+import Link from 'next/link'
+import { Check, Sparkles, Zap, Crown, ArrowLeft } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -45,6 +46,17 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-master-dark via-master-blue to-master-turquoise py-16 px-4">
       <div className="max-w-6xl mx-auto">
+        {/* Bouton retour */}
+        <div className="mb-8">
+          <Link 
+            href="/dashboard" 
+            className="inline-flex items-center gap-2 text-white hover:text-master-turquoise-light transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Retour au dashboard
+          </Link>
+        </div>
+
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Passez au niveau supérieur

@@ -10,6 +10,7 @@ interface Lesson {
   title: string
   type: string
   order: number
+  isDemoContent: boolean
   vimeoVideoId: string | null
   countForReporting?: boolean
   isOptional?: boolean
@@ -36,14 +37,9 @@ interface SubChapter {
 }
 
 const LESSON_TYPES = [
-  { value: 'VIDEO_COURS', label: '🎥 Vidéo de cours', requiresVimeo: true, canHaveCorrection: false },
-  { value: 'QCM', label: '📝 QCM', requiresVimeo: false, canHaveCorrection: true },
-  { value: 'CORRECTION_VIDEO', label: '✅ Vidéo de correction', requiresVimeo: true, isCorrection: true },
-  { value: 'CORRECTION_DOCUMENT', label: '📄 Correction PDF', requiresVimeo: false, isCorrection: true },
-  { value: 'EXO_ECRIT', label: '📄 Exercice écrit', requiresVimeo: false, canHaveCorrection: true },
-  { value: 'DS', label: '📋 Devoir Surveillé (DS)', requiresVimeo: false, canHaveCorrection: true },
-  { value: 'CARTOGRAPHIE', label: '🗺️ Cartographie', requiresVimeo: false, canHaveCorrection: false },
-  { value: 'METHODE', label: '💡 Méthode', requiresVimeo: false, canHaveCorrection: false },
+  { value: 'VIDEO_COURS', label: '🎥 Cours vidéo' },
+  { value: 'METHODE', label: '💡 Fiche méthode' },
+  { value: 'CARTOGRAPHIE', label: '🗺️ Carte mentale' },
 ]
 
 export default function LessonsAdminPage() {
@@ -58,17 +54,12 @@ export default function LessonsAdminPage() {
     title: '',
     type: 'VIDEO_COURS' as string,
     order: 1,
+    isDemoContent: false,
     vimeoVideoId: '',
-    documentUrl: '',
-    linkedExerciseId: '',
-    prerequisiteLessonId: '',
-    parentLessonId: '',
+    contentUrl: '',
     countForReporting: true,
     isOptional: false,
-    content: ''
   })
-
-  const selectedLessonType = LESSON_TYPES.find(t => t.value === formData.type)
 
   useEffect(() => {
     fetchData()
@@ -126,14 +117,11 @@ export default function LessonsAdminPage() {
       title: lesson.title,
       type: lesson.type,
       order: lesson.order,
+      isDemoContent: lesson.isDemoContent,
       vimeoVideoId: lesson.vimeoVideoId || '',
-      documentUrl: '',
-      linkedExerciseId: '',
-      prerequisiteLessonId: '',
-      parentLessonId: '',
+      contentUrl: '',
       countForReporting: lesson.countForReporting ?? true,
       isOptional: lesson.isOptional ?? false,
-      content: ''
     })
     setShowForm(true)
   }
@@ -162,14 +150,11 @@ export default function LessonsAdminPage() {
       title: '',
       type: 'VIDEO_COURS',
       order: 1,
+      isDemoContent: false,
       vimeoVideoId: '',
-      documentUrl: '',
-      linkedExerciseId: '',
-      prerequisiteLessonId: '',
-      parentLessonId: '',
+      contentUrl: '',
       countForReporting: true,
       isOptional: false,
-      content: ''
     })
     setEditingLesson(null)
     setShowForm(false)
@@ -220,55 +205,83 @@ export default function LessonsAdminPage() {
               {editingLesson ? '✏️ Modifier la leçon' : '➕ Créer une leçon'}
             </h3>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Sous-chapitre parent *</label>
-                <select
-                  required
-                  className="input"
-                  value={formData.subChapterId}
-                  onChange={(e) => setFormData({...formData, subChapterId: e.target.value})}
-                >
-                  <option value="">Sélectionner un sous-chapitre...</option>
-                  {subChapters.map(sc => (
-                    <option key={sc.id} value={sc.id}>
-                      {sc.chapter.course.title} → {sc.chapter.title} → {sc.title}
-                    </option>
-                  ))}
-                </select>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Informations de base */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Sous-chapitre parent *</label>
+                  <select
+                    required
+                    className="input"
+                    value={formData.subChapterId}
+                    onChange={(e) => setFormData({...formData, subChapterId: e.target.value})}
+                  >
+                    <option value="">Sélectionner un sous-chapitre...</option>
+                    {subChapters.map(sc => (
+                      <option key={sc.id} value={sc.id}>
+                        {sc.chapter.course.title} → {sc.chapter.title} → {sc.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Type de leçon *</label>
+                  <select
+                    required
+                    className="input"
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                  >
+                    {LESSON_TYPES.map(type => (
+                      <option key={type.value} value={type.value}>{type.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Titre de la leçon *</label>
+                  <input
+                    type="text"
+                    required
+                    className="input"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    placeholder="Ex: Résoudre une équation du second degré"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Ordre d'affichage</label>
+                  <input
+                    type="number"
+                    className="input"
+                    min="1"
+                    value={formData.order}
+                    onChange={(e) => setFormData({...formData, order: parseInt(e.target.value)})}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Type de leçon *</label>
-                <select
-                  required
-                  className="input"
-                  value={formData.type}
-                  onChange={(e) => setFormData({...formData, type: e.target.value})}
-                >
-                  {LESSON_TYPES.map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Titre de la leçon *</label>
+              <div className="flex items-center gap-2 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
                 <input
-                  type="text"
-                  required
-                  className="input"
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  placeholder="Ex: Introduction aux limites"
+                  type="checkbox"
+                  id="isDemoContent"
+                  checked={formData.isDemoContent}
+                  onChange={(e) => setFormData({...formData, isDemoContent: e.target.checked})}
+                  className="w-5 h-5 text-master-turquoise rounded"
                 />
+                <label htmlFor="isDemoContent" className="font-medium">
+                  🆓 Contenu GRATUIT accessible aux comptes DEMO
+                </label>
               </div>
 
-              {selectedLessonType?.requiresVimeo && (
-                <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+              {/* Vidéo cours (pour COURS VIDÉO) */}
+              {formData.type === 'VIDEO_COURS' && (
+                <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
                   <label className="block text-sm font-medium mb-1 flex items-center gap-2">
                     <Video className="w-4 h-4" />
-                    ID de la vidéo Vimeo *
+                    🎥 ID de la vidéo Vimeo *
                   </label>
                   <input
                     type="text"
@@ -287,150 +300,29 @@ export default function LessonsAdminPage() {
                 </div>
               )}
 
-              {!selectedLessonType?.requiresVimeo && formData.type !== 'QCM' && !selectedLessonType?.isCorrection && (
-                <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+              {/* Document pour MÉTHODE ou CARTOGRAPHIE */}
+              {(formData.type === 'METHODE' || formData.type === 'CARTOGRAPHIE') && (
+                <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
                   <label className="block text-sm font-medium mb-1 flex items-center gap-2">
                     <FileQuestion className="w-4 h-4" />
-                    URL du document (PDF, image, etc.) - Optionnel
+                    📄 URL du document (optionnel)
                   </label>
                   <input
                     type="url"
                     className="input"
-                    value={formData.documentUrl}
-                    onChange={(e) => setFormData({...formData, documentUrl: e.target.value})}
-                    placeholder="https://drive.google.com/... ou https://..."
+                    value={formData.contentUrl}
+                    onChange={(e) => setFormData({...formData, contentUrl: e.target.value})}
+                    placeholder="https://drive.google.com/... ou Dropbox, etc."
                   />
                   <div className="mt-2 text-xs text-gray-600 space-y-1">
-                    <p className="font-semibold">💡 Où héberger vos documents :</p>
-                    <p>• <strong>Google Drive</strong> : Téléversez le PDF, clic droit → Obtenir le lien → Copier</p>
-                    <p>• <strong>Dropbox</strong> : Partagez le fichier, copiez le lien public</p>
-                    <p>• <strong>Votre serveur</strong> : URL directe vers le fichier</p>
-                    <p className="text-blue-600 mt-2">Le PDF s'affichera directement dans la leçon !</p>
+                    <p className="font-semibold">💡 Hébergez votre document :</p>
+                    <p>• <strong>Google Drive</strong> : Téléversez → Clic droit → Obtenir le lien</p>
+                    <p>• <strong>Dropbox</strong> : Partagez → Copiez le lien</p>
                   </div>
                 </div>
               )}
 
-              {selectedLessonType?.isCorrection && (
-                <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-                  <label className="block text-sm font-medium mb-1 flex items-center gap-2">
-                    <FileQuestion className="w-4 h-4" />
-                    Lier à un exercice/DS/QCM - Optionnel
-                  </label>
-                  <select
-                    className="input"
-                    value={formData.linkedExerciseId}
-                    onChange={(e) => setFormData({...formData, linkedExerciseId: e.target.value})}
-                  >
-                    <option value="">-- Aucun lien --</option>
-                    {lessons
-                      .filter(l => ['EXO_ECRIT', 'DS', 'QCM'].includes(l.type) && l.subChapterId === formData.subChapterId)
-                      .map(lesson => (
-                        <option key={lesson.id} value={lesson.id}>
-                          {lesson.title}
-                        </option>
-                      ))}
-                  </select>
-                  <div className="mt-2 text-xs text-gray-600">
-                    <p className="font-semibold">💡 Lier cette correction à :</p>
-                    <p>• Un exercice écrit</p>
-                    <p>• Un DS (Devoir Surveillé)</p>
-                    <p>• Un QCM</p>
-                    <p className="text-orange-600 mt-2">La correction s'affichera après que l'élève termine l'exercice.</p>
-                  </div>
-                </div>
-              )}
-
-              {formData.type === 'CORRECTION_DOCUMENT' && (
-                <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
-                  <label className="block text-sm font-medium mb-1 flex items-center gap-2">
-                    <FileQuestion className="w-4 h-4" />
-                    URL de la correction PDF *
-                  </label>
-                  <input
-                    type="url"
-                    required
-                    className="input"
-                    value={formData.documentUrl}
-                    onChange={(e) => setFormData({...formData, documentUrl: e.target.value})}
-                    placeholder="https://drive.google.com/... ou https://..."
-                  />
-                  <div className="mt-2 text-xs text-gray-600 space-y-1">
-                    <p className="font-semibold">💡 PDF de correction :</p>
-                    <p>1. Créez votre correction en PDF</p>
-                    <p>2. Uploadez-la sur Google Drive ou Dropbox</p>
-                    <p>3. Obtenez le lien public</p>
-                    <p>4. Collez-le ici</p>
-                    <p className="text-purple-600 mt-2">Le PDF s'affichera après l'exercice !</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-                <label className="block text-sm font-medium mb-1 flex items-center gap-2">
-                  🌳 Leçon Parente (Hiérarchie) - Optionnel
-                </label>
-                <select
-                  className="input"
-                  value={formData.parentLessonId}
-                  onChange={(e) => setFormData({...formData, parentLessonId: e.target.value})}
-                >
-                  <option value="">-- Aucune (Niveau 1 - Racine) --</option>
-                  {lessons
-                    .filter(l => l.subChapterId === formData.subChapterId && l.id !== editingLesson?.id)
-                    .sort((a, b) => a.order - b.order)
-                    .map(lesson => (
-                      <option key={lesson.id} value={lesson.id}>
-                        #{lesson.order} - {lesson.title}
-                      </option>
-                    ))}
-                </select>
-                <div className="mt-2 text-xs text-gray-600">
-                  <p className="font-semibold">💡 Hiérarchie à 3 niveaux :</p>
-                  <p>• <strong>Niveau 1</strong> : Vidéo de cours (pas de parent)</p>
-                  <p>• <strong>Niveau 2</strong> : Exercice 1 (parent = Vidéo de cours)</p>
-                  <p>• <strong>Niveau 3</strong> : QCM Ex 1 (parent = Exercice 1)</p>
-                  <p className="text-blue-600 mt-2">🌳 Les leçons enfants s'afficheront indentées sous leur parent</p>
-                </div>
-              </div>
-
-              <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-                <label className="block text-sm font-medium mb-1 flex items-center gap-2">
-                  🔒 Prérequis - Optionnel
-                </label>
-                <select
-                  className="input"
-                  value={formData.prerequisiteLessonId}
-                  onChange={(e) => setFormData({...formData, prerequisiteLessonId: e.target.value})}
-                >
-                  <option value="">-- Aucun prérequis --</option>
-                  {lessons
-                    .filter(l => l.subChapterId === formData.subChapterId && l.id !== editingLesson?.id)
-                    .sort((a, b) => a.order - b.order)
-                    .map(lesson => (
-                      <option key={lesson.id} value={lesson.id}>
-                        #{lesson.order} - {lesson.title}
-                      </option>
-                    ))}
-                </select>
-                <div className="mt-2 text-xs text-gray-600">
-                  <p className="font-semibold">💡 Prérequis (Déblocage) :</p>
-                  <p>• L'élève doit TERMINER la leçon prérequise avant d'accéder à celle-ci</p>
-                  <p>• Exemple : Correction Ex 1 → débloque → Exercice 2</p>
-                  <p className="text-orange-600 mt-2">🔒 Les leçons verrouillées afficheront un cadenas</p>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Ordre d'affichage</label>
-                <input
-                  type="number"
-                  className="input"
-                  min="1"
-                  value={formData.order}
-                  onChange={(e) => setFormData({...formData, order: parseInt(e.target.value)})}
-                />
-              </div>
-
+              {/* Options avancées */}
               <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg space-y-3">
                 <h3 className="font-semibold text-gray-800 mb-2">⚙️ Options avancées</h3>
                 
@@ -506,6 +398,11 @@ export default function LessonsAdminPage() {
                       <h3 className="text-xl font-bold text-master-dark">
                         {lesson.title}
                       </h3>
+                      {lesson.isDemoContent && (
+                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                          🆓 DEMO
+                        </span>
+                      )}
                       <span className="text-sm text-gray-500">
                         Ordre: {lesson.order}
                       </span>

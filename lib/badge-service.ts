@@ -143,7 +143,7 @@ export class BadgeService {
       : 0
 
     const videoPerformances = performances.filter(p => 
-      p.lesson.type === 'VIDEO_COURS' || p.lesson.type === 'CORRECTION_VIDEO'
+      p.lesson && (p.lesson.type === 'VIDEO_COURS' || p.lesson.type === 'CORRECTION_VIDEO')
     )
     const avgVideoCompletion = videoPerformances.length > 0
       ? videoPerformances.reduce((sum, p) => sum + p.videoProgressPercent, 0) / videoPerformances.length
