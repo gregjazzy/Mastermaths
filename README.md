@@ -4,11 +4,19 @@
 
 ---
 
-## ✅ STATUT : PRÊT POUR PRODUCTION
+## ✅ STATUT : EN PRODUCTION 🎉
 
-Le projet est **100% complet et fonctionnel**. Toutes les fonctionnalités sont implémentées.
+Le projet est **100% complet et déployé**.
 
-**Prochaine étape** : Configuration Supabase (10 minutes) → Voir `SETUP_SUPABASE_DETAILLE.md`
+**🌐 URL de production** : https://mastermathsfr.netlify.app
+
+**🆕 Nouvelles fonctionnalités** :
+- ✅ Système de badges de maîtrise (Bronze 🥉, Argent 🥈, Or 🥇)
+- ✅ Popup animé avec confettis lors de l'obtention d'un badge
+- ✅ Configuration Supabase complétée
+- ✅ Application déployée sur Netlify
+
+**📝 Changelog** : Voir `CHANGELOG_DEC_2024.md` pour les détails complets
 
 ---
 
@@ -20,33 +28,31 @@ Le projet est **100% complet et fonctionnel**. Toutes les fonctionnalités sont 
 npm install
 ```
 
-### Étape 2 : Configurer Supabase
+### Étape 2 : Configurer les Variables d'Environnement
 
-**📚 Guide détaillé** : `SETUP_SUPABASE_DETAILLE.md`
-
-1. Créer un compte sur https://supabase.com
-2. Créer un projet
-3. Copier l'URL de connexion
-4. Créer le fichier `.env` :
+Créer un fichier `.env` à la racine :
 
 ```env
-DATABASE_URL="votre-url-supabase"
-NEXTAUTH_SECRET="générer-avec-openssl-rand-base64-32"
+DATABASE_URL="postgresql://postgres:***@db.zqgjhtafyuivnmgyqcix.supabase.co:5432/postgres"
+NEXTAUTH_SECRET="2nV1Jo3Sq2Lcp3YLFoLuqxk1rAf7aShtkRdj43i4AAg="
 NEXTAUTH_URL="http://localhost:3002"
 ```
 
-5. Appliquer les migrations :
+⚠️ **Note** : La base de données Supabase est déjà configurée. Utilisez les identifiants fournis.
+
+### Étape 3 : Régénérer Prisma Client
 
 ```bash
 npx prisma generate
-npx prisma db push
 ```
 
-### Étape 3 : Lancer l'Application
+### Étape 4 : Lancer l'Application
 
 ```bash
 npm run dev
 ```
+
+L'application sera accessible sur : http://localhost:3002
 
 Ouvrir : http://localhost:3002
 
