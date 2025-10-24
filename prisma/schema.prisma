@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,77 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserStatus {
-  FREE
-  DEMO
-  PREMIUM
-}
-
-enum LessonType {
-  VIDEO_COURS
-  QCM
-  CORRECTION_VIDEO
-  CORRECTION_DOCUMENT  // Correction en PDF
-  EXO_ECRIT
-  DS                   // Devoir Surveillé
-  CARTOGRAPHIE
-  METHODE
-}
-
 model User {
-  id                  String        @id @default(cuid())
-  email               String        @unique
-  emailsNotification  String[]      // Jusqu'à 3 emails (élève + parents/tuteurs)
-  emailVerified       DateTime?
-  hashedPassword      String?
-  name                String?
-  status              UserStatus    @default(FREE)
-  isSubscribed        Boolean       @default(false)
-  stripeCustomerId    String?       @unique
-  subscriptionId      String?
-  
-  // Gamification
-  currentTitle        String        @default("Apprenti Mathématicien") // Titre actuel de l'élève
-  totalMasteryPoints  Int           @default(0) // Points de Maîtrise Historique (PMU)
-  monthlyMasteryPoints Int          @default(0) // PMU du mois en cours
-  weeklyMasteryPoints  Int          @default(0) // PMU de la semaine en cours
-  lastMonthlyReset    DateTime?     // Dernière réinitialisation mensuelle
-  lastWeeklyReset     DateTime?     // Dernière réinitialisation hebdomadaire
-  
-  // Connexions
-  connectionDaysCount Int           @default(0) // Compteur de jours de connexion avec activité
-  connectionStreak    Int           @default(0) // Jours consécutifs de connexion
-  bestStreak          Int           @default(0) // Meilleur streak de l'utilisateur
-  lastConnectionDate  DateTime?     // Dernière date de connexion comptabilisée
-  lastReminderSentAt  DateTime?     // Dernière date d'envoi d'email de rappel
-  
-  // Badges et récompenses
-  badgesUnlocked      String[]      // Liste des IDs/noms de badges obtenus
-  hasFreeCourseReward Boolean       @default(false) // Éligible au cours particulier gratuit
-  
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  
-  performances        Performance[]
-  accounts            Account[]
-  sessions            Session[]
-  connectionLogs      ConnectionLog[]
-  
+  id                    String          @id @default(cuid())
+  email                 String          @unique
+  emailsNotification    String[]
+  emailVerified         DateTime?
+  hashedPassword        String?
+  name                  String?
+  status                UserStatus      @default(FREE)
+  isSubscribed          Boolean         @default(false)
+  stripeCustomerId      String?         @unique
+  subscriptionId        String?
+  currentTitle          String          @default("Apprenti Mathématicien")
+  totalMasteryPoints    Int             @default(0)
+  monthlyMasteryPoints  Int             @default(0)
+  weeklyMasteryPoints   Int             @default(0)
+  lastMonthlyReset      DateTime?
+  lastWeeklyReset       DateTime?
+  currentStreak         Int             @default(0)
+  longestStreak         Int             @default(0)
+  lastConnectionDate    DateTime?       @db.Date
+  totalConnectionTime   Int             @default(0)
+  monthlyConnectionTime Int             @default(0)
+  weeklyConnectionTime  Int             @default(0)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  accounts              Account[]
+  connectionLogs        ConnectionLog[]
+  performances          Performance[]
+  sessions              Session[]
+  user_badges           user_badges[]
+
   @@map("users")
 }
 
 model ConnectionLog {
   id              String   @id @default(cuid())
   userId          String
-  connectedAt     DateTime @default(now())
-  disconnectedAt  DateTime?
-  durationMinutes Int?     // Durée de la session en minutes
-  ipAddress       String?  // Adresse IP (optionnel)
-  userAgent       String?  // Navigateur/device (optionnel)
-  
+  connectionDate  DateTime @db.Date
+  durationMinutes Int      @default(0)
+  createdAt       DateTime @default(now())
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@index([userId, connectedAt])
+
+  @@unique([userId, connectionDate])
   @@map("connection_logs")
 }
 
@@ -90,15 +59,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -114,155 +82,168 @@ model Session {
   @@map("sessions")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verificationtokens")
-}
-
 model Course {
-  id          String    @id @default(cuid())
-  title       String
-  description String?   @db.Text
-  order       Int       @default(0)
-  isDemoContent Boolean @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
-  chapters    Chapter[]
-  
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  order         Int       @default(0)
+  isDemoContent Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  chapters      Chapter[]
+
   @@map("courses")
 }
 
 model Chapter {
-  id                    String       @id @default(cuid())
-  title                 String
-  description           String?      @db.Text
-  order                 Int          @default(0)
-  courseId              String
-  
-  // Carte mentale de révision (optionnelle)
-  mentalMapUrl          String?      // URL vers l'image de la carte mentale
-  mentalMapTitle        String?      // Titre de la carte mentale
-  mentalMapDescription  String?      @db.Text
-  
-  // Répertoire des grands lycées (optionnel)
-  lyceesRepertoireUrl   String?      // URL vers le PDF du répertoire
-  lyceesRepertoireTitle String?      // Titre du répertoire
-  lyceesRepertoireDescription String? @db.Text
-  
-  createdAt             DateTime     @default(now())
-  updatedAt             DateTime     @updatedAt
-  
-  course                Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  subChapters           SubChapter[]
-  
+  id                          String       @id @default(cuid())
+  title                       String
+  description                 String?
+  order                       Int          @default(0)
+  courseId                    String
+  mentalMapUrl                String?
+  mentalMapTitle              String?
+  mentalMapDescription        String?
+  lyceesRepertoireUrl         String?
+  lyceesRepertoireTitle       String?
+  lyceesRepertoireDescription String?
+  createdAt                   DateTime     @default(now())
+  updatedAt                   DateTime     @updatedAt
+  course                      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subChapters                 SubChapter[]
+
   @@map("chapters")
 }
 
 model SubChapter {
   id          String   @id @default(cuid())
   title       String
-  description String?  @db.Text
+  description String?
   order       Int      @default(0)
   chapterId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
-  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
-  
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
   @@map("subchapters")
 }
 
 model Lesson {
-  id                    String      @id @default(cuid())
-  title                 String
-  subChapterId          String
-  type                  LessonType
-  contentUrl            String?     // Vimeo URL, PDF URL, ou ID QCM
-  vimeoVideoId          String?     // ID Vimeo pour les vidéos
-  content               String?     @db.Text // Contenu textuel additionnel
-  isCorrectionVideo     Boolean     @default(false)
-  isCorrectionDocument  Boolean     @default(false) // TRUE si c'est une correction PDF
-  linkedExerciseId      String?     // Lien vers l'exercice/DS/QCM correspondant
-  prerequisiteLessonId  String?     // Leçon prérequise (doit être complétée avant)
-  parentLessonId        String?     // Leçon parente (pour hiérarchie: Exercice 1 → QCM Ex1 → Correction Ex1)
-  countForReporting     Boolean     @default(true) // Compter dans les statistiques/reporting
-  isOptional            Boolean     @default(false) // Leçon optionnelle (pas de prérequis strict)
-  order                 Int         @default(0)
-  createdAt             DateTime    @default(now())
-  updatedAt             DateTime    @updatedAt
-  
-  subChapter            SubChapter  @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
-  linkedExercise        Lesson?     @relation("ExerciseCorrection", fields: [linkedExerciseId], references: [id])
-  corrections           Lesson[]    @relation("ExerciseCorrection")
-  prerequisiteLesson    Lesson?     @relation("LessonPrerequisite", fields: [prerequisiteLessonId], references: [id])
-  dependentLessons      Lesson[]    @relation("LessonPrerequisite")
-  parentLesson          Lesson?     @relation("LessonHierarchy", fields: [parentLessonId], references: [id])
-  childLessons          Lesson[]    @relation("LessonHierarchy")
-  performances          Performance[]
-  qcmQuestions          QcmQuestion[]
-  
+  id                                         String        @id @default(cuid())
+  title                                      String
+  subChapterId                               String
+  type                                       LessonType
+  contentUrl                                 String?
+  isCorrectionVideo                          Boolean       @default(false)
+  isCorrectionDocument                       Boolean       @default(false)
+  linkedQcmId                                String?
+  linkedExerciseId                           String?
+  prerequisiteLessonId                       String?
+  parentLessonId                             String?
+  countForReporting                          Boolean       @default(true)
+  isOptional                                 Boolean       @default(false)
+  order                                      Int           @default(0)
+  createdAt                                  DateTime      @default(now())
+  updatedAt                                  DateTime      @updatedAt
+  linkedExercise                             Lesson?       @relation("ExerciseCorrection", fields: [linkedExerciseId], references: [id])
+  corrections                                Lesson[]      @relation("ExerciseCorrection")
+  lessons_lessons_linkedQcmIdTolessons       Lesson?       @relation("lessons_linkedQcmIdTolessons", fields: [linkedQcmId], references: [id])
+  other_lessons_lessons_linkedQcmIdTolessons Lesson[]      @relation("lessons_linkedQcmIdTolessons")
+  parentLesson                               Lesson?       @relation("LessonHierarchy", fields: [parentLessonId], references: [id])
+  childLessons                               Lesson[]      @relation("LessonHierarchy")
+  prerequisiteLesson                         Lesson?       @relation("LessonPrerequisite", fields: [prerequisiteLessonId], references: [id])
+  dependentLessons                           Lesson[]      @relation("LessonPrerequisite")
+  subChapter                                 SubChapter    @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
+  performances                               Performance[]
+  qcmQuestions                               QcmQuestion[]
+
+  @@index([linkedExerciseId], map: "Lesson_linkedExerciseId_idx")
+  @@index([parentLessonId], map: "Lesson_parentLessonId_idx")
+  @@index([prerequisiteLessonId], map: "Lesson_prerequisiteLessonId_idx")
   @@map("lessons")
 }
 
 model QcmQuestion {
-  id              String   @id @default(cuid())
-  lessonId        String
-  question        String   @db.Text
-  options         String[] // Tableau de réponses possibles
-  correctAnswer   Int?     // Index de la bonne réponse (0-3) - Pour QCM simple
-  correctAnswers  Int[]    @default([]) // Indices des bonnes réponses - Pour QCM multiple
-  isMultipleChoice Boolean @default(false) // TRUE si plusieurs réponses possibles
-  explanation     String?  @db.Text
-  order           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  
+  id               String   @id @default(cuid())
+  lessonId         String
+  question         String
+  options          String[]
+  correctAnswer    Int?
+  correctAnswers   Int[]
+  isMultipleChoice Boolean  @default(false)
+  explanation      String?
+  order            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lesson           Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
   @@map("qcm_questions")
 }
 
 model Performance {
-  id                    String   @id @default(cuid())
-  userId                String
-  lessonId              String
-  videoProgressPercent  Float    @default(0) // 0-100% pour Vidéo Cours OU Vidéo Correction
-  quizScorePercent      Float?   // 0-100% pour QCM
-  isCompleted           Boolean  @default(false) // Pour EXO_ECRIT, CARTOGRAPHIE, METHODE
-  hasViewedCorrection   Boolean  @default(false) // TRUE si vu la vidéo de correction
-  connectionDaysCount   Int      @default(0) // Compteur de jours où l'élève s'est connecté ET a suivi une lesson
-  badgesUnlocked        String[] // Liste des badges obtenus pour cette performance
-  lastAccessedAt        DateTime @default(now())
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson                Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  
+  id                   String   @id @default(cuid())
+  userId               String
+  lessonId             String
+  videoProgressPercent Float    @default(0)
+  quizScorePercent     Float?
+  isCompleted          Boolean  @default(false)
+  hasViewedCorrection  Boolean  @default(false)
+  lastAccessedAt       DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  lesson               Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, lessonId])
   @@map("performances")
 }
 
 model Badge {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?  @db.Text
-  icon        String?  // URL ou nom d'icône
-  criteria    Json     // Critères de déclenchement
-  type        String   // Type de badge: "connection", "performance", "completion", etc.
-  rarity      String   @default("common") // "common", "rare", "epic", "legendary", "secret"
-  masteryPoints Int    @default(0) // Points de maîtrise accordés
-  order       Int      @default(0)
-  isSecret    Boolean  @default(false) // Badge secret (critères cachés)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id                    String        @id @default(cuid())
+  name                  String
+  description           String
+  icon                  String
+  rarity                String
+  masteryPointsRequired Int           @default(0)
+  createdAt             DateTime      @default(now())
+  user_badges           user_badges[]
+
   @@map("badges")
 }
 
+model user_badges {
+  id         String   @id
+  userId     String
+  badgeId    String
+  unlockedAt DateTime @default(now())
+  badges     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  users      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
+
+model verification_tokens {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserStatus {
+  FREE
+  DEMO
+  PREMIUM
+}
+
+enum LessonType {
+  VIDEO_COURS
+  QCM
+  CORRECTION_VIDEO
+  CORRECTION_DOCUMENT
+  EXO_ECRIT
+  DS
+  CARTOGRAPHIE
+  METHODE
+}

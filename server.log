@@ -10,3 +10,12 @@
  ○ Compiling /api/auth/[...nextauth] ...
  ✓ Compiled /api/auth/[...nextauth] in 541ms (264 modules)
  ✓ Compiled in 16ms
+   Reload env: .env
+ ✓ Compiled in 209ms (184 modules)
+   Reload env: .env
+ ✓ Compiled in 51ms (184 modules)
+   Reload env: .env
+ ✓ Compiled in 29ms (184 modules)
+   Reload env: .env
+ ✓ Compiled in 28ms (184 modules)
+[?25h
