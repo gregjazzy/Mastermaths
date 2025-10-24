@@ -127,7 +127,7 @@ export async function validatePrerequisite(
       }
       visited.add(currentId)
 
-      const lesson = await prisma.lesson.findUnique({
+      const lesson: { prerequisiteLessonId: string | null } | null = await prisma.lesson.findUnique({
         where: { id: currentId },
         select: { prerequisiteLessonId: true }
       })
@@ -170,7 +170,7 @@ export async function createExerciseSequence(
 
     for (let i = 1; i <= count; i++) {
       // 1. Créer l'exercice
-      const exercise = await prisma.lesson.create({
+      const exercise: { id: string } = await prisma.lesson.create({
         data: {
           title: `Exercice ${i}`,
           subChapterId,
@@ -183,7 +183,7 @@ export async function createExerciseSequence(
       createdLessons.push(exercise as Lesson)
 
       // 2. Créer le QCM
-      const qcm = await prisma.lesson.create({
+      const qcm: { id: string } = await prisma.lesson.create({
         data: {
           title: `QCM Exercice ${i}`,
           subChapterId,
@@ -196,7 +196,7 @@ export async function createExerciseSequence(
       createdLessons.push(qcm as Lesson)
 
       // 3. Créer la correction
-      const correction = await prisma.lesson.create({
+      const correction: { id: string } = await prisma.lesson.create({
         data: {
           title: `Correction Exercice ${i}`,
           subChapterId,
