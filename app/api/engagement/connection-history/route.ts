@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     // Récupérer toutes les connexions de l'utilisateur
     const connections = await prisma.connectionLog.findMany({
       where: { userId: user.id },
-      orderBy: { connectedAt: 'desc' },
+      orderBy: { connectionDate: 'desc' },
       take: 50 // Limiter aux 50 dernières
     })
 
@@ -31,14 +31,14 @@ export async function GET(req: Request) {
     const connectionsToday = await prisma.connectionLog.count({
       where: {
         userId: user.id,
-        connectedAt: { gte: today }
+        connectionDate: { gte: today }
       }
     })
 
     const connectionsThisWeek = await prisma.connectionLog.count({
       where: {
         userId: user.id,
-        connectedAt: { gte: thisWeek }
+        connectionDate: { gte: thisWeek }
       }
     })
 
@@ -49,12 +49,12 @@ export async function GET(req: Request) {
     // Calculer les connexions par jour des 7 derniers jours
     const last7Days = await prisma.$queryRaw`
       SELECT 
-        DATE("connectedAt") as date,
+        DATE("connectionDate") as date,
         COUNT(*) as count
       FROM connection_logs
       WHERE "userId" = ${user.id}
-        AND "connectedAt" >= NOW() - INTERVAL '7 days'
-      GROUP BY DATE("connectedAt")
+        AND "connectionDate" >= NOW() - INTERVAL '7 days'
+      GROUP BY DATE("connectionDate")
       ORDER BY date DESC
     `
 

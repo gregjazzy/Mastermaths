@@ -24,12 +24,13 @@ export async function POST(req: Request) {
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0] : headersList.get('x-real-ip') || undefined
 
     // TOUJOURS créer un log de connexion (pas de limite par jour)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
     const connectionLog = await prisma.connectionLog.create({
       data: {
         userId: user.id,
-        connectedAt: new Date(),
-        ipAddress,
-        userAgent,
+        connectionDate: today
       }
     })
 
@@ -57,13 +58,10 @@ export async function POST(req: Request) {
     }
 
     // Compter le nombre total de connexions aujourd'hui
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    
     const connectionsToday = await prisma.connectionLog.count({
       where: {
         userId: user.id,
-        connectedAt: {
+        connectionDate: {
           gte: today
         }
       }
@@ -77,7 +75,7 @@ export async function POST(req: Request) {
     // Récupérer le meilleur streak
     const userStats = await prisma.user.findUnique({
       where: { id: user.id },
-      select: { bestStreak: true, connectionDaysCount: true }
+      select: { longestStreak: true }
     })
 
     return NextResponse.json({ 
@@ -85,14 +83,14 @@ export async function POST(req: Request) {
       sessionId: connectionLog.id,  // ID de la session pour le tracking
       connectionLog: {
         id: connectionLog.id,
-        connectedAt: connectionLog.connectedAt
+        connectedAt: connectionLog.createdAt
       },
       stats: {
         connectionsToday,
         totalConnections,
         dayCounterIncremented: incrementedDay,
         currentStreak: newStreak,
-        bestStreak: userStats?.bestStreak || 0
+        bestStreak: userStats?.longestStreak || 0
       },
       message: incrementedDay 
         ? `🔥 ${newStreak} jour${newStreak > 1 ? 's' : ''} consécutif${newStreak > 1 ? 's' : ''} ! ${connectionsToday} connexion(s) aujourd'hui.` 

@@ -42,13 +42,13 @@ export async function POST(
       update: {
         isCompleted: true,
         lastAccessedAt: new Date(),
-        bestScore: score ? Math.max(score, existingPerformance?.bestScore || 0) : undefined
+        quizScorePercent: score ? Math.max(score, existingPerformance?.quizScorePercent || 0) : undefined
       },
       create: {
         userId: user.id,
         lessonId: lessonId,
         isCompleted: true,
-        bestScore: score || 0
+        quizScorePercent: score || 0
       }
     })
 

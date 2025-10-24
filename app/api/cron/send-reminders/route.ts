@@ -91,7 +91,7 @@ export async function GET(req: Request) {
       email: u.email,
       name: u.name,
       lastConnection: u.lastConnectionDate,
-      streak: u.connectionStreak
+      streak: u.currentStreak
     }))
   })
 }

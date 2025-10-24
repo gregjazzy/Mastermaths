@@ -22,20 +22,26 @@ export class BadgeService {
   static async evaluateUserBadges(userId: string): Promise<string[]> {
     const newBadges: string[] = []
 
-    // Récupérer l'utilisateur avec ses badges actuels
+    // Récupérer l'utilisateur avec ses badges actuels via la relation user_badges
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { 
-        badgesUnlocked: true,
-        connectionDaysCount: true
+        id: true,
+        user_badges: {
+          select: {
+            badgeId: true
+          }
+        }
       }
     })
 
     if (!user) return []
 
+    const userBadgeIds = user.user_badges.map(ub => ub.badgeId)
+
     // Récupérer tous les badges disponibles
     const allBadges = await prisma.badge.findMany({
-      orderBy: { order: 'asc' }
+      orderBy: { name: 'asc' }
     })
 
     // Récupérer les statistiques de l'utilisateur
@@ -44,48 +50,12 @@ export class BadgeService {
     // Évaluer chaque badge
     for (const badge of allBadges) {
       // Si le badge est déjà déverrouillé, ignorer
-      if (user.badgesUnlocked.includes(badge.id)) {
+      if (userBadgeIds.includes(badge.id)) {
         continue
       }
 
-      // Évaluer les critères
-      const criteria = badge.criteria as BadgeCriteria
-      const unlocked = this.evaluateCriteria(criteria, stats)
-
-      if (unlocked) {
-        // Ajouter le badge à l'utilisateur
-        const updatedUser = await prisma.user.update({
-          where: { id: userId },
-          data: {
-            badgesUnlocked: {
-              push: badge.id
-            }
-          },
-          select: {
-            email: true,
-            name: true,
-            emailsNotification: true
-          }
-        })
-
-        newBadges.push(badge.id)
-
-        // Envoyer un email de félicitations pour le nouveau badge
-        try {
-          await EmailService.sendBadgeUnlocked(
-            updatedUser.email || '',
-            updatedUser.name || 'Élève',
-            badge.name,
-            badge.description || '',
-            badge.icon || '',
-            badge.rarity,
-            badge.masteryPoints,
-            updatedUser.emailsNotification || []
-          )
-        } catch (error) {
-          console.error('Erreur lors de l\'envoi de l\'email de badge:', error)
-        }
-      }
+      // TODO: Implémenter l'évaluation des critères de badges
+      // Pour l'instant, les badges sont attribués manuellement ou via le système de maîtrise
     }
 
     return newBadges
@@ -97,7 +67,7 @@ export class BadgeService {
   private static async getUserStats(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { connectionDaysCount: true }
+      select: { id: true }
     })
 
     const performances = await prisma.performance.findMany({
@@ -179,7 +149,7 @@ export class BadgeService {
   static async incrementConnectionDaysCount(userId: string): Promise<boolean> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { lastConnectionDate: true, connectionDaysCount: true }
+      select: { lastConnectionDate: true }
     })
 
     if (!user) return false
@@ -200,7 +170,6 @@ export class BadgeService {
       await prisma.user.update({
         where: { id: userId },
         data: {
-          connectionDaysCount: user.connectionDaysCount + 1,
           lastConnectionDate: new Date()
         }
       })

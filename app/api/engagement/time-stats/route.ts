@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     // Récupérer tous les logs de connexion
     const allLogs = await prisma.connectionLog.findMany({
       where: { userId: user.id },
-      orderBy: { connectedAt: 'desc' }
+      orderBy: { connectionDate: 'desc' }
     })
 
     // Calculer les stats
@@ -42,15 +42,15 @@ export async function GET(request: Request) {
     const totalMinutes = allLogs.reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
 
     // Temps aujourd'hui
-    const todayLogs = allLogs.filter(log => new Date(log.connectedAt) >= today)
+    const todayLogs = allLogs.filter(log => new Date(log.connectionDate) >= today)
     const todayMinutes = todayLogs.reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
 
     // Temps cette semaine
-    const weekLogs = allLogs.filter(log => new Date(log.connectedAt) >= thisWeekStart)
+    const weekLogs = allLogs.filter(log => new Date(log.connectionDate) >= thisWeekStart)
     const weekMinutes = weekLogs.reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
 
     // Temps ce mois
-    const monthLogs = allLogs.filter(log => new Date(log.connectedAt) >= thisMonthStart)
+    const monthLogs = allLogs.filter(log => new Date(log.connectionDate) >= thisMonthStart)
     const monthMinutes = monthLogs.reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
 
     // Nombre de sessions
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
 
     // Jours actifs uniques
     const uniqueDays = new Set(allLogs.map(log => 
-      new Date(log.connectedAt).toDateString()
+      new Date(log.connectionDate).toDateString()
     )).size
 
     // Temps moyen par jour
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
       nextDay.setDate(nextDay.getDate() + 1)
       
       const dayLogs = allLogs.filter(log => {
-        const logDate = new Date(log.connectedAt)
+        const logDate = new Date(log.connectionDate)
         return logDate >= date && logDate < nextDay
       })
       

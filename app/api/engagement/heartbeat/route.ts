@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     }
 
     // Calculer la durée en minutes
-    const connectedAt = new Date(connectionLog.connectedAt)
+    const connectedAt = new Date(connectionLog.createdAt)
     const durationMs = now.getTime() - connectedAt.getTime()
     const durationMinutes = Math.floor(durationMs / (1000 * 60))
 
@@ -50,7 +50,6 @@ export async function POST(request: Request) {
     await prisma.connectionLog.update({
       where: { id: sessionId },
       data: {
-        disconnectedAt: now,
         durationMinutes
       }
     })

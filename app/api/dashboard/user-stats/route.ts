@@ -23,10 +23,13 @@ export async function GET() {
         totalMasteryPoints: true,
         monthlyMasteryPoints: true,
         weeklyMasteryPoints: true,
-        hasFreeCourseReward: true,
-        connectionStreak: true,
-        bestStreak: true,
-        badgesUnlocked: true
+        currentStreak: true,
+        longestStreak: true,
+        user_badges: {
+          select: {
+            id: true
+          }
+        }
       }
     })
 
@@ -39,10 +42,9 @@ export async function GET() {
       totalMasteryPoints: user.totalMasteryPoints,
       monthlyMasteryPoints: user.monthlyMasteryPoints,
       weeklyMasteryPoints: user.weeklyMasteryPoints,
-      hasFreeCourseReward: user.hasFreeCourseReward,
-      connectionStreak: user.connectionStreak,
-      bestStreak: user.bestStreak,
-      badgesCount: user.badgesUnlocked.length
+      connectionStreak: user.currentStreak,
+      bestStreak: user.longestStreak,
+      badgesCount: user.user_badges.length
     })
 
   } catch (error) {

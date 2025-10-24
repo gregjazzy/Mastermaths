@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     const leaderboardWithRank = leaderboard.map((user, index) => ({
       ...user,
       rank: index + 1,
-      badgesCount: user.badgesUnlocked.length
+      badgesCount: user.user_badges.length
     }))
 
     return NextResponse.json({ 

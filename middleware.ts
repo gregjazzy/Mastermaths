@@ -8,6 +8,15 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
   const isDashboard = request.nextUrl.pathname.startsWith('/dashboard')
   const isCourse = request.nextUrl.pathname.startsWith('/cours')
+  const isAdmin = request.nextUrl.pathname.startsWith('/admin')
+
+  // 🔒 BLOQUER /admin en production
+  if (isAdmin && process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Accès admin désactivé en production. Utilisez votre environnement local.' },
+      { status: 403 }
+    )
+  }
 
   // Rediriger vers login si pas authentifié et essaie d'accéder à une page protégée
   if (!isAuth && (isDashboard || isCourse)) {
@@ -41,7 +50,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/cours/:path*', '/auth/:path*']
+  matcher: ['/dashboard/:path*', '/cours/:path*', '/auth/:path*', '/admin/:path*']
 }
 
 

@@ -222,8 +222,12 @@ export class MasteryPointsService {
         name: true,
         currentTitle: true,
         totalMasteryPoints: true,
-        connectionStreak: true,
-        badgesUnlocked: true
+        currentStreak: true,
+        user_badges: {
+          select: {
+            id: true
+          }
+        }
       },
       orderBy: {
         totalMasteryPoints: 'desc'
