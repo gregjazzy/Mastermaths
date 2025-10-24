@@ -12,7 +12,7 @@
  *   └─ Exercice 3 (prérequis: Correction Ex 2)
  */
 
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export interface Lesson {
   id: string

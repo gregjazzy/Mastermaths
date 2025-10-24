@@ -61,7 +61,9 @@ export class BadgeService {
               push: badge.id
             }
           },
-          include: {
+          select: {
+            email: true,
+            name: true,
             emailsNotification: true
           }
         })
@@ -71,11 +73,11 @@ export class BadgeService {
         // Envoyer un email de félicitations pour le nouveau badge
         try {
           await EmailService.sendBadgeUnlocked(
-            updatedUser.email,
-            updatedUser.firstName + ' ' + updatedUser.lastName,
+            updatedUser.email || '',
+            updatedUser.name || 'Élève',
             badge.name,
-            badge.description,
-            badge.icon,
+            badge.description || '',
+            badge.icon || '',
             badge.rarity,
             badge.masteryPoints,
             updatedUser.emailsNotification || []

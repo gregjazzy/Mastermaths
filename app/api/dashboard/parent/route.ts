@@ -38,18 +38,17 @@ export async function GET() {
       },
       select: {
         id: true,
-        name: true,
         email: true,
+        name: true,
         status: true,
         currentTitle: true,
         totalMasteryPoints: true,
         monthlyMasteryPoints: true,
         weeklyMasteryPoints: true,
-        currentStreak: true,
-        longestStreak: true,
+        connectionStreak: true,
+        bestStreak: true,
         lastConnectionDate: true,
-      },
-      include: {
+        badgesUnlocked: true,
         performances: {
           select: {
             id: true,
@@ -60,13 +59,12 @@ export async function GET() {
         },
         connectionLogs: {
           orderBy: {
-            connectionDate: 'desc'
+            connectedAt: 'desc'
           },
-          take: 30
-        },
-        userBadges: {
+          take: 30,
           select: {
-            id: true
+            connectedAt: true,
+            durationMinutes: true
           }
         }
       }
@@ -75,7 +73,7 @@ export async function GET() {
     // Calculer les statistiques pour chaque enfant
     const childrenWithStats = children.map((child) => {
       // Calculer la progression moyenne
-      const totalProgress = child.performances.reduce((sum: number, perf: any) => {
+      const totalProgress = child.performances.reduce((sum: number, perf) => {
         if (perf.isCompleted) return sum + 100
         return sum + perf.videoProgressPercent
       }, 0)
@@ -88,8 +86,8 @@ export async function GET() {
       const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
       
       const monthlyConnectionMinutes = child.connectionLogs
-        .filter(log => new Date(log.connectionDate) >= thisMonthStart)
-        .reduce((sum, log) => sum + (log.durationMinutes || 0), 0)
+        .filter(log => new Date(log.connectedAt) >= thisMonthStart)
+        .reduce((sum: number, log) => sum + (log.durationMinutes || 0), 0)
 
       return {
         childId: child.id,
@@ -100,10 +98,10 @@ export async function GET() {
         totalMasteryPoints: child.totalMasteryPoints,
         monthlyMasteryPoints: child.monthlyMasteryPoints,
         weeklyMasteryPoints: child.weeklyMasteryPoints,
-        connectionStreak: child.currentStreak,
-        bestStreak: child.longestStreak,
-        badgesUnlocked: child.userBadges.length,
-        coursesEnrolled: 0, // TODO: calculer depuis les lessons
+        connectionStreak: child.connectionStreak,
+        bestStreak: child.bestStreak,
+        badgesUnlocked: Array.isArray(child.badgesUnlocked) ? child.badgesUnlocked.length : 0,
+        coursesEnrolled: 0,
         averageCompletion,
         lastConnection: child.lastConnectionDate || new Date(),
         monthlyConnectionMinutes,
