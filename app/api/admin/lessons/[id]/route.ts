@@ -14,7 +14,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { subChapterId, title, type, order, vimeoVideoId, documentUrl, linkedExerciseId, prerequisiteLessonId, parentLessonId, countForReporting, isOptional, content } = body
+    const { subChapterId, title, type, order, vimeoVideoId, documentUrl, linkedExerciseId, prerequisiteLessonId, parentLessonId, countForReporting, isOptional } = body
 
     const lesson = await prisma.lesson.update({
       where: { id: params.id },
@@ -23,16 +23,14 @@ export async function PUT(
         title,
         type,
         order,
-        vimeoVideoId: vimeoVideoId || null,
-        contentUrl: documentUrl || null,
+        contentUrl: vimeoVideoId || documentUrl || null,
         linkedExerciseId: linkedExerciseId || null,
         prerequisiteLessonId: prerequisiteLessonId || null,
         parentLessonId: parentLessonId || null,
         countForReporting: countForReporting !== undefined ? countForReporting : true,
         isOptional: isOptional || false,
         isCorrectionVideo: type === 'CORRECTION_VIDEO',
-        isCorrectionDocument: type === 'CORRECTION_DOCUMENT',
-        content: content || null
+        isCorrectionDocument: type === 'CORRECTION_DOCUMENT'
       }
     })
 
