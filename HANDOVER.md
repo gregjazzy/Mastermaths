@@ -4,13 +4,69 @@
 
 Ce projet est **100% COMPLET et FONCTIONNEL**. 
 
-**Configuration Supabase terminée et déployée sur Netlify.**
+**✅ Configuration Supabase terminée et déployée sur Netlify.**
+**✅ Système de badges complet réactivé.**
+**✅ Interface admin sécurisée (bloquée en production).**
 
 ---
 
 ## 📋 STATUT DU PROJET : ✅ EN PRODUCTION
 
-### 🆕 DERNIÈRES MISES À JOUR (Décembre 2024) :
+**🌐 URL de production** : https://mastermathsfr.netlify.app
+
+---
+
+## 🚨 TODO IMMÉDIAT (pour finaliser le système de badges)
+
+### 1. Exécuter le SQL dans Supabase
+Allez dans **Supabase → SQL Editor** et exécutez :
+```sql
+ALTER TABLE badges 
+ADD COLUMN IF NOT EXISTS "masteryPoints" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS criteria JSONB;
+```
+*Fichier disponible : `add_badge_fields.sql`*
+
+### 2. Créer les badges dans l'interface admin (optionnel)
+Ou exécuter un script de seed pour créer les 11 badges généraux automatiquement.
+
+**Badges suggérés** :
+- 🎉 Bienvenue (à l'inscription)
+- 🔥 7 jours consécutifs
+- 🏆 Premier QCM parfait
+- 📚 10 leçons complétées
+- ⭐ 5 badges de maîtrise (Or)
+- etc.
+
+---
+
+### 🆕 DERNIÈRES MISES À JOUR (24 Octobre 2025) :
+
+#### ✅ Système de Badges Complet Réactivé
+**Badges généraux automatiques** :
+- Évaluation automatique basée sur des critères (JSON)
+- Table `user_badges` pour le stockage
+- Envoi d'emails automatiques lors du déverrouillage
+- Champs ajoutés au modèle `Badge` :
+  - `masteryPoints` (Int) : PMU à attribuer
+  - `order` (Int) : Ordre d'affichage
+  - `criteria` (JSONB) : Critères d'évaluation automatique
+
+**⚠️ ACTION REQUISE** : Exécuter le SQL suivant dans Supabase :
+```sql
+ALTER TABLE badges 
+ADD COLUMN IF NOT EXISTS "masteryPoints" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS criteria JSONB;
+```
+
+**Fichier SQL disponible** : `add_badge_fields.sql`
+
+#### ✅ Sécurité Admin Renforcée
+- `/admin` **bloqué en production** (NODE_ENV=production)
+- Accessible uniquement en local (http://localhost:3002/admin)
+- Middleware mis à jour avec vérification d'environnement
 
 #### ✅ Configuration Supabase Complétée
 - Base de données PostgreSQL configurée et accessible
@@ -21,11 +77,14 @@ Ce projet est **100% COMPLET et FONCTIONNEL**.
 
 #### ✅ Déploiement Netlify Fonctionnel
 - Site déployé sur : `https://mastermathsfr.netlify.app`
-- Variables d'environnement configurées (DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL)
+- Variables d'environnement configurées :
+  - `DATABASE_URL` : postgresql://postgres:***@db.zqgjhtafyuivnmgyqcix.supabase.co:5432/postgres
+  - `NEXTAUTH_SECRET` : 2nV1Jo3Sq2Lcp3YLFoLuqxk1rAf7aShtkRdj43i4AAg=
+  - `NEXTAUTH_URL` : https://mastermathsfr.netlify.app
 - Build TypeScript réussi sans erreurs
 - Application fonctionnelle en production
 
-#### ✅ Système de Badges de Maîtrise (NOUVEAU)
+#### ✅ Système de Badges de Maîtrise
 **Badges par leçon** :
 - 🥉 **Bronze** : Score 80-89% au QCM (+20 PMU)
 - 🥈 **Argent** : Score 90-99% au QCM (+40 PMU)
@@ -53,11 +112,29 @@ Ce projet est **100% COMPLET et FONCTIONNEL**.
 - `app/api/mastery-badges/route.ts` : API de récupération
 - Table SQL créée dans Supabase
 
-#### ✅ Corrections TypeScript
-- Imports Prisma corrigés (default → named imports)
-- Propriétés de modèles synchronisées avec la base de données
-- Routes API corrigées (`dashboard/parent`, `auth`, `badge-service`)
-- Build Next.js réussi sans erreurs de type
+#### ✅ Corrections TypeScript Massives
+**Champs de modèles corrigés** :
+- `connectedAt` → `connectionDate` (ConnectionLog)
+- `badgesUnlocked` → relation `user_badges` (User)
+- `connectionStreak` → `currentStreak` (User)
+- `bestStreak` → `longestStreak` (User)
+- `bestScore` → `quizScorePercent` (Performance)
+- `connectionDaysCount` → calcul dynamique depuis `connectionLog`
+
+**Fichiers corrigés** (14 fichiers) :
+- `app/api/admin/lessons/route.ts`
+- `app/api/cron/send-reminders/route.ts`
+- `app/api/dashboard/parent/route.ts`
+- `app/api/dashboard/user-stats/route.ts`
+- `app/api/engagement/*.ts` (5 fichiers)
+- `app/api/leaderboard/historical/route.ts`
+- `app/api/lessons/[lessonId]/complete/route.ts`
+- `lib/badge-service.ts`
+- `lib/connection-service.ts`
+- `lib/mastery-points-service.ts`
+- `middleware.ts`
+
+**Résultat** : Build Next.js réussi sans erreurs de type ✅
 
 ### Ce qui a été fait (TOUT) :
 
