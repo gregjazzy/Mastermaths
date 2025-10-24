@@ -69,24 +69,35 @@ export class MasteryBadgeService {
 
     if (!lesson) return null
 
-    // Créer l'identifiant unique du badge
-    const badgeId = `lesson_${lessonId}_${level.toLowerCase()}`
-
-    // Vérifier si l'utilisateur a déjà ce badge
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { 
-        id: true,
-        name: true,
-        email: true,
-        emailsNotification: true
+    // Vérifier si le badge existe déjà
+    const existingBadge = await prisma.masteryBadge.findUnique({
+      where: {
+        userId_type_entityId_level: {
+          userId,
+          type: 'LESSON',
+          entityId: lessonId,
+          level: level
+        }
       }
     })
 
-    if (!user) return null
+    if (existingBadge) {
+      // Badge déjà gagné, ne pas le recréer
+      return null
+    }
 
-    // Note: On stocke les badges de maîtrise dans une structure JSON
-    // Vous pourriez aussi créer une table dédiée si besoin
+    // Créer le badge dans la base de données
+    const badge = await prisma.masteryBadge.create({
+      data: {
+        userId,
+        type: 'LESSON',
+        level,
+        entityId: lessonId,
+        entityName: lesson.title,
+        score,
+        pmuAwarded: pmuBonus
+      }
+    })
 
     // Ajouter les PMU bonus
     await prisma.user.update({
@@ -98,16 +109,14 @@ export class MasteryBadgeService {
       }
     })
 
-    const badge: MasteryBadge = {
+    return {
       type: 'LESSON',
       level,
       entityId: lessonId,
       entityName: lesson.title,
       score,
-      earnedAt: new Date()
+      earnedAt: badge.earnedAt
     }
-
-    return badge
   }
 
   /**

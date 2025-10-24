@@ -37,6 +37,7 @@ model User {
   performances          Performance[]
   sessions              Session[]
   user_badges           user_badges[]
+  masteryBadges         MasteryBadge[]
 
   @@map("users")
 }
@@ -246,4 +247,21 @@ enum LessonType {
   DS
   CARTOGRAPHIE
   METHODE
+}
+
+model MasteryBadge {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // 'LESSON', 'CHAPTER', 'COURSE'
+  level       String   // 'BRONZE', 'SILVER', 'GOLD', 'COMPLETED', 'MASTERED', 'GRADUATE', 'EXCELLENCE'
+  entityId    String   // ID de la leçon, chapitre ou cours
+  entityName  String   // Nom pour affichage
+  score       Int?     // Score du QCM (pour les badges de leçon)
+  pmuAwarded  Int      // PMU gagnés pour ce badge
+  earnedAt    DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, type, entityId, level]) // Un badge unique par combinaison
+  @@map("mastery_badges")
 }
