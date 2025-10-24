@@ -9,6 +9,22 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
 
+# ==========================================
+# SCHEDULED FUNCTIONS (CRON Jobs)
+# ==========================================
+
+# Fonction 1 : Rappels d'inactivité (tous les jours à 10h Paris = 8h UTC)
+[functions."send-reminders"]
+  schedule = "0 8 * * *"
+
+# Fonction 2 : Récapitulatif mensuel (1er du mois à 9h Paris = 7h UTC)
+[functions."monthly-report"]
+  schedule = "0 7 1 * *"
+
+# ==========================================
+# Redirects et Headers
+# ==========================================
+
 # Redirects pour SPA
 [[redirects]]
   from = "/*"
