@@ -17,75 +17,106 @@ export default function VimeoPlayer({
   onProgress 
 }: VimeoPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const playerRef = useRef<Player | null>(null)
   const [isReady, setIsReady] = useState(false)
+  const [useFallback, setUseFallback] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const lastProgressUpdate = useRef(0)
 
-  useEffect(() => {
-    if (!containerRef.current) return
+  // Extraire l'ID Vimeo
+  const extractVimeoId = (url: string): string | null => {
+    const patterns = [
+      /vimeo\.com\/(\d+)/,
+      /player\.vimeo\.com\/video\/(\d+)/,
+      /^(\d+)$/,
+    ]
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match) return match[1]
+    }
+    return null
+  }
 
-    // Extraire l'ID Vimeo de l'URL
-    const vimeoId = extractVimeoId(videoUrl)
+  const vimeoId = extractVimeoId(videoUrl)
+
+  useEffect(() => {
+    // Si pas d'ID valide, mode fallback direct
     if (!vimeoId) {
       console.error('URL Vimeo invalide:', videoUrl)
+      setError('URL vidéo invalide')
+      setUseFallback(true)
       return
     }
 
-    // Détecter si on est sur mobile
+    // Détecter mobile
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
-    // Initialiser le player Vimeo avec options mobile
-    const player = new Player(containerRef.current, {
-      id: parseInt(vimeoId),
-      width: 1920,
-      responsive: true,
-      // Options critiques pour mobile
-      playsinline: true,        // Permet la lecture inline sur iOS
-      controls: true,            // Afficher les contrôles natifs
-      muted: false,              // Ne pas muter par défaut
-      background: false,         // Pas de mode background
-      autopause: true,           // Pause auto quand on sort de la page
-      byline: false,             // Masquer le nom de l'auteur
-      portrait: false,           // Masquer la photo de profil
-      title: false,              // Masquer le titre
-      transparent: false,        // Fond opaque
-      // Options supplémentaires pour mobile
-      ...(isMobile && {
-        quality: 'auto',         // Qualité adaptative sur mobile
-      })
-    })
-
-    playerRef.current = player
-
-    player.ready().then(() => {
+    // Sur mobile, utiliser directement l'iframe HTML native
+    if (isMobile) {
+      console.log('📱 Mobile détecté - Mode iframe natif')
+      setUseFallback(true)
       setIsReady(true)
-    })
-
-    // Écouter les événements de progression
-    player.on('timeupdate', async (data) => {
-      const percent = (data.percent * 100)
-      
-      // Mettre à jour seulement tous les 5%
-      if (Math.abs(percent - lastProgressUpdate.current) >= 5) {
-        lastProgressUpdate.current = percent
-        onProgress?.(percent)
-        
-        // Enregistrer la progression dans la base de données
-        await updateVideoProgress(lessonId, percent, isCorrectionVideo)
-      }
-    })
-
-    // Marquer comme vu à 95% (presque complété)
-    player.on('timeupdate', async (data) => {
-      if (data.percent >= 0.95) {
-        await updateVideoProgress(lessonId, 100, isCorrectionVideo)
-      }
-    })
-
-    return () => {
-      player.destroy()
+      return
     }
-  }, [videoUrl, lessonId, isCorrectionVideo])
+
+    // Sur desktop, essayer le SDK Vimeo
+    if (!containerRef.current) return
+
+    try {
+      const player = new Player(containerRef.current, {
+        id: parseInt(vimeoId),
+        width: 1920,
+        responsive: true,
+        playsinline: true,
+        controls: true,
+        muted: false,
+        background: false,
+        autopause: true,
+        byline: false,
+        portrait: false,
+        title: false,
+        transparent: false,
+      })
+
+      playerRef.current = player
+
+      player.ready()
+        .then(() => {
+          console.log('✅ Vimeo SDK chargé')
+          setIsReady(true)
+        })
+        .catch((err) => {
+          console.error('❌ Erreur Vimeo SDK:', err)
+          setError('Erreur de chargement du player')
+          setUseFallback(true)
+        })
+
+      // Tracking progression
+      player.on('timeupdate', async (data) => {
+        const percent = (data.percent * 100)
+        if (Math.abs(percent - lastProgressUpdate.current) >= 5) {
+          lastProgressUpdate.current = percent
+          onProgress?.(percent)
+          await updateVideoProgress(lessonId, percent, isCorrectionVideo)
+        }
+      })
+
+      player.on('timeupdate', async (data) => {
+        if (data.percent >= 0.95) {
+          await updateVideoProgress(lessonId, 100, isCorrectionVideo)
+        }
+      })
+
+      return () => {
+        player.destroy()
+      }
+    } catch (err) {
+      console.error('❌ Erreur initialisation Vimeo:', err)
+      setError('Impossible d\'initialiser le player')
+      setUseFallback(true)
+    }
+  }, [videoUrl, lessonId, isCorrectionVideo, vimeoId])
 
   const updateVideoProgress = async (lessonId: string, percent: number, isCorrection: boolean) => {
     try {
@@ -98,41 +129,54 @@ export default function VimeoPlayer({
         }),
       })
 
-      // Si la vidéo est complétée à 95%+, évaluer les badges
       if (percent >= 95) {
         await fetch('/api/engagement/badges', {
           method: 'POST'
         })
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la progression:', error)
+      console.error('Erreur progression:', error)
     }
   }
 
-  const extractVimeoId = (url: string): string | null => {
-    // Gérer différents formats d'URL Vimeo
-    const patterns = [
-      /vimeo\.com\/(\d+)/,
-      /player\.vimeo\.com\/video\/(\d+)/,
-      /^(\d+)$/,
-    ]
-
-    for (const pattern of patterns) {
-      const match = url.match(pattern)
-      if (match) return match[1]
-    }
-
-    return null
+  // MODE FALLBACK : iframe HTML native (mobile + erreurs)
+  if (useFallback && vimeoId) {
+    return (
+      <div className="relative w-full">
+        <div className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden">
+          <iframe
+            ref={iframeRef}
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&autopause=1&playsinline=1&portrait=0&byline=0&title=0&controls=1`}
+            className="w-full h-full"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+            title="Vidéo du cours"
+          />
+        </div>
+        {error && (
+          <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400">
+            ⚠️ Mode de compatibilité activé
+          </div>
+        )}
+      </div>
+    )
   }
 
+  // MODE NORMAL : SDK Vimeo (desktop)
   return (
     <div className="relative w-full">
       <div 
         ref={containerRef} 
-        className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden
-          touch-manipulation" // Améliore les interactions tactiles
+        className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden touch-manipulation"
         style={{
-          // Force le navigateur à permettre la lecture inline sur iOS
           WebkitPlaysinline: 'true',
         } as React.CSSProperties}
       />
@@ -147,4 +191,3 @@ export default function VimeoPlayer({
     </div>
   )
 }
-
