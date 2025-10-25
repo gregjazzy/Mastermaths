@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
-import BadgePopup, { BadgeEarned } from './BadgePopup'
+import BadgeCelebrationPopup, { BadgeEarned } from './BadgeCelebrationPopup'
+import { celebrateQcmScore } from '@/lib/celebration'
 
 interface QcmQuestion {
   id: string
@@ -29,6 +30,7 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [badgeEarned, setBadgeEarned] = useState<BadgeEarned | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchQuestions()
@@ -129,6 +131,13 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
       setScore(scorePercent)
       setSubmitted(true)
       onComplete?.(scorePercent)
+      
+      // Déclencher la célébration visuelle
+      setTimeout(() => {
+        if (containerRef.current) {
+          celebrateQcmScore(containerRef.current, scorePercent)
+        }
+      }, 300) // Petit délai pour que l'UI se mette à jour d'abord
     } catch (error) {
       console.error('Erreur lors de la soumission du QCM:', error)
       alert('Une erreur est survenue lors de la soumission.')
@@ -161,7 +170,7 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
   }
 
   return (
-    <div className="space-y-6">
+    <div ref={containerRef} className="space-y-6">
       {submitted && score !== null && (
         <div className={`rounded-lg p-6 ${
           score === 100 
@@ -330,9 +339,10 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
       </div>
 
       {/* Badge Popup */}
-      <BadgePopup 
+      <BadgeCelebrationPopup 
         badge={badgeEarned} 
-        onClose={() => setBadgeEarned(null)} 
+        onClose={() => setBadgeEarned(null)}
+        type={lessonId ? 'lesson' : 'exercise'}
       />
     </div>
   )
