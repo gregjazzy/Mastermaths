@@ -384,9 +384,10 @@ export default function DashboardStudent() {
                             {expandedSubChapters.has(subChapter.subChapterId) && (
                               <div className="border-t border-gray-200 p-3 space-y-2">
                                 {subChapter.lessons.map((lesson) => (
-                                  <div
+                                  <Link
                                     key={lesson.lessonId}
-                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                    href={`/cours/${course.courseId}/lecon/${lesson.lessonId}`}
+                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                                   >
                                     <div className="flex items-center gap-3 flex-1">
                                       {getLessonIcon(lesson.lessonType)}
@@ -429,7 +430,7 @@ export default function DashboardStudent() {
                                         <span className="text-xs text-gray-400">Non commencé</span>
                                       )}
                                     </div>
-                                  </div>
+                                  </Link>
                                 ))}
                               </div>
                             )}
