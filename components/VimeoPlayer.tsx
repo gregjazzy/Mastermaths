@@ -47,6 +47,7 @@ export default function VimeoPlayer({
     if (!id) {
       console.error('❌ URL Vimeo invalide:', videoUrl)
       setError('URL vidéo invalide')
+      setUseUltraSimple(true)
       return
     }
 
@@ -64,8 +65,8 @@ export default function VimeoPlayer({
       return
     }
 
-    // STRATÉGIE 2 : Sur Android, essayer iframe native
-    if (isMobile) {
+    // STRATÉGIE 2 : Sur Android, utiliser iframe native
+    if (isMobile && !isIOS) {
       console.log('📱 Mobile Android détecté → Mode iframe natif')
       setUseFallback(true)
       setIsReady(true)
@@ -73,15 +74,20 @@ export default function VimeoPlayer({
     }
 
     // STRATÉGIE 3 : Desktop - essayer SDK avec timeout
-    if (!containerRef.current) return
-
     console.log('🖥️ Desktop détecté → Tentative SDK Vimeo')
+    
+    if (!containerRef.current) {
+      console.warn('⚠️ Container ref not ready, retrying...')
+      return
+    }
     
     // Timeout de 5 secondes pour le SDK
     const sdkTimeout = setTimeout(() => {
       console.warn('⏰ SDK Vimeo timeout → Basculement iframe')
-      setUseFallback(true)
-      setIsReady(true)
+      if (!isReady) {
+        setUseFallback(true)
+        setIsReady(true)
+      }
     }, 5000)
 
     try {
@@ -133,7 +139,13 @@ export default function VimeoPlayer({
 
       return () => {
         clearTimeout(sdkTimeout)
-        player.destroy()
+        if (playerRef.current) {
+          try {
+            playerRef.current.destroy()
+          } catch (e) {
+            console.warn('Player already destroyed')
+          }
+        }
       }
     } catch (err) {
       clearTimeout(sdkTimeout)
