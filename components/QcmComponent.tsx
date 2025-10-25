@@ -118,12 +118,16 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
       if (result.badges?.lesson || result.masteryBadge) {
         const badge = result.badges?.lesson || result.masteryBadge
         if (badge) {
+          // Mapper le badge de l'API vers le format BadgeEarned
+          const badgeLevel = badge.level === 'GOLD' ? 'gold' : badge.level === 'SILVER' ? 'silver' : 'bronze'
+          const pmuAwarded = badge.pmuAwarded || (badge.level === 'GOLD' ? 60 : badge.level === 'SILVER' ? 40 : 20)
+          
           setBadgeEarned({
-            type: badge.type,
-            level: badge.level,
-            entityName: badge.entityName,
-            pmuAwarded: badge.pmuAwarded || (badge.level === 'GOLD' ? 60 : badge.level === 'SILVER' ? 40 : 20),
-            score: badge.score
+            emoji: badgeLevel === 'gold' ? '🏆' : badgeLevel === 'silver' ? '🥈' : '🥉',
+            level: badgeLevel,
+            title: `Badge ${badgeLevel === 'gold' ? 'Or' : badgeLevel === 'silver' ? 'Argent' : 'Bronze'} !`,
+            description: badge.entityName || `${badge.type || 'Réussite'} complété${badge.score ? ` à ${badge.score}%` : ''} !`,
+            pmu: pmuAwarded
           })
         }
       }
