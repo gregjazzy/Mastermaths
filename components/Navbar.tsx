@@ -4,14 +4,13 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BookOpen, LayoutDashboard, LogOut, Crown, User, Trophy } from 'lucide-react'
-import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
   const { data: session } = useSession()
   const user = session?.user as any
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm transition-colors">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
@@ -33,19 +32,19 @@ export default function Navbar() {
                 />
                 <BookOpen className="w-10 h-10 text-master-turquoise hidden" />
               </div>
-              <span className="text-xl font-bold text-master-dark dark:text-white">Master Maths</span>
+              <span className="text-xl font-bold text-master-dark">Master Maths</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/dashboard" className="nav-link dark:text-gray-300 dark:hover:text-master-turquoise">
+              <Link href="/dashboard" className="nav-link">
                 <LayoutDashboard className="w-4 h-4 inline mr-2" />
                 Dashboard
               </Link>
-              <Link href="/cours" className="nav-link dark:text-gray-300 dark:hover:text-master-turquoise">
+              <Link href="/cours" className="nav-link">
                 <BookOpen className="w-4 h-4 inline mr-2" />
                 Mes cours
               </Link>
-              <Link href="/hall-of-fame" className="nav-link dark:text-gray-300 dark:hover:text-master-turquoise">
+              <Link href="/hall-of-fame" className="nav-link">
                 <Trophy className="w-4 h-4 inline mr-2" />
                 Hall of Fame
               </Link>
@@ -65,16 +64,13 @@ export default function Navbar() {
 
             <div className="flex items-center gap-3">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{user?.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-gray-700">{user?.name}</p>
+                <p className="text-xs text-gray-500">
                   {user?.status === 'PREMIUM' && '👑 Premium'}
                   {user?.status === 'DEMO' && '⚡ Démo'}
                   {user?.status === 'FREE' && '🆓 Gratuit'}
                 </p>
               </div>
-              
-              {/* Toggle Mode Sombre */}
-              <ThemeToggle />
               
               <button
                 onClick={async () => {
@@ -96,7 +92,7 @@ export default function Navbar() {
                   // Déconnexion NextAuth
                   await signOut({ callbackUrl: '/' })
                 }}
-                className="p-2 text-gray-600 dark:text-gray-300 hover:text-master-turquoise hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-gray-600 hover:text-master-turquoise hover:bg-gray-100 rounded-lg transition-colors"
                 title="Se déconnecter"
               >
                 <LogOut className="w-5 h-5" />
