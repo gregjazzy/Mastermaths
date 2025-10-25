@@ -31,11 +31,28 @@ export default function VimeoPlayer({
       return
     }
 
-    // Initialiser le player Vimeo
+    // Détecter si on est sur mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
+    // Initialiser le player Vimeo avec options mobile
     const player = new Player(containerRef.current, {
       id: parseInt(vimeoId),
       width: 1920,
       responsive: true,
+      // Options critiques pour mobile
+      playsinline: true,        // Permet la lecture inline sur iOS
+      controls: true,            // Afficher les contrôles natifs
+      muted: false,              // Ne pas muter par défaut
+      background: false,         // Pas de mode background
+      autopause: true,           // Pause auto quand on sort de la page
+      byline: false,             // Masquer le nom de l'auteur
+      portrait: false,           // Masquer la photo de profil
+      title: false,              // Masquer le titre
+      transparent: false,        // Fond opaque
+      // Options supplémentaires pour mobile
+      ...(isMobile && {
+        quality: 'auto',         // Qualité adaptative sur mobile
+      })
     })
 
     playerRef.current = player
@@ -112,11 +129,19 @@ export default function VimeoPlayer({
     <div className="relative w-full">
       <div 
         ref={containerRef} 
-        className="w-full aspect-video bg-gray-900 rounded-lg overflow-hidden"
+        className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden
+          touch-manipulation" // Améliore les interactions tactiles
+        style={{
+          // Force le navigateur à permettre la lecture inline sur iOS
+          WebkitPlaysinline: 'true',
+        } as React.CSSProperties}
       />
       {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-lg">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-master-turquoise"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900 dark:bg-gray-950 rounded-lg">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-master-turquoise mx-auto mb-4"></div>
+            <p className="text-white text-sm">Chargement de la vidéo...</p>
+          </div>
         </div>
       )}
     </div>

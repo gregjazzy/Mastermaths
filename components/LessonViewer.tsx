@@ -127,14 +127,16 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
       </div>
 
       {/* Contenu dynamique selon le type */}
-      <div className="bg-white rounded-xl shadow-lg p-6 space-y-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 md:p-6 space-y-8">
         {/* 1. COURS VIDÉO */}
         {lesson.type === 'VIDEO_COURS' && lesson.contentUrl && (
-          <VimeoPlayer
-            videoUrl={lesson.contentUrl}
-            lessonId={lesson.id}
-            onProgress={(percent) => console.log('Progression:', percent)}
-          />
+          <div className="w-full">
+            <VimeoPlayer
+              videoUrl={lesson.contentUrl}
+              lessonId={lesson.id}
+              onProgress={(percent) => console.log('Progression:', percent)}
+            />
+          </div>
         )}
 
         {/* 2. EXERCICE OU DS */}
