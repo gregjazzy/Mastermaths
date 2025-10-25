@@ -53,7 +53,7 @@ export async function GET(req: Request) {
       SELECT 
         DATE("connectionDate") as date,
         COUNT(*) as count
-      FROM connection_logs
+      FROM "ConnectionLog"
       WHERE "userId" = ${user.id}
         AND "connectionDate" >= NOW() - INTERVAL '7 days'
       GROUP BY DATE("connectionDate")
