@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Edit, Trash2, Save, Video, FileQuestion } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Plus, Edit, Trash2, Save, Video, FileQuestion, CheckCircle2 } from 'lucide-react'
 
 interface Lesson {
   id: string
@@ -43,6 +44,7 @@ const LESSON_TYPES = [
 ]
 
 export default function LessonsAdminPage() {
+  const router = useRouter()
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [subChapters, setSubChapters] = useState<SubChapter[]>([])
   const [loading, setLoading] = useState(true)
@@ -424,6 +426,13 @@ export default function LessonsAdminPage() {
                   </div>
 
                   <div className="flex gap-2">
+                    <button
+                      onClick={() => router.push(`/admin/qcm/${lesson.id}`)}
+                      className="p-2 hover:bg-green-100 rounded-lg transition-colors"
+                      title="Gérer le QCM"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    </button>
                     <button
                       onClick={() => handleEdit(lesson)}
                       className="p-2 hover:bg-blue-100 rounded-lg transition-colors"
