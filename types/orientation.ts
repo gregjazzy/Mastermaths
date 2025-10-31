@@ -3,6 +3,7 @@
 // ========================================
 
 export interface PerformanceTrimestre {
+  // Notes et classements de l'élève
   moyenneGenerale: string
   classementGeneral: string
   mathsNote: string
@@ -19,6 +20,16 @@ export interface PerformanceTrimestre {
   specialite3Classement?: string
   matiereFailbleNote: string
   matiereFaibleClassement: string
+  
+  // Moyennes de la classe (optionnel)
+  moyenneGeneraleClasse?: string
+  mathsNoteClasse?: string
+  lv1NoteClasse?: string
+  lv2NoteClasse?: string
+  specialite1NoteClasse?: string
+  specialite2NoteClasse?: string
+  specialite3NoteClasse?: string
+  matiereFaibleNoteClasse?: string
   
   // Noms des matières
   specialite1Nom: string
@@ -61,6 +72,7 @@ export interface QuestionnaireOrientation {
   // ========== 1. Informations Générales ==========
   age: string
   genre: string
+  lycee: string // NOUVEAU : Nom du lycée
   matieresPrefereees: string[] // 3 matières
   matieresDisfficiles: string[] // 3 matières
   troublesApprentissage?: string

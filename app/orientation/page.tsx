@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Target, ChevronRight, ChevronLeft, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { QuestionnaireOrientation } from '@/types/orientation'
+import { Step2Performance } from '@/components/Step2Performance'
 
 export default function OrientationPage() {
   const { data: session, status } = useSession()
@@ -212,75 +213,36 @@ export default function OrientationPage() {
   const totalSteps = 6
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* En-tête */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Target className="w-10 h-10 text-purple-600" />
-            <h1 className="text-3xl font-bold text-master-dark">
-              Bilan d'Orientation Piloté par IA
-            </h1>
+        {/* En-tête Premium */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl mb-6 shadow-lg">
+            <Target className="w-10 h-10 text-white" />
           </div>
-          <p className="text-gray-600 mb-4">
-            Répondez à toutes les questions pour obtenir un bilan personnalisé complet
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Obtenez votre Bilan d'Orientation
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Un bilan personnalisé pour éclairer vos choix d'études supérieures et maximiser vos chances de réussite
           </p>
           
-          {/* Bannière de sauvegarde automatique */}
-          <div className="max-w-2xl mx-auto mb-4">
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-left">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-blue-900 mb-1">💾 Sauvegarde automatique</h3>
-                  <p className="text-sm text-blue-700 leading-relaxed">
-                    Vos réponses sont <strong>automatiquement enregistrées dans votre navigateur</strong>. 
-                    Vous pouvez fermer cette page et revenir plus tard pour continuer le questionnaire.
-                  </p>
-                  <p className="text-xs text-blue-600 mt-2">
-                    ⚠️ Note : La sauvegarde est locale (sur cet appareil uniquement). 
-                    Si vous changez de navigateur ou d'appareil, vous devrez recommencer.
-                  </p>
-                  {hasDraft && (
-                    <button
-                      onClick={clearDraft}
-                      className="mt-3 text-xs text-blue-600 hover:text-blue-800 underline font-medium"
-                    >
-                      🗑️ Effacer le brouillon et recommencer
-                    </button>
-                  )}
-                </div>
-              </div>
+          {/* Bénéfices clés */}
+          <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-purple-100">
+              <div className="text-3xl mb-2">🎯</div>
+              <div className="font-semibold text-gray-900 mb-1">Analyse Approfondie</div>
+              <div className="text-sm text-gray-600">De vos résultats et potentiel</div>
             </div>
-          </div>
-
-          {/* Disclaimer de confidentialité et RGPD */}
-          <div className="max-w-2xl mx-auto mb-4">
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-left">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-green-900 mb-1">🔒 Confidentialité et Protection des Données</h3>
-                  <p className="text-sm text-green-700 leading-relaxed mb-2">
-                    <strong>Engagement de confidentialité :</strong> Vos données personnelles sont traitées dans le strict respect du RGPD.
-                  </p>
-                  <ul className="text-xs text-green-700 space-y-1 list-disc list-inside">
-                    <li>Seul le <strong>bilan final</strong> est conservé (sans données personnelles identifiables)</li>
-                    <li>Les <strong>données du questionnaire</strong> sont automatiquement supprimées après génération du bilan</li>
-                    <li><strong>Aucune donnée n'est communiquée à des tiers</strong> (ni partenaires, ni annonceurs)</li>
-                    <li>Le bilan est <strong>strictement personnel</strong> et accessible uniquement par vous</li>
-                    <li>Vous pouvez demander la suppression complète de votre bilan à tout moment</li>
-                  </ul>
-                </div>
-              </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-blue-100">
+              <div className="text-3xl mb-2">🚀</div>
+              <div className="font-semibold text-gray-900 mb-1">Plan d'Action</div>
+              <div className="text-sm text-gray-600">Concret et personnalisé</div>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-purple-100">
+              <div className="text-3xl mb-2">🎓</div>
+              <div className="font-semibold text-gray-900 mb-1">Rapport Détaillé</div>
+              <div className="text-sm text-gray-600">Complet et personnalisé</div>
             </div>
           </div>
         </div>
@@ -352,6 +314,34 @@ export default function OrientationPage() {
             )}
           </div>
         </div>
+
+        {/* Footer Disclaimers - Discret en bas */}
+        <div className="mt-12 space-y-3">
+          {/* Sauvegarde */}
+          <details className="bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900">
+              💾 Sauvegarde automatique
+            </summary>
+            <div className="px-4 pb-3 text-xs text-gray-600">
+              Vos réponses sont sauvegardées localement. Vous pouvez revenir plus tard.
+              {hasDraft && (
+                <button onClick={clearDraft} className="ml-2 text-purple-600 hover:underline">
+                  Effacer et recommencer
+                </button>
+              )}
+            </div>
+          </details>
+
+          {/* Confidentialité */}
+          <details className="bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900">
+              🔒 Confidentialité RGPD
+            </summary>
+            <div className="px-4 pb-3 text-xs text-gray-600">
+              Vos données sont strictement confidentielles. Seul le bilan final est conservé. Aucun partage avec des tiers.
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   )
@@ -368,7 +358,7 @@ function Step1InfosGenerales({ formData, setFormData }: any) {
         📋 Informations Générales
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">Âge de l'élève *</label>
           <input
@@ -395,6 +385,18 @@ function Step1InfosGenerales({ formData, setFormData }: any) {
             <option value="F">Femme</option>
             <option value="Autre">Autre</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Lycée *</label>
+          <input
+            type="text"
+            required
+            className="input"
+            placeholder="Ex: Lycée Henri IV"
+            value={formData.lycee || ''}
+            onChange={(e) => setFormData({ ...formData, lycee: e.target.value })}
+          />
         </div>
       </div>
 
@@ -464,64 +466,6 @@ function Step1InfosGenerales({ formData, setFormData }: any) {
           value={formData.aideExterieure || ''}
           onChange={(e) => setFormData({ ...formData, aideExterieure: e.target.value })}
         />
-      </div>
-    </div>
-  )
-}
-
-function Step2Performance({ formData, setFormData }: any) {
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-master-dark mb-4">
-        📊 Performance Académique
-      </h2>
-      
-      <p className="text-sm text-gray-600">
-        Remplissez les moyennes et classements pour chaque trimestre.
-        Laissez vide si non applicable ou non terminé.
-      </p>
-
-      {/* Interface simplifiée - On stockera les données comme JSON */}
-      <div className="space-y-4">
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-bold mb-2">📝 Instructions</h3>
-          <p className="text-sm text-gray-700">
-            Cette section collecte vos notes académiques. Pour simplifier cette démo,
-            vous pouvez saisir un résumé textuel de votre parcours académique.
-            Une version complète inclurait des tableaux détaillés pour chaque trimestre.
-          </p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Résumé du parcours académique (Première et Terminale) *
-          </label>
-          <textarea
-            required
-            className="input"
-            rows={6}
-            placeholder="Ex: En Première, moyenne générale de 14/20 (classé 8/32). Spécialités: Maths (16/20), Physique (15/20), SVT (13/20 - abandonnée). En Terminale, moyenne de 15/20 (classé 5/30), Maths Expert (17/20), Physique (16/20)..."
-            value={formData.parcoursAcademique || ''}
-            onChange={(e) => setFormData({ ...formData, parcoursAcademique: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Niveau général de la classe *
-          </label>
-          <select
-            required
-            className="input"
-            value={formData.contexteClasse || ''}
-            onChange={(e) => setFormData({ ...formData, contexteClasse: e.target.value })}
-          >
-            <option value="">Sélectionner</option>
-            <option value="Élevé">Élevé (classe d'excellence)</option>
-            <option value="Moyen">Moyen</option>
-            <option value="Faible">Faible</option>
-          </select>
-        </div>
       </div>
     </div>
   )
