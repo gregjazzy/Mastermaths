@@ -173,10 +173,10 @@ export function Step2Performance({ formData, setFormData }: Step2PerformanceProp
         <div className="flex-1 text-sm text-gray-700">
           <p className="font-semibold mb-1">Conseils de saisie :</p>
           <ul className="list-disc list-inside space-y-1 text-xs">
-            <li>Renseignez vos notes avec 2 décimales si nécessaire (ex: 15.75)</li>
+            <li><strong>Tous les champs sont optionnels</strong> mais influent beaucoup sur la pertinence du bilan</li>
             <li>Pour le classement, indiquez votre rang sur le total d'élèves (ex: 8/32)</li>
-            <li>Les moyennes de classe permettent une analyse comparative précise (optionnel mais recommandé)</li>
-            <li>Remplissez les 3 trimestres des deux années pour un bilan complet</li>
+            <li>Les moyennes de classe permettent une analyse comparative précise</li>
+            <li>Plus vous remplissez de trimestres, plus le bilan sera précis et personnalisé</li>
           </ul>
         </div>
       </div>
