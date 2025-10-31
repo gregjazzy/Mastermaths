@@ -32,7 +32,7 @@ export default function LoginPage() {
         return
       }
 
-      router.push('/dashboard')
+      router.push('/cours')
       router.refresh()
     } catch (error) {
       setError('Une erreur est survenue')

@@ -5,24 +5,9 @@ import { useTheme } from './ThemeProvider'
 import { useState, useRef, useEffect } from 'react'
 
 export default function ThemeToggle() {
+  const { theme, resolvedTheme, setTheme } = useTheme()
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  
-  // Gérer le cas où le ThemeProvider n'est pas disponible
-  let theme: 'light' | 'dark' | 'system' = 'system'
-  let resolvedTheme: 'light' | 'dark' = 'light'
-  let setTheme: (theme: 'light' | 'dark' | 'system') => void = () => {}
-  
-  try {
-    const themeContext = useTheme()
-    theme = themeContext.theme
-    resolvedTheme = themeContext.resolvedTheme
-    setTheme = themeContext.setTheme
-  } catch (error) {
-    // ThemeProvider pas disponible - mode silencieux
-    console.warn('ThemeProvider not available, using default theme')
-    return null // Ne pas afficher le toggle si pas de provider
-  }
 
   // Fermer le menu si on clique dehors
   useEffect(() => {

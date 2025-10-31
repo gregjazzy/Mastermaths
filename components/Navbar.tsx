@@ -37,7 +37,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
-              <Link href="/dashboard" className="flex items-center gap-3">
+              <Link href="/cours" className="flex items-center gap-3">
                 {/* Logo Master Maths */}
                 <div className="relative w-10 h-10">
                   <Image
@@ -60,13 +60,13 @@ export default function Navbar() {
 
               {/* Menu Desktop */}
               <div className="hidden md:flex items-center gap-4">
-                <Link href="/dashboard" className="nav-link">
-                  <LayoutDashboard className="w-4 h-4 inline mr-2" />
-                  Dashboard
-                </Link>
                 <Link href="/cours" className="nav-link">
                   <BookOpen className="w-4 h-4 inline mr-2" />
                   Mes cours
+                </Link>
+                <Link href="/dashboard" className="nav-link">
+                  <LayoutDashboard className="w-4 h-4 inline mr-2" />
+                  Statistiques
                 </Link>
                 <Link href="/hall-of-fame" className="nav-link">
                   <Trophy className="w-4 h-4 inline mr-2" />
@@ -165,21 +165,21 @@ export default function Navbar() {
               {/* Navigation */}
               <nav className="space-y-2">
                 <Link 
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
-                >
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Dashboard</span>
-                </Link>
-
-                <Link 
                   href="/cours"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
                 >
                   <BookOpen className="w-5 h-5" />
                   <span className="font-medium">Mes cours</span>
+                </Link>
+
+                <Link 
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span className="font-medium">Statistiques</span>
                 </Link>
 
                 <Link 

@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
   // Rediriger vers dashboard si déjà authentifié et sur page auth
   if (isAuth && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/cours', request.url))
   }
 
   // Vérifier l'accès au contenu basé sur le statut
