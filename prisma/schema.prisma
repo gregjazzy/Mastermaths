@@ -309,3 +309,41 @@ enum LessonType {
   CARTOGRAPHIE
   METHODE
 }
+
+// ========== BANQUE DS ==========
+
+model DSBanque {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  lycee       String   // Ex: "Louis-le-Grand", "Henri IV"
+  niveau      String   // Ex: "Terminale", "Première"
+  chapter     String   // Ex: "Suites numériques", "Limites"
+  difficulty  Int      @default(1) // 1 à 5
+  duration    Int?     // Durée en minutes
+  pdfUrl      String?  // URL du PDF
+  correctionPdfUrl String? // URL du corrigé
+  isPublic    Boolean  @default(true)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  downloads   DSDownload[]
+
+  @@index([niveau])
+  @@index([lycee])
+  @@index([chapter])
+  @@map("ds_banque")
+}
+
+model DSDownload {
+  id        String   @id @default(cuid())
+  userId    String
+  dsId      String
+  ds        DSBanque @relation(fields: [dsId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([dsId])
+  @@map("ds_downloads")
+}
+

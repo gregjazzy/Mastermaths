@@ -3,13 +3,31 @@
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, LayoutDashboard, LogOut, Crown, User, Trophy, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { BookOpen, LayoutDashboard, LogOut, Crown, User, Trophy, Menu, X, ChevronDown, GraduationCap, FileText, Wrench, Video, Target } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 
 export default function Navbar() {
   const { data: session } = useSession()
   const user = session?.user as any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [apprendreOpen, setApprendreOpen] = useState(false)
+  const [outilsOpen, setOutilsOpen] = useState(false)
+  const apprendreRef = useRef<HTMLDivElement>(null)
+  const outilsRef = useRef<HTMLDivElement>(null)
+
+  // Fermer les dropdowns quand on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (apprendreRef.current && !apprendreRef.current.contains(event.target as Node)) {
+        setApprendreOpen(false)
+      }
+      if (outilsRef.current && !outilsRef.current.contains(event.target as Node)) {
+        setOutilsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleSignOut = async () => {
     // Finaliser la session de tracking avant de se déconnecter
@@ -60,13 +78,115 @@ export default function Navbar() {
 
               {/* Menu Desktop */}
               <div className="hidden md:flex items-center gap-4">
-                <Link href="/cours" className="nav-link">
-                  <BookOpen className="w-4 h-4 inline mr-2" />
-                  Mes cours
-                </Link>
+                {/* Dropdown Apprendre */}
+                <div className="relative" ref={apprendreRef}>
+                  <button
+                    onClick={() => {
+                      setApprendreOpen(!apprendreOpen)
+                      setOutilsOpen(false)
+                    }}
+                    className="nav-link flex items-center gap-1"
+                  >
+                    <GraduationCap className="w-4 h-4" />
+                    Apprendre
+                    <ChevronDown className={`w-4 h-4 transition-transform ${apprendreOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {apprendreOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                      <Link 
+                        href="/cours" 
+                        onClick={() => setApprendreOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <BookOpen className="w-5 h-5 text-master-turquoise" />
+                        <div>
+                          <div className="font-medium text-gray-900">Cours vidéo</div>
+                          <div className="text-xs text-gray-500">Leçons & QCM</div>
+                        </div>
+                      </Link>
+                      <Link 
+                        href="/ds-banque" 
+                        onClick={() => setApprendreOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <FileText className="w-5 h-5 text-indigo-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Banque de DS</div>
+                          <div className="text-xs text-gray-500">Top 5 lycées Paris</div>
+                        </div>
+                      </Link>
+                      <Link 
+                        href="/live" 
+                        onClick={() => setApprendreOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <Video className="w-5 h-5 text-red-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Lives hebdo</div>
+                          <div className="text-xs text-gray-500">Cours en direct</div>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Dropdown Outils */}
+                <div className="relative" ref={outilsRef}>
+                  <button
+                    onClick={() => {
+                      setOutilsOpen(!outilsOpen)
+                      setApprendreOpen(false)
+                    }}
+                    className="nav-link flex items-center gap-1"
+                  >
+                    <Wrench className="w-4 h-4" />
+                    Outils
+                    <ChevronDown className={`w-4 h-4 transition-transform ${outilsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {outilsOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                      <Link 
+                        href="/correction-ds" 
+                        onClick={() => setOutilsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <FileText className="w-5 h-5 text-orange-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Correction DS</div>
+                          <div className="text-xs text-gray-500">Personnalisée</div>
+                        </div>
+                      </Link>
+                      <Link 
+                        href="/orientation" 
+                        onClick={() => setOutilsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <Target className="w-5 h-5 text-purple-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Bilan d'orientation</div>
+                          <div className="text-xs text-gray-500">Gratuit & complet</div>
+                        </div>
+                      </Link>
+                      <Link 
+                        href="/persona" 
+                        onClick={() => setOutilsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <User className="w-5 h-5 text-blue-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Étude persona</div>
+                          <div className="text-xs text-gray-500">Profil détaillé</div>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 <Link href="/dashboard" className="nav-link">
                   <LayoutDashboard className="w-4 h-4 inline mr-2" />
-                  Statistiques
+                  Dashboard
                 </Link>
                 <Link href="/hall-of-fame" className="nav-link">
                   <Trophy className="w-4 h-4 inline mr-2" />
@@ -164,32 +284,103 @@ export default function Navbar() {
 
               {/* Navigation */}
               <nav className="space-y-2">
-                <Link 
-                  href="/cours"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  <span className="font-medium">Mes cours</span>
-                </Link>
+                {/* Section Apprendre */}
+                <div className="space-y-1">
+                  <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Apprendre</div>
+                  <Link 
+                    href="/cours"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Cours vidéo</div>
+                      <div className="text-xs text-gray-500">Leçons & QCM</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/ds-banque"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <FileText className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Banque de DS</div>
+                      <div className="text-xs text-gray-500">Top 5 lycées Paris</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/live"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <Video className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Lives hebdo</div>
+                      <div className="text-xs text-gray-500">Cours en direct</div>
+                    </div>
+                  </Link>
+                </div>
 
-                <Link 
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
-                >
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Statistiques</span>
-                </Link>
+                {/* Section Outils */}
+                <div className="space-y-1 pt-4">
+                  <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Outils</div>
+                  <Link 
+                    href="/correction-ds"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <FileText className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Correction DS</div>
+                      <div className="text-xs text-gray-500">Personnalisée</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/orientation"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <Target className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Bilan d'orientation</div>
+                      <div className="text-xs text-gray-500">Gratuit & complet</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/persona"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <User className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Étude persona</div>
+                      <div className="text-xs text-gray-500">Profil détaillé</div>
+                    </div>
+                  </Link>
+                </div>
 
-                <Link 
-                  href="/hall-of-fame"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
-                >
-                  <Trophy className="w-5 h-5" />
-                  <span className="font-medium">Hall of Fame</span>
-                </Link>
+                {/* Section Progression */}
+                <div className="space-y-1 pt-4">
+                  <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Progression</div>
+                  <Link 
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    <span className="font-medium">Dashboard</span>
+                  </Link>
+
+                  <Link 
+                    href="/hall-of-fame"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <Trophy className="w-5 h-5" />
+                    <span className="font-medium">Hall of Fame</span>
+                  </Link>
+                </div>
               </nav>
 
               {/* Déconnexion */}
