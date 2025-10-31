@@ -13,6 +13,10 @@ const nextConfig = {
       },
     ],
   },
+  // Configuration pour Prisma en environnement serverless (Netlify)
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
+  },
 }
 
 module.exports = nextConfig

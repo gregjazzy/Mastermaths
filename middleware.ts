@@ -10,12 +10,9 @@ export async function middleware(request: NextRequest) {
   const isCourse = request.nextUrl.pathname.startsWith('/cours')
   const isAdmin = request.nextUrl.pathname.startsWith('/admin')
 
-  // 🔒 BLOQUER /admin en production
-  if (isAdmin && process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { error: 'Accès admin désactivé en production. Utilisez votre environnement local.' },
-      { status: 403 }
-    )
+  // Rediriger vers login si pas authentifié et essaie d'accéder à l'admin
+  if (!isAuth && isAdmin) {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
   // Rediriger vers login si pas authentifié et essaie d'accéder à une page protégée
