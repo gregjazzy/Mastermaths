@@ -180,6 +180,17 @@ export default function Navbar() {
                           <div className="text-xs text-gray-500">Profil détaillé</div>
                         </div>
                       </Link>
+                      <Link 
+                        href="/metiers-ia" 
+                        onClick={() => setOutilsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <Wrench className="w-5 h-5 text-green-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Métiers versus IA</div>
+                          <div className="text-xs text-gray-500">Impact IA</div>
+                        </div>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -356,6 +367,17 @@ export default function Navbar() {
                     <div>
                       <div className="font-medium">Étude persona</div>
                       <div className="text-xs text-gray-500">Profil détaillé</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/metiers-ia"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-master-turquoise/10 hover:text-master-turquoise rounded-lg transition-colors"
+                  >
+                    <Wrench className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Métiers versus IA</div>
+                      <div className="text-xs text-gray-500">Impact IA</div>
                     </div>
                   </Link>
                 </div>
