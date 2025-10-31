@@ -1,5 +1,47 @@
 # 🎯 HANDOVER - Master Maths LMS Platform
 
+## 🚨 PROBLÈME EN PRODUCTION (31 Octobre 2025 - 19h40)
+
+### ❌ **ÉTAT ACTUEL : SITE EN ERREUR EN PRODUCTION**
+
+**Symptômes :**
+- ✅ Site fonctionne parfaitement en LOCAL (localhost:3000)
+- ❌ Site affiche des erreurs 500 en PRODUCTION (https://master-maths.com)
+- ❌ Erreur console : "Error occurred in the Server Components render"
+
+**Cause probable :**
+- Problème de connexion Prisma à Supabase en production
+- Configuration variables d'environnement Netlify
+- Incompatibilité entre local et production
+
+**Tentatives de correction (sans succès) :**
+1. ❌ Ajout de `directUrl` dans schema.prisma → Retiré (aggravait le problème)
+2. ❌ Ajout variable `DIRECT_URL` sur Netlify → Supprimée
+3. ❌ Ajout variable `SKIP_ENV_VALIDATION` → Supprimée
+4. ❌ Modification du script build dans package.json
+
+**Configuration actuelle :**
+
+**Variables Netlify :**
+- `DATABASE_URL` : `postgres://postgres:Romane181818...@db.zqgjhtafyuivnmgyqcix.supabase.co:6543/postgres`
+- `NEXTAUTH_SECRET` : `2nV1Jo3Sq2Lcp3YLFoLuqxk1rAf7aShtkRdj43i4AAg=`
+- `NEXTAUTH_URL` : `https://master-maths.com`
+- `GEMINI_API_KEY` : `AIzaSyA9nJRKf_BqgmH4JO2fGRju01FFMM8K1XQ`
+
+**Fichiers modifiés :**
+- `prisma/schema.prisma` : Sans `directUrl` (comme à l'origine)
+- `package.json` : Build avec `prisma generate && next build`
+
+**Dernier commit :** `7f1e64b` - Fix: Retirer directUrl temporairement pour debug prod
+
+**⚠️ PROCHAINE ÉTAPE POUR LE PROCHAIN ASSISTANT :**
+1. Consulter les logs Functions Netlify pour voir l'erreur exacte
+2. Vérifier si le problème vient de Prisma qui ne peut pas se connecter à Supabase en production
+3. Potentiellement rollback au commit `2e6750f` qui fonctionnait
+4. Vérifier que toutes les variables d'environnement sont correctes sur Netlify
+
+---
+
 ## 🆕 DERNIÈRES MISES À JOUR (31 Octobre 2025)
 
 ### 🎯 **Navigation Moderne avec Dropdowns & Nouvelles Fonctionnalités**
