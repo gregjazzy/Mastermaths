@@ -1,17 +1,11 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-    }
-
+    // Pas de vérification de session pour l'admin
     const subChapters = await prisma.subChapter.findMany({
       orderBy: [
         { chapterId: 'asc' },
@@ -28,6 +22,7 @@ export async function GET() {
       }
     })
 
+    console.log('[ADMIN SUBCHAPTERS] Récupérés:', subChapters.length)
     return NextResponse.json({ subChapters })
   } catch (error) {
     console.error('[SUBCHAPTERS GET ERROR]', error)
@@ -37,11 +32,6 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-    }
-
     const body = await request.json()
     const { chapterId, title, description, order } = body
 
