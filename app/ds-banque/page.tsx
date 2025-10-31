@@ -136,7 +136,7 @@ export default function DSBanquePage() {
             Banque de DS
           </h1>
           <p className="text-sm md:text-base text-gray-600">
-            DS de mathématiques calibrés sur le niveau des lycées parisiens
+            DS de mathématiques pour tous les niveaux
           </p>
           
           {/* Disclaimer légal */}
