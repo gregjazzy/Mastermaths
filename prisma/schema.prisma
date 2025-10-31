@@ -347,3 +347,24 @@ model DSDownload {
   @@map("ds_downloads")
 }
 
+// ========== LIVES ==========
+
+model Live {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  niveau      String   // Seconde, Première, Terminale
+  theme       String   // Ex: "Suites numériques", "Géométrie"
+  scheduledAt DateTime // Date et heure du live
+  duration    Int      @default(60) // Durée en minutes
+  everwebinarUrl String // Lien EverWebinar
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([niveau])
+  @@index([scheduledAt])
+  @@index([isActive])
+  @@map("lives")
+}
+
