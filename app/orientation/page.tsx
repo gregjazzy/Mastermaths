@@ -215,6 +215,15 @@ export default function OrientationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Bouton retour */}
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span>Retour au dashboard</span>
+        </button>
+        
         {/* En-tête Premium */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl mb-6 shadow-lg">
