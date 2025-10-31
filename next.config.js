@@ -2,7 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['player.vimeo.com', 'vimeo.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'player.vimeo.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'vimeo.com',
+      },
+    ],
   },
 }
 

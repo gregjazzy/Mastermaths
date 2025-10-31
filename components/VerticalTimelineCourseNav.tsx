@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Lock, CheckCircle, Clock, Play, Award, TrendingUp } from 'lucide-react'
+import { Lock, CheckCircle, Clock, Play, Award, TrendingUp, Brain } from 'lucide-react'
+import MindMapButton from './MindMapButton'
+import KnowledgeGraphButton from './KnowledgeGraphButton'
 
 // ==================== INTERFACES ====================
 
@@ -35,6 +37,7 @@ interface Chapter {
   title: string
   order: number
   subChapters: SubChapter[]
+  mentalMapUrl?: string | null
 }
 
 interface CourseData {
@@ -63,6 +66,7 @@ type TimelineItem = {
   estimatedTime?: string
   courseId: string
   exercises?: Exercise[]
+  mentalMapUrl?: string | null
 }
 
 // ==================== HELPER FUNCTIONS ====================
@@ -129,6 +133,7 @@ export default function VerticalTimelineCourseNav({ course, currentLessonId }: V
         isLocked: false,
         isCurrent: false,
         courseId: course.id,
+        mentalMapUrl: chapter.mentalMapUrl,
       })
 
       chapter.subChapters.forEach((subChapter) => {
@@ -186,7 +191,7 @@ export default function VerticalTimelineCourseNav({ course, currentLessonId }: V
         {/* Header du cours */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-master-dark mb-2">{course.title}</h2>
-          <div className="flex items-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
             <div className="flex items-center gap-1">
               <TrendingUp className="w-4 h-4" />
               <span>{calculateGlobalProgress(timelineItems)}% complété</span>
@@ -196,6 +201,9 @@ export default function VerticalTimelineCourseNav({ course, currentLessonId }: V
               <span>{countCompletedItems(timelineItems)} / {countTotalLessons(timelineItems)} leçons</span>
             </div>
           </div>
+          
+          {/* Bouton Knowledge Graph */}
+          <KnowledgeGraphButton courseId={course.id} />
         </div>
 
         {/* Timeline */}
@@ -248,27 +256,40 @@ export default function VerticalTimelineCourseNav({ course, currentLessonId }: V
 
 function ChapterNode({ item }: { item: TimelineItem }) {
   return (
-    <div className="flex items-center gap-4 mb-8 mt-8">
-      {/* Cercle du chapitre */}
-      <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-        item.isCompleted
-          ? 'bg-gradient-to-br from-master-turquoise to-cyan-600 ring-4 ring-master-turquoise/20'
-          : 'bg-gradient-to-br from-master-dark to-gray-700 ring-4 ring-gray-300/20'
-      }`}>
-        {item.isCompleted ? (
-          <CheckCircle className="w-6 h-6 text-white" />
-        ) : (
-          <span className="text-2xl">📚</span>
-        )}
+    <div className="mb-8 mt-8">
+      <div className="flex items-center gap-4">
+        {/* Cercle du chapitre */}
+        <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+          item.isCompleted
+            ? 'bg-gradient-to-br from-master-turquoise to-cyan-600 ring-4 ring-master-turquoise/20'
+            : 'bg-gradient-to-br from-master-dark to-gray-700 ring-4 ring-gray-300/20'
+        }`}>
+          {item.isCompleted ? (
+            <CheckCircle className="w-6 h-6 text-white" />
+          ) : (
+            <span className="text-2xl">📚</span>
+          )}
+        </div>
+        
+        {/* Titre du chapitre */}
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-master-dark">{item.title}</h3>
+          {item.isCompleted && (
+            <p className="text-sm text-master-turquoise font-medium">✓ Chapitre complété</p>
+          )}
+        </div>
       </div>
-      
-      {/* Titre du chapitre */}
-      <div>
-        <h3 className="text-xl font-bold text-master-dark">{item.title}</h3>
-        {item.isCompleted && (
-          <p className="text-sm text-master-turquoise font-medium">✓ Chapitre complété</p>
-        )}
-      </div>
+
+      {/* Bouton Mind Map si disponible */}
+      {item.mentalMapUrl && (
+        <div className="mt-3 ml-16">
+          <MindMapButton 
+            chapterId={item.id}
+            chapterTitle={item.title}
+            hasMap={true}
+          />
+        </div>
+      )}
     </div>
   )
 }

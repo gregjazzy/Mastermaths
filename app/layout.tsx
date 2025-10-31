@@ -1,11 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import SessionProvider from '@/components/SessionProvider'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const poppins = Poppins({ 
+  weight: ['600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Master Maths - École de Mathématiques en Ligne',
@@ -28,7 +39,7 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/images/master-maths-icon.png" type="image/png" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${poppins.variable} ${inter.className}`}>
         <SessionProvider session={session}>
           {children}
         </SessionProvider>

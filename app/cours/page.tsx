@@ -3,8 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Navbar from '@/components/Navbar'
+import CourseCard from '@/components/CourseCard'
 import Link from 'next/link'
-import { BookOpen, Lock, CheckCircle2 } from 'lucide-react'
+import { BookOpen, Lock } from 'lucide-react'
 
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions)
@@ -47,10 +48,23 @@ export default async function CoursesPage() {
               }
             }
           }
-        }
+        },
+        orderBy: { order: 'asc' }
       }
     },
     orderBy: { order: 'asc' }
+  })
+
+  // Récupérer les performances pour calculer la progression
+  const performances = await prisma.performance.findMany({
+    where: { 
+      userId: user.id,
+      lessonId: { not: null }
+    },
+    select: {
+      lessonId: true,
+      isCompleted: true
+    }
   })
 
   // Récupérer tous les cours pour afficher les verrouillés
@@ -60,6 +74,15 @@ export default async function CoursesPage() {
         orderBy: { order: 'asc' }
       })
     : []
+
+  // Palette de couleurs douces
+  const courseColors = [
+    'from-cyan-400 to-teal-500',      // Turquoise (signature)
+    'from-blue-400 to-blue-500',      // Bleu doux
+    'from-indigo-400 to-indigo-500',  // Indigo
+    'from-purple-400 to-purple-500',  // Violet pastel
+    'from-pink-400 to-rose-500',      // Rose doux
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -79,7 +102,7 @@ export default async function CoursesPage() {
 
         {/* Cours accessibles */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {courses.map((course) => {
+          {courses.map((course, index) => {
             const totalLessons = course.chapters.reduce(
               (sum, ch) => sum + ch.subChapters.reduce(
                 (subSum, sc) => subSum + sc.lessons.length, 0
@@ -137,32 +160,39 @@ export default async function CoursesPage() {
 
             console.log(`✅ Will redirect to: /cours/${course.id}/lecon/${firstAccessibleLesson}`)
 
+            // Calculer la progression pour ce cours
+            const courseLessonIds = course.chapters.flatMap(ch => 
+              ch.subChapters.flatMap(sc => 
+                sc.lessons.map(l => l.id)
+              )
+            )
+
+            const completedLessonsCount = performances.filter(p => 
+              courseLessonIds.includes(p.lessonId!) && p.isCompleted
+            ).length
+
+            const progressPercentage = totalLessons > 0 
+              ? Math.round((completedLessonsCount / totalLessons) * 100)
+              : 0
+
+            const isInProgress = completedLessonsCount > 0 && completedLessonsCount < totalLessons
+            const isCompleted = completedLessonsCount === totalLessons && totalLessons > 0
+
+            // Attribuer une couleur basée sur l'index du cours
+            const colorGradient = courseColors[index % courseColors.length]
+
             return (
-              <Link
+              <CourseCard
                 key={course.id}
-                href={`/cours/${course.id}/lecon/${firstAccessibleLesson}`}
-                className="card hover:shadow-xl transition-all group"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <BookOpen className="w-12 h-12 text-master-turquoise group-hover:scale-110 transition-transform" />
-                  {course.isDemoContent && (
-                    <span className="bg-master-turquoise/10 text-master-turquoise text-xs font-semibold px-3 py-1 rounded-full">
-                      DÉMO
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-xl font-bold text-master-dark mb-2 group-hover:text-master-turquoise transition-colors">
-                  {course.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {course.description}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span>{course.chapters.length} chapitres</span>
-                  <span>•</span>
-                  <span>{totalLessons} leçons</span>
-                </div>
-              </Link>
+                course={course}
+                firstLessonId={firstAccessibleLesson}
+                progressPercentage={progressPercentage}
+                completedLessons={completedLessonsCount}
+                totalLessons={totalLessons}
+                colorGradient={colorGradient}
+                isInProgress={isInProgress}
+                isCompleted={isCompleted}
+              />
             )
           })}
         </div>

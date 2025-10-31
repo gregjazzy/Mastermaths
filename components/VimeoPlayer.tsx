@@ -83,8 +83,8 @@ export default function VimeoPlayer({
 
   // SOLUTION SIMPLE : iframe Vimeo native pour TOUS les devices
   return (
-    <div className="relative w-full">
-      <div className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden">
+    <div className="relative w-full" style={{ zIndex: 0 }}>
+      <div className="w-full aspect-video bg-gray-900 dark:bg-gray-950 rounded-lg overflow-hidden" style={{ position: 'relative', zIndex: 0 }}>
         <iframe
           ref={iframeRef}
           src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&autopause=1&playsinline=1&portrait=0&byline=0&title=0&controls=1&quality=auto`}
@@ -98,6 +98,7 @@ export default function VimeoPlayer({
             left: 0,
             width: '100%',
             height: '100%',
+            zIndex: 0,
           }}
           title="Vidéo du cours"
           loading="lazy"

@@ -30,7 +30,7 @@ export async function GET(
       )
     }
 
-    // Récupérer la leçon
+    // Récupérer la leçon avec la performance de l'utilisateur
     const lesson = await prisma.lesson.findUnique({
       where: { id: lessonId },
       include: {
@@ -41,7 +41,15 @@ export async function GET(
             }
           }
         },
-        qcmQuestions: true  // Inclure les questions QCM
+        qcmQuestions: true,  // Inclure les questions QCM
+        performances: {
+          where: { userId: user.id },
+          select: {
+            isCompleted: true,
+            videoProgressPercent: true,
+            quizScorePercent: true
+          }
+        }
       }
     })
 
@@ -52,7 +60,17 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(lesson)
+    // Formater la réponse avec les infos de complétion
+    const performance = lesson.performances[0] || null
+    const response = {
+      ...lesson,
+      isCompleted: performance?.isCompleted || false,
+      progress: performance?.videoProgressPercent || 0,
+      quizScore: performance?.quizScorePercent || null,
+      performances: undefined  // Retirer le tableau performances
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Erreur lors de la récupération de la leçon:', error)
     return NextResponse.json(

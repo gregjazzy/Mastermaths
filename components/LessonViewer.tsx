@@ -21,6 +21,8 @@ interface Lesson {
     }
   }
   qcmQuestions?: any[]
+  isCompleted?: boolean  // Ajouter l'état de complétion
+  progress?: number
 }
 
 interface LessonViewerProps {
@@ -65,6 +67,8 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
     try {
       await fetch(`/api/lessons/${lessonId}/complete`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: null })
       })
 
       // Évaluer les badges après complétion de la leçon
@@ -307,14 +311,23 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
         {/* Bouton de complétion pour les types simples */}
         {!['EXO_ECRIT', 'DS'].includes(lesson.type) && (
           <div className="mt-8 pt-6 border-t">
-            <button
-              onClick={handleMarkComplete}
-              disabled={isCompleting}
-              className="btn-primary w-full flex items-center justify-center gap-2"
-            >
-              <CheckCircle2 className="w-5 h-5" />
-              {isCompleting ? 'Enregistrement...' : 'Marquer comme complété'}
-            </button>
+            {lesson.isCompleted ? (
+              <div className="w-full flex items-center justify-center gap-2 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-500">
+                <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-green-600 dark:text-green-400 font-semibold">
+                  ✓ Leçon complétée
+                </span>
+              </div>
+            ) : (
+              <button
+                onClick={handleMarkComplete}
+                disabled={isCompleting}
+                className="btn-primary w-full flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                {isCompleting ? 'Enregistrement...' : 'Marquer comme complété'}
+              </button>
+            )}
           </div>
         )}
       </div>

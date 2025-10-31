@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import LeaderboardWidget from '@/components/LeaderboardWidget'
+import Navbar from '@/components/Navbar'
 
 type LeaderboardType = 'historical' | 'monthly' | 'weekly'
 
@@ -9,7 +10,9 @@ export default function HallOfFamePage() {
   const [activeTab, setActiveTab] = useState<LeaderboardType>('historical')
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-master-dark via-master-blue to-master-turquoise py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-500">
+      <Navbar />
+      <div className="py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -158,6 +161,7 @@ export default function HallOfFamePage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

@@ -35,6 +35,7 @@ model User {
   accounts              Account[]
   connectionLogs        ConnectionLog[]
   masteryBadges         MasteryBadge[]
+  mentalMapProgress     MentalMapProgress[]
   performances          Performance[]
   sessions              Session[]
   user_badges           user_badges[]
@@ -112,8 +113,11 @@ model Chapter {
   createdAt                   DateTime     @default(now())
   updatedAt                   DateTime     @updatedAt
   course                      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  mentalMapProgress           MentalMapProgress[]
   subChapters                 SubChapter[]
 
+  @@index([courseId])
+  @@index([order])
   @@map("chapters")
 }
 
@@ -129,6 +133,8 @@ model SubChapter {
   lessons       Lesson[]
   chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
+  @@index([chapterId])
+  @@index([order])
   @@map("subchapters")
 }
 
@@ -149,6 +155,8 @@ model Lesson {
   performances      Performance[]
   qcmQuestions      QcmQuestion[] @relation("LessonQcm")
 
+  @@index([subChapterId])
+  @@index([order])
   @@map("lessons")
 }
 
@@ -209,7 +217,28 @@ model Performance {
 
   @@unique([userId, lessonId])
   @@index([exerciseId])
+  @@index([userId])
+  @@index([lessonId])
+  @@index([userId, isCompleted])
   @@map("performances")
+}
+
+model MentalMapProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  chapterId  String
+  conceptKey String
+  isChecked  Boolean  @default(false)
+  checkedAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter    Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId, conceptKey])
+  @@index([userId])
+  @@index([chapterId])
+  @@map("mental_map_progress")
 }
 
 model Badge {

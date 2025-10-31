@@ -134,6 +134,7 @@ export default async function LessonPage({
       id: chapter.id,
       title: chapter.title,
       order: chapter.order,
+      mentalMapUrl: chapter.mentalMapUrl,
       subChapters: chapter.subChapters.map(subChapter => ({
         id: subChapter.id,
         title: subChapter.title,

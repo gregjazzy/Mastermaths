@@ -1,0 +1,42 @@
+{
+  "chapterId": "CHAPTER_ID_HERE",
+  "imageUrl": "/mindmaps/second-degre.png",
+  "concepts": [
+    {
+      "id": "discriminant",
+      "label": "Discriminant Δ",
+      "x": 300,
+      "y": 150,
+      "radius": 60
+    },
+    {
+      "id": "forme_canonique",
+      "label": "Forme canonique",
+      "x": 500,
+      "y": 200,
+      "radius": 65
+    },
+    {
+      "id": "racines",
+      "label": "Calcul des racines",
+      "x": 300,
+      "y": 350,
+      "radius": 70
+    },
+    {
+      "id": "signe_trinome",
+      "label": "Signe du trinôme",
+      "x": 500,
+      "y": 350,
+      "radius": 65
+    },
+    {
+      "id": "variations",
+      "label": "Tableau de variations",
+      "x": 700,
+      "y": 200,
+      "radius": 75
+    }
+  ]
+}
+
