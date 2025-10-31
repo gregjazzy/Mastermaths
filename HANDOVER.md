@@ -1,5 +1,133 @@
 # 🎯 HANDOVER - Master Maths LMS Platform
 
+## 🆕 DERNIÈRES MISES À JOUR (31 Octobre 2025)
+
+### 🎯 **Navigation Moderne avec Dropdowns & Nouvelles Fonctionnalités**
+
+Une refonte complète de la navigation a été effectuée avec l'ajout de 4 nouvelles pages fonctionnelles.
+
+#### **Navbar avec Dropdowns**
+- ✅ **Menu "Apprendre"** : Cours vidéo, Banque DS (Top 5 lycées Paris), Lives hebdo
+- ✅ **Menu "Outils"** : Correction DS, Bilan d'orientation, Étude persona, Métiers versus IA
+- ✅ **Menu mobile** : Organisé par sections (Apprendre, Outils, Progression)
+- ✅ **Design** : Dropdowns élégants avec descriptions et icônes colorées
+
+**Fichier modifié :**
+- `components/Navbar.tsx` : Ajout dropdowns desktop + menu mobile organisé
+
+#### **Page Banque DS** (`/ds-banque`)
+- ✅ **Filtres** : Classe (Seconde/Première/Terminale) + Lycée (Tous/Top 5 Paris/Autres)
+- ✅ **Fonctionnalités** : Download tracking, statistiques, bouton retour
+- ✅ **Design** : Cards avec badges colorés, infos détaillées (lycée, classe, chapitre, durée)
+- ✅ **Actions** : Télécharger sujet + corrigé (PDF)
+
+**Fichiers créés :**
+- `app/ds-banque/page.tsx` : Page principale avec filtres
+- `app/api/ds-banque/route.ts` : GET liste des DS
+- `app/api/ds-banque/download/route.ts` : POST tracking téléchargements
+
+**Migration Prisma :**
+```prisma
+model DSBanque {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  lycee       String
+  niveau      String
+  chapter     String
+  difficulty  Int      @default(1)
+  duration    Int?
+  pdfUrl      String?
+  correctionPdfUrl String?
+  isPublic    Boolean  @default(true)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  downloads   DSDownload[]
+
+  @@index([niveau])
+  @@index([lycee])
+  @@index([chapter])
+  @@map("ds_banque")
+}
+
+model DSDownload {
+  id        String   @id @default(cuid())
+  userId    String
+  dsId      String
+  ds        DSBanque @relation(fields: [dsId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([dsId])
+  @@map("ds_downloads")
+}
+```
+
+#### **Page Lives Hebdomadaires** (`/live`)
+- ✅ **Organisation** : Par classe (Seconde, Première, Terminale)
+- ✅ **Affichage** : Date/heure formatée, durée, thème, statut (À venir/Terminé)
+- ✅ **Intégration** : Liens directs vers EverWebinar
+- ✅ **Design** : Cards colorées par niveau avec badges animés
+
+**Fichiers créés :**
+- `app/live/page.tsx` : Page principale avec planning
+- `app/api/lives/route.ts` : GET liste des lives actifs
+
+**Migration Prisma :**
+```prisma
+model Live {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  niveau      String
+  theme       String
+  scheduledAt DateTime
+  duration    Int      @default(60)
+  everwebinarUrl String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([niveau])
+  @@index([scheduledAt])
+  @@index([isActive])
+  @@map("lives")
+}
+```
+
+#### **Système de Recommandations Personnalisées**
+- ✅ **Widget Dashboard** : Affiche la prochaine leçon logique + leçons à réviser (score < 80%)
+- ✅ **Logique intelligente** : 
+  - Première fois → première leçon
+  - Progression → leçon suivante dans l'ordre (sous-chapitre → chapitre → cours)
+  - Révision → leçons avec score faible
+- ✅ **Design** : Cards gradient (indigo pour progression, orange pour révisions)
+
+**Fichiers créés :**
+- `lib/recommendation-service.ts` : Service de recommandations
+- `app/api/recommendations/route.ts` : API endpoint
+- `components/RecommendationsWidget.tsx` : Widget visuel
+- Intégré dans `components/DashboardStudent.tsx`
+
+#### **Microinteractions & Animations**
+- ✅ **Toast notifications** : `react-hot-toast` (login, QCM, leçons)
+- ✅ **Count-up animations** : `react-countup` (PMU dans dashboard)
+- ✅ **Progress bar** : `nprogress` (navigation entre pages)
+- ✅ **Confetti & célébrations** : Déjà implémenté pour badges
+
+**Packages ajoutés :**
+```json
+{
+  "react-hot-toast": "^2.4.1",
+  "react-countup": "^6.5.0",
+  "nprogress": "^0.2.0",
+  "@types/nprogress": "^0.2.3"
+}
+```
+
+---
+
 ## ✅ CORRECTIONS RÉCENTES
 
 **✅ RÉSOLU : KNOWLEDGE GRAPH - ESPACEMENT DES NŒUDS (31 Octobre 2025)**

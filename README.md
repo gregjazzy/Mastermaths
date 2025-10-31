@@ -11,15 +11,20 @@ Le projet est **presque entièrement terminé** avec toutes les fonctionnalités
 **🌐 URL de production** : https://mastermathsfr.netlify.app
 
 **🆕 Dernières fonctionnalités (31 Octobre 2025)** :
-- ✅ **Design professionnel** : Refonte complète avec typographie premium (Inter/Poppins) et palette moderne
-- ✅ **Mind Map interactive** : Cartes mentales avec concepts checkables pour révisions
-- ✅ **Knowledge Graph** : Visualisation interactive de la structure du cours avec progression
-- ✅ **Navigation optimisée** : Redirection vers `/cours`, Timeline verticale, Course Cards enrichies
-- ✅ **Animations** : Fade-in, slide-up, scale-in, shimmer, float
-- ✅ **Optimisation performance** : Index SQL + Next.js moderne (80% plus rapide en production) 🚀
+- ✅ **Navbar moderne** : Dropdowns "Apprendre" & "Outils" avec menu mobile organisé
+- ✅ **Banque DS** : DS de Top 5 lycées Paris avec filtres (classe, lycée) et download tracking
+- ✅ **Lives hebdo** : Planning par classe avec liens EverWebinar et statuts
+- ✅ **Recommandations** : Widget intelligent (prochaine leçon + révisions suggérées)
+- ✅ **Microinteractions** : Toasts, count-up animations, progress bar
+- ✅ **Design professionnel** : Refonte complète avec typographie premium (Inter/Poppins)
+- ✅ **Mind Map** : Cartes mentales interactives avec concepts checkables
+- ✅ **Knowledge Graph** : Visualisation de la structure du cours
+- ✅ **Optimisation performance** : Index SQL + Next.js moderne (80% plus rapide) 🚀
 
-**📝 Handover complet** : Voir `HANDOVER.md` pour tous les détails  
-**⚡ Performance** : Voir `OPTIMISATION_PERFORMANCE_31OCT2025.md` pour les optimisations
+**📝 Documentation** :
+- **NOUVELLES_FONCTIONNALITES_31OCT2025.md** ⭐ → Guide des dernières fonctionnalités
+- **HANDOVER.md** → Vue d'ensemble et guide de transition  
+- **OPTIMISATION_PERFORMANCE_31OCT2025.md** → Optimisations performance
 
 ---
 
