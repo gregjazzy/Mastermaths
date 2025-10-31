@@ -20,7 +20,9 @@ export async function PUT(
           animation: {
             type: data.animationType || 'none',
             color: data.animationColor || 'gold',
-            glowIntensity: data.glowIntensity || 'medium'
+            glowIntensity: data.glowIntensity || 'medium',
+            useCustomCSS: data.useCustomCSS || false,
+            customCSS: data.customCSS || null
           }
         }
       }

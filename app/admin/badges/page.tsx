@@ -17,6 +17,8 @@ interface Badge {
   animationType?: string
   animationColor?: string
   glowIntensity?: string
+  customCSS?: string
+  useCustomCSS?: boolean
 }
 
 const ANIMATION_PRESETS = [
@@ -53,6 +55,7 @@ export default function BadgesAdminPage() {
   const [loading, setLoading] = useState(true)
   const [editingBadge, setEditingBadge] = useState<Badge | null>(null)
   const [previewAnimation, setPreviewAnimation] = useState(false)
+  const [cssContent, setCssContent] = useState('')
 
   useEffect(() => {
     fetchBadges()
@@ -86,6 +89,8 @@ export default function BadgesAdminPage() {
           animationType: editingBadge.animationType,
           animationColor: editingBadge.animationColor,
           glowIntensity: editingBadge.glowIntensity,
+          customCSS: editingBadge.customCSS,
+          useCustomCSS: editingBadge.useCustomCSS,
         })
       })
 
@@ -102,8 +107,33 @@ export default function BadgesAdminPage() {
     }
   }
 
-  const getAnimationClass = (type?: string) => {
-    switch (type) {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.name.endsWith('.css')) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const content = event.target?.result as string
+        setCssContent(content)
+        if (editingBadge) {
+          setEditingBadge({
+            ...editingBadge,
+            customCSS: content,
+            useCustomCSS: true
+          })
+        }
+        toast.success('CSS chargé !')
+      }
+      reader.readAsText(file)
+    } else {
+      toast.error('Veuillez sélectionner un fichier .css')
+    }
+  }
+
+  const getAnimationClass = (badge: Badge) => {
+    if (badge.useCustomCSS) {
+      return 'badge-custom-animation'
+    }
+    switch (badge.animationType) {
       case 'pulse': return 'animate-pulse'
       case 'bounce': return 'animate-bounce'
       case 'rotate': return 'animate-spin'
@@ -160,15 +190,26 @@ export default function BadgesAdminPage() {
                   <div className="flex items-center justify-center mb-4 py-6">
                     <div 
                       className={`
+                        badge-preview
                         w-24 h-24 rounded-full flex items-center justify-center text-4xl
-                        bg-gradient-to-br ${getColorClass(badge.animationColor)}
-                        ${getAnimationClass(badge.animationType)}
-                        ${getGlowClass(badge.glowIntensity)}
+                        ${badge.useCustomCSS ? 'badge-custom-animation' : `
+                          bg-gradient-to-br ${getColorClass(badge.animationColor)}
+                          ${getAnimationClass(badge)}
+                          ${getGlowClass(badge.glowIntensity)}
+                        `}
                         transition-all
                       `}
+                      data-badge-id={badge.id}
                     >
                       {badge.icon}
                     </div>
+                    {badge.useCustomCSS && badge.customCSS && (
+                      <style>{`
+                        [data-badge-id="${badge.id}"].badge-custom-animation {
+                          ${badge.customCSS}
+                        }
+                      `}</style>
+                    )}
                   </div>
 
                   {/* Infos */}
@@ -177,18 +218,27 @@ export default function BadgesAdminPage() {
                   
                   {/* Config actuelle */}
                   <div className="text-xs text-gray-500 mb-4 space-y-1">
-                    <div>
-                      <span className="font-semibold">Animation:</span>{' '}
-                      {ANIMATION_PRESETS.find(a => a.value === badge.animationType)?.label || 'Aucune'}
-                    </div>
-                    <div>
-                      <span className="font-semibold">Couleur:</span>{' '}
-                      {COLOR_PRESETS.find(c => c.value === badge.animationColor)?.label || 'Gris'}
-                    </div>
-                    <div>
-                      <span className="font-semibold">Lueur:</span>{' '}
-                      {GLOW_INTENSITY.find(g => g.value === badge.glowIntensity)?.label || 'Moyen'}
-                    </div>
+                    {badge.useCustomCSS ? (
+                      <div className="flex items-center gap-2 text-purple-600">
+                        <Sparkles className="w-4 h-4" />
+                        <span className="font-semibold">CSS Personnalisé</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <span className="font-semibold">Animation:</span>{' '}
+                          {ANIMATION_PRESETS.find(a => a.value === badge.animationType)?.label || 'Aucune'}
+                        </div>
+                        <div>
+                          <span className="font-semibold">Couleur:</span>{' '}
+                          {COLOR_PRESETS.find(c => c.value === badge.animationColor)?.label || 'Gris'}
+                        </div>
+                        <div>
+                          <span className="font-semibold">Lueur:</span>{' '}
+                          {GLOW_INTENSITY.find(g => g.value === badge.glowIntensity)?.label || 'Moyen'}
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   {/* Bouton éditer */}
@@ -232,96 +282,190 @@ export default function BadgesAdminPage() {
                     <p className="text-sm text-gray-600 mb-4 font-semibold">Prévisualisation en direct</p>
                     <div 
                       className={`
+                        badge-preview-modal
                         w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl
-                        bg-gradient-to-br ${getColorClass(editingBadge.animationColor)}
-                        ${getAnimationClass(editingBadge.animationType)}
-                        ${getGlowClass(editingBadge.glowIntensity)}
+                        ${editingBadge.useCustomCSS ? 'badge-custom-animation' : `
+                          bg-gradient-to-br ${getColorClass(editingBadge.animationColor)}
+                          ${getAnimationClass(editingBadge)}
+                          ${getGlowClass(editingBadge.glowIntensity)}
+                        `}
                         transition-all
                       `}
                     >
                       {editingBadge.icon}
                     </div>
+                    {editingBadge.useCustomCSS && editingBadge.customCSS && (
+                      <style>{`
+                        .badge-preview-modal.badge-custom-animation {
+                          ${editingBadge.customCSS}
+                        }
+                      `}</style>
+                    )}
                   </div>
 
-                  {/* Type d'animation */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Type d'animation
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {ANIMATION_PRESETS.map((preset) => (
-                        <button
-                          key={preset.value}
-                          type="button"
-                          onClick={() => setEditingBadge({
-                            ...editingBadge,
-                            animationType: preset.value
-                          })}
-                          className={`p-3 rounded-lg border-2 text-left transition-all ${
-                            editingBadge.animationType === preset.value
-                              ? 'border-purple-600 bg-purple-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="font-semibold text-sm">{preset.label}</div>
-                          <div className="text-xs text-gray-500">{preset.description}</div>
-                        </button>
-                      ))}
-                    </div>
+                  {/* Toggle mode */}
+                  <div className="flex items-center justify-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setEditingBadge({
+                        ...editingBadge,
+                        useCustomCSS: false
+                      })}
+                      className={`px-4 py-2 rounded-lg transition-all ${
+                        !editingBadge.useCustomCSS
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Presets
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingBadge({
+                        ...editingBadge,
+                        useCustomCSS: true
+                      })}
+                      className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                        editingBadge.useCustomCSS
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      CSS Personnalisé
+                    </button>
                   </div>
 
-                  {/* Couleur */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Couleur du dégradé
-                    </label>
-                    <div className="grid grid-cols-4 gap-3">
-                      {COLOR_PRESETS.map((color) => (
-                        <button
-                          key={color.value}
-                          type="button"
-                          onClick={() => setEditingBadge({
-                            ...editingBadge,
-                            animationColor: color.value
-                          })}
-                          className={`p-3 rounded-lg border-2 transition-all ${
-                            editingBadge.animationColor === color.value
-                              ? 'border-purple-600 scale-110'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${color.class} mb-2`}></div>
-                          <div className="text-xs font-medium text-center">{color.label}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Mode CSS Custom */}
+                  {editingBadge.useCustomCSS ? (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Fichier CSS personnalisé
+                      </label>
+                      <div className="space-y-3">
+                        {/* Upload */}
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-500 transition-colors">
+                          <input
+                            type="file"
+                            accept=".css"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                            id="css-upload"
+                          />
+                          <label htmlFor="css-upload" className="cursor-pointer">
+                            <div className="text-purple-600 mb-2">
+                              <Plus className="w-8 h-8 mx-auto" />
+                            </div>
+                            <p className="text-sm font-medium text-gray-700">
+                              Cliquez pour uploader un fichier .css
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Le CSS sera appliqué au badge
+                            </p>
+                          </label>
+                        </div>
 
-                  {/* Intensité lueur */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Intensité de la lueur
-                    </label>
-                    <div className="grid grid-cols-4 gap-3">
-                      {GLOW_INTENSITY.map((glow) => (
-                        <button
-                          key={glow.value}
-                          type="button"
-                          onClick={() => setEditingBadge({
-                            ...editingBadge,
-                            glowIntensity: glow.value
-                          })}
-                          className={`p-4 rounded-lg border-2 transition-all ${
-                            editingBadge.glowIntensity === glow.value
-                              ? 'border-purple-600 bg-purple-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="text-sm font-semibold text-center">{glow.label}</div>
-                        </button>
-                      ))}
+                        {/* Aperçu du CSS */}
+                        {editingBadge.customCSS && (
+                          <div className="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                            <pre>{editingBadge.customCSS}</pre>
+                          </div>
+                        )}
+
+                        {/* Exemple */}
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <p className="text-xs font-semibold text-blue-900 mb-2">💡 Exemple de CSS :</p>
+                          <code className="text-xs text-blue-800 block">
+                            background: linear-gradient(45deg, #ff00ff, #00ffff);<br/>
+                            animation: rotate 3s infinite linear;<br/>
+                            box-shadow: 0 0 30px rgba(255,0,255,0.8);
+                          </code>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <>
+                      {/* Type d'animation */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Type d'animation
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {ANIMATION_PRESETS.map((preset) => (
+                            <button
+                              key={preset.value}
+                              type="button"
+                              onClick={() => setEditingBadge({
+                                ...editingBadge,
+                                animationType: preset.value
+                              })}
+                              className={`p-3 rounded-lg border-2 text-left transition-all ${
+                                editingBadge.animationType === preset.value
+                                  ? 'border-purple-600 bg-purple-50'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <div className="font-semibold text-sm">{preset.label}</div>
+                              <div className="text-xs text-gray-500">{preset.description}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Couleur */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Couleur du dégradé
+                        </label>
+                        <div className="grid grid-cols-4 gap-3">
+                          {COLOR_PRESETS.map((color) => (
+                            <button
+                              key={color.value}
+                              type="button"
+                              onClick={() => setEditingBadge({
+                                ...editingBadge,
+                                animationColor: color.value
+                              })}
+                              className={`p-3 rounded-lg border-2 transition-all ${
+                                editingBadge.animationColor === color.value
+                                  ? 'border-purple-600 scale-110'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${color.class} mb-2`}></div>
+                              <div className="text-xs font-medium text-center">{color.label}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Intensité lueur */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Intensité de la lueur
+                        </label>
+                        <div className="grid grid-cols-4 gap-3">
+                          {GLOW_INTENSITY.map((glow) => (
+                            <button
+                              key={glow.value}
+                              type="button"
+                              onClick={() => setEditingBadge({
+                                ...editingBadge,
+                                glowIntensity: glow.value
+                              })}
+                              className={`p-4 rounded-lg border-2 transition-all ${
+                                editingBadge.glowIntensity === glow.value
+                                  ? 'border-purple-600 bg-purple-50'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <div className="text-sm font-semibold text-center">{glow.label}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Footer */}
