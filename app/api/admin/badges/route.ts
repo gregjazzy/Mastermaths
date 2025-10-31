@@ -32,3 +32,36 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// POST : Créer un badge
+export async function POST(request: NextRequest) {
+  try {
+    const data = await request.json()
+    
+    const badge = await prisma.badge.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        icon: data.icon,
+        rarity: data.rarity || 'COMMON',
+        masteryPointsRequired: data.masteryPointsRequired || 0,
+        masteryPoints: data.masteryPoints || 10,
+        order: data.order || 0,
+        criteria: {
+          animation: {
+            type: data.animationType || 'none',
+            color: data.animationColor || 'gold',
+            glowIntensity: data.glowIntensity || 'medium',
+            useCustomCSS: data.useCustomCSS || false,
+            customCSS: data.customCSS || null
+          }
+        }
+      }
+    })
+    
+    return NextResponse.json({ badge })
+  } catch (error) {
+    console.error('Erreur POST badge:', error)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  }
+}
+

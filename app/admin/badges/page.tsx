@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Edit, Save, X, Award, Sparkles } from 'lucide-react'
+import { ArrowLeft, Plus, Edit, Save, X, Award, Sparkles, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Badge {
@@ -54,6 +54,7 @@ export default function BadgesAdminPage() {
   const [badges, setBadges] = useState<Badge[]>([])
   const [loading, setLoading] = useState(true)
   const [editingBadge, setEditingBadge] = useState<Badge | null>(null)
+  const [isCreating, setIsCreating] = useState(false)
   const [previewAnimation, setPreviewAnimation] = useState(false)
   const [cssContent, setCssContent] = useState('')
 
@@ -82,10 +83,21 @@ export default function BadgesAdminPage() {
     if (!editingBadge) return
 
     try {
-      const response = await fetch(`/api/admin/badges/${editingBadge.id}`, {
-        method: 'PUT',
+      const url = isCreating 
+        ? '/api/admin/badges'
+        : `/api/admin/badges/${editingBadge.id}`
+      
+      const response = await fetch(url, {
+        method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: editingBadge.name,
+          description: editingBadge.description,
+          icon: editingBadge.icon,
+          rarity: editingBadge.rarity,
+          masteryPointsRequired: editingBadge.masteryPointsRequired,
+          masteryPoints: editingBadge.masteryPoints,
+          order: editingBadge.order,
           animationType: editingBadge.animationType,
           animationColor: editingBadge.animationColor,
           glowIntensity: editingBadge.glowIntensity,
@@ -97,7 +109,8 @@ export default function BadgesAdminPage() {
       if (response.ok) {
         await fetchBadges()
         setEditingBadge(null)
-        toast.success('Badge mis à jour !')
+        setIsCreating(false)
+        toast.success(isCreating ? 'Badge créé !' : 'Badge mis à jour !')
       } else {
         toast.error('Erreur lors de la sauvegarde')
       }
@@ -105,6 +118,45 @@ export default function BadgesAdminPage() {
       console.error('Erreur:', error)
       toast.error('Erreur lors de la sauvegarde')
     }
+  }
+
+  const handleDelete = async (badgeId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce badge ?')) return
+
+    try {
+      const response = await fetch(`/api/admin/badges/${badgeId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        await fetchBadges()
+        toast.success('Badge supprimé !')
+      } else {
+        toast.error('Erreur lors de la suppression')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      toast.error('Erreur lors de la suppression')
+    }
+  }
+
+  const handleCreateNew = () => {
+    setIsCreating(true)
+    setEditingBadge({
+      id: '',
+      name: '',
+      description: '',
+      icon: '🏆',
+      rarity: 'COMMON',
+      masteryPointsRequired: 0,
+      masteryPoints: 10,
+      order: badges.length + 1,
+      animationType: 'none',
+      animationColor: 'gold',
+      glowIntensity: 'medium',
+      useCustomCSS: false,
+      customCSS: null
+    })
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,9 +223,16 @@ export default function BadgesAdminPage() {
               Gestion des Badges
             </h1>
             <p className="text-gray-600 mt-2">
-              Personnalisez les animations et couleurs des badges
+              Créez et personnalisez vos badges avec animations CSS
             </p>
           </div>
+          <button
+            onClick={handleCreateNew}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            Créer un badge
+          </button>
         </div>
 
         {loading ? (
@@ -241,14 +300,25 @@ export default function BadgesAdminPage() {
                     )}
                   </div>
 
-                  {/* Bouton éditer */}
-                  <button
-                    onClick={() => setEditingBadge(badge)}
-                    className="w-full btn-primary flex items-center justify-center gap-2"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Personnaliser
-                  </button>
+                  {/* Boutons actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setIsCreating(false)
+                        setEditingBadge(badge)
+                      }}
+                      className="flex-1 btn-primary flex items-center justify-center gap-2"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Modifier
+                    </button>
+                    <button
+                      onClick={() => handleDelete(badge.id)}
+                      className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -263,12 +333,15 @@ export default function BadgesAdminPage() {
                 {/* Header */}
                 <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-master-dark flex items-center gap-3">
-                    <Sparkles className="w-6 h-6 text-yellow-500" />
-                    Personnaliser : {editingBadge.name}
+                    {isCreating ? <Plus className="w-6 h-6 text-green-500" /> : <Sparkles className="w-6 h-6 text-yellow-500" />}
+                    {isCreating ? 'Créer un badge' : `Modifier : ${editingBadge.name || 'Badge'}`}
                   </h2>
                   <button
                     type="button"
-                    onClick={() => setEditingBadge(null)}
+                    onClick={() => {
+                      setEditingBadge(null)
+                      setIsCreating(false)
+                    }}
                     className="text-gray-400 hover:text-gray-600"
                   >
                     <X className="w-6 h-6" />
@@ -277,30 +350,188 @@ export default function BadgesAdminPage() {
 
                 {/* Content */}
                 <div className="p-6 space-y-6">
-                  {/* Preview en direct */}
-                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-8 text-center">
-                    <p className="text-sm text-gray-600 mb-4 font-semibold">Prévisualisation en direct</p>
-                    <div 
-                      className={`
-                        badge-preview-modal
-                        w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl
-                        ${editingBadge.useCustomCSS ? 'badge-custom-animation' : `
-                          bg-gradient-to-br ${getColorClass(editingBadge.animationColor)}
-                          ${getAnimationClass(editingBadge)}
-                          ${getGlowClass(editingBadge.glowIntensity)}
-                        `}
-                        transition-all
-                      `}
-                    >
-                      {editingBadge.icon}
+                  {/* Informations de base */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg text-gray-900">📝 Informations</h3>
+                    
+                    {/* Nom */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du badge *
+                      </label>
+                      <input
+                        type="text"
+                        value={editingBadge.name}
+                        onChange={(e) => setEditingBadge({...editingBadge, name: e.target.value})}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="Ex: Première Semaine"
+                        required
+                      />
                     </div>
-                    {editingBadge.useCustomCSS && editingBadge.customCSS && (
-                      <style>{`
-                        .badge-preview-modal.badge-custom-animation {
-                          ${editingBadge.customCSS}
-                        }
-                      `}</style>
-                    )}
+
+                    {/* Description */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Description *
+                      </label>
+                      <textarea
+                        value={editingBadge.description}
+                        onChange={(e) => setEditingBadge({...editingBadge, description: e.target.value})}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="Ex: Connectez-vous pendant 7 jours consécutifs"
+                        rows={2}
+                        required
+                      />
+                    </div>
+
+                    {/* Icône */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Emoji / Icône *
+                      </label>
+                      <input
+                        type="text"
+                        value={editingBadge.icon}
+                        onChange={(e) => setEditingBadge({...editingBadge, icon: e.target.value})}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-4xl text-center"
+                        placeholder="🏆"
+                        required
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Collez un emoji ou tapez un caractère
+                      </p>
+                    </div>
+
+                    {/* Rareté et Points */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Rareté
+                        </label>
+                        <select
+                          value={editingBadge.rarity}
+                          onChange={(e) => setEditingBadge({...editingBadge, rarity: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                        >
+                          <option value="COMMON">Commun</option>
+                          <option value="RARE">Rare</option>
+                          <option value="EPIC">Épique</option>
+                          <option value="LEGENDARY">Légendaire</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Points gagnés
+                        </label>
+                        <input
+                          type="number"
+                          value={editingBadge.masteryPoints}
+                          onChange={(e) => setEditingBadge({...editingBadge, masteryPoints: parseInt(e.target.value)})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Critères d'obtention */}
+                  <div className="border-t pt-6 space-y-4">
+                    <h3 className="font-semibold text-lg text-gray-900">🎯 Critères d'obtention</h3>
+                    <p className="text-sm text-gray-600">
+                      Définissez les conditions pour débloquer ce badge
+                    </p>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Leçons complétées */}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Leçons complétées
+                          </label>
+                          <input
+                            type="number"
+                            value={editingBadge.masteryPointsRequired || 0}
+                            onChange={(e) => setEditingBadge({...editingBadge, masteryPointsRequired: parseInt(e.target.value) || 0})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            placeholder="0 = aucun"
+                            min="0"
+                          />
+                        </div>
+
+                        {/* Jours de connexion */}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Jours de connexion
+                          </label>
+                          <input
+                            type="number"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            placeholder="0 = aucun"
+                            min="0"
+                          />
+                        </div>
+
+                        {/* Taux réussite QCM */}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Taux réussite QCM (%)
+                          </label>
+                          <input
+                            type="number"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            placeholder="0 = aucun"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+
+                        {/* QCM parfaits */}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            QCM parfaits (100%)
+                          </label>
+                          <input
+                            type="number"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                            placeholder="0 = aucun"
+                            min="0"
+                          />
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-gray-500 italic">
+                        💡 Laissez à 0 ou vide pour ignorer un critère
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Preview en direct */}
+                  <div className="border-t pt-6">
+                    <h3 className="font-semibold text-lg text-gray-900 mb-4">✨ Animation</h3>
+                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-8 text-center">
+                      <p className="text-sm text-gray-600 mb-4 font-semibold">Prévisualisation</p>
+                      <div 
+                        className={`
+                          badge-preview-modal
+                          w-32 h-32 mx-auto rounded-full flex items-center justify-center text-5xl
+                          ${editingBadge.useCustomCSS ? 'badge-custom-animation' : `
+                            bg-gradient-to-br ${getColorClass(editingBadge.animationColor)}
+                            ${getAnimationClass(editingBadge)}
+                            ${getGlowClass(editingBadge.glowIntensity)}
+                          `}
+                          transition-all
+                        `}
+                      >
+                        {editingBadge.icon}
+                      </div>
+                      {editingBadge.useCustomCSS && editingBadge.customCSS && (
+                        <style>{`
+                          .badge-preview-modal.badge-custom-animation {
+                            ${editingBadge.customCSS}
+                          }
+                        `}</style>
+                      )}
+                    </div>
                   </div>
 
                   {/* Toggle mode */}
