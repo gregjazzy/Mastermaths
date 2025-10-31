@@ -426,26 +426,27 @@ export default function LessonsAdminPage() {
                   </div>
 
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => router.push(`/admin/qcm/${lesson.id}`)}
-                      className="p-2 hover:bg-green-100 rounded-lg transition-colors"
-                      title="Gérer le QCM"
+                    <Link
+                      href={`/admin/qcm/${lesson.id}`}
+                      className="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center gap-2"
+                      title="Gérer les QCM"
                     >
-                      <CheckCircle2 className="w-5 h-5 text-green-600" />
-                    </button>
+                      <FileQuestion className="w-4 h-4" />
+                      QCM
+                    </Link>
                     <button
                       onClick={() => handleEdit(lesson)}
-                      className="p-2 hover:bg-blue-100 rounded-lg transition-colors"
+                      className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                       title="Modifier"
                     >
-                      <Edit className="w-5 h-5 text-blue-600" />
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(lesson.id)}
-                      className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                      className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                       title="Supprimer"
                     >
-                      <Trash2 className="w-5 h-5 text-red-600" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
