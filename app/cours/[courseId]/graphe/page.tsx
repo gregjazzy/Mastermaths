@@ -65,10 +65,11 @@ export default function KnowledgeGraphPage() {
     const nodes: GraphNode[] = []
     const links: GraphLink[] = []
 
-    // Espacements manuels pour les positions X
-    const chapterSpacing = 180
-    const subChapterSpacing = 120
-    const lessonSpacing = 80
+    // Espacements adaptatifs selon la taille d'écran
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const chapterSpacing = isMobile ? 100 : 180
+    const subChapterSpacing = isMobile ? 70 : 120
+    const lessonSpacing = isMobile ? 50 : 80
     let chapterX = -((courseData.chapters.length - 1) * chapterSpacing) / 2
 
     // Nœud du cours (centre)
@@ -78,7 +79,7 @@ export default function KnowledgeGraphPage() {
       type: 'course',
       isCompleted: false,
       color: '#0891b2',
-      size: 20,
+      size: isMobile ? 15 : 20,
       courseId: courseData.id,
       fx: 0 as any // Force au centre
     } as any)
@@ -95,7 +96,7 @@ export default function KnowledgeGraphPage() {
         type: 'chapter',
         isCompleted: chapterCompleted,
         color: chapterCompleted ? '#22c55e' : '#6366f1',
-        size: 15,
+        size: isMobile ? 12 : 15,
         courseId: courseData.id,
         fx: chapterX as any
       } as any)
@@ -198,18 +199,18 @@ export default function KnowledgeGraphPage() {
   return (
     <div className={`${isFullscreen ? 'fixed inset-0' : 'min-h-screen'} bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col`}>
       {/* Header */}
-      <div className="bg-black/30 backdrop-blur-sm p-4 flex items-center justify-between border-b border-white/10">
-        <div className="flex items-center gap-4">
+      <div className="bg-black/30 backdrop-blur-sm p-3 md:p-4 flex items-center justify-between border-b border-white/10">
+        <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={handleBack}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             title="Retour"
           >
-            <ArrowLeft className="w-6 h-6 text-white" />
+            <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">Graphe de Connaissances</h1>
-            <p className="text-sm text-gray-300">
+            <h1 className="text-lg md:text-2xl font-bold text-white mb-1">Graphe de Connaissances</h1>
+            <p className="text-xs md:text-sm text-gray-300 hidden sm:block">
               <span className="inline-block w-3 h-3 rounded-full bg-green-500 mr-2"></span>
               Complété
               <span className="inline-block w-3 h-3 rounded-full bg-amber-500 ml-4 mr-2"></span>
@@ -222,7 +223,7 @@ export default function KnowledgeGraphPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors hidden md:block"
             title={isFullscreen ? "Réduire" : "Plein écran"}
           >
             {isFullscreen ? (
@@ -236,7 +237,7 @@ export default function KnowledgeGraphPage() {
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             title="Fermer"
           >
-            <X className="w-6 h-6 text-white" />
+            <X className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </button>
         </div>
       </div>
@@ -275,8 +276,9 @@ export default function KnowledgeGraphPage() {
             node.fy = node.y
           }}
           nodeCanvasObject={(node: any, ctx: any, globalScale: number) => {
-            const fontSize = 11 / globalScale
-            const nodeSize = node.size * 1.2
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+            const fontSize = isMobile ? 9 / globalScale : 11 / globalScale
+            const nodeSize = node.size * (isMobile ? 1.5 : 1.2)
             
             // Cercle du nœud
             ctx.beginPath()
