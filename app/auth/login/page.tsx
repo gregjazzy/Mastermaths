@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -20,6 +21,8 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
+    const loadingToast = toast.loading('🔐 Connexion en cours...')
+
     try {
       const result = await signIn('credentials', {
         email: formData.email,
@@ -28,13 +31,19 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
+        toast.dismiss(loadingToast)
+        toast.error('❌ Email ou mot de passe incorrect')
         setError('Email ou mot de passe incorrect')
         return
       }
 
+      toast.dismiss(loadingToast)
+      toast.success('✅ Connexion réussie ! Bienvenue ! 👋')
       router.push('/cours')
       router.refresh()
     } catch (error) {
+      toast.dismiss(loadingToast)
+      toast.error('❌ Une erreur est survenue')
       setError('Une erreur est survenue')
     } finally {
       setIsLoading(false)

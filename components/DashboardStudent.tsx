@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import CountUp from 'react-countup'
 import { 
   BookOpen, 
   TrendingUp, 
@@ -20,6 +21,7 @@ import StreakDisplay from './StreakDisplay'
 import LeaderboardWidget from './LeaderboardWidget'
 import SessionTracker from './SessionTracker'
 import TimeStatsDisplay from './TimeStatsDisplay'
+import RecommendationsWidget from './RecommendationsWidget'
 
 interface LessonPerformance {
   lessonId: string
@@ -184,19 +186,40 @@ export default function DashboardStudent() {
                 <Trophy className="w-6 h-6" />
                 <p className="text-sm opacity-90">PMU Total</p>
               </div>
-              <p className="text-2xl font-bold">{userStats.totalMasteryPoints.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                <CountUp 
+                  end={userStats.totalMasteryPoints} 
+                  duration={1.5}
+                  separator=" "
+                  preserveValue={true}
+                />
+              </p>
             </div>
 
             {/* PMU Mensuel */}
             <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
               <p className="text-sm opacity-90 mb-2">PMU ce mois</p>
-              <p className="text-2xl font-bold">{userStats.monthlyMasteryPoints.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                <CountUp 
+                  end={userStats.monthlyMasteryPoints} 
+                  duration={1.5}
+                  separator=" "
+                  preserveValue={true}
+                />
+              </p>
             </div>
 
             {/* PMU Hebdo */}
             <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
               <p className="text-sm opacity-90 mb-2">PMU cette semaine</p>
-              <p className="text-2xl font-bold">{userStats.weeklyMasteryPoints.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                <CountUp 
+                  end={userStats.weeklyMasteryPoints} 
+                  duration={1.5}
+                  separator=" "
+                  preserveValue={true}
+                />
+              </p>
             </div>
           </div>
         )}
@@ -229,6 +252,11 @@ export default function DashboardStudent() {
               <ChevronRight className="w-6 h-6 text-[#5865F2]" />
             </div>
           </a>
+        </div>
+
+        {/* Recommandations personnalisées */}
+        <div className="mb-8">
+          <RecommendationsWidget />
         </div>
 
         {/* Classement Top 10 en aperçu */}

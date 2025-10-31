@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import toast from 'react-hot-toast'
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
 import BadgeCelebrationPopup, { BadgeEarned } from './BadgeCelebrationPopup'
 import { celebrateQcmScore } from '@/lib/celebration'
@@ -71,11 +72,12 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
 
   const handleSubmit = async () => {
     if (Object.keys(answers).length !== questions.length) {
-      alert('Veuillez répondre à toutes les questions avant de soumettre.')
+      toast.error('❌ Veuillez répondre à toutes les questions')
       return
     }
 
     setIsSubmitting(true)
+    const loadingToast = toast.loading('⏳ Évaluation en cours...')
 
     try {
       // Calculer le score
@@ -136,6 +138,24 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
       setSubmitted(true)
       onComplete?.(scorePercent)
       
+      // Toast selon le score
+      toast.dismiss(loadingToast)
+      if (scorePercent === 100) {
+        toast.success('🎉 PARFAIT ! Score de 100% !', { duration: 4000 })
+      } else if (scorePercent >= 90) {
+        toast.success(`✅ Excellent ! Score de ${scorePercent.toFixed(0)}%`)
+      } else if (scorePercent >= 80) {
+        toast.success(`👍 Bien joué ! Score de ${scorePercent.toFixed(0)}%`)
+      } else if (scorePercent >= 50) {
+        toast('📚 Pas mal ! Score de ' + scorePercent.toFixed(0) + '% - Continue tes efforts !', {
+          icon: '💪',
+        })
+      } else {
+        toast('🔄 Score de ' + scorePercent.toFixed(0) + '% - N\'hésite pas à réviser', {
+          icon: '📖',
+        })
+      }
+      
       // Déclencher la célébration visuelle
       setTimeout(() => {
         if (containerRef.current) {
@@ -144,7 +164,8 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
       }, 300) // Petit délai pour que l'UI se mette à jour d'abord
     } catch (error) {
       console.error('Erreur lors de la soumission du QCM:', error)
-      alert('Une erreur est survenue lors de la soumission.')
+      toast.dismiss(loadingToast)
+      toast.error('❌ Erreur lors de la soumission')
     } finally {
       setIsSubmitting(false)
     }

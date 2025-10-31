@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 import { FileText, CheckCircle2, AlertCircle } from 'lucide-react'
 import VimeoPlayer from './VimeoPlayer'
 import QcmComponent from './QcmComponent'
@@ -76,10 +77,12 @@ export default function LessonViewer({ lessonId, onComplete }: LessonViewerProps
         method: 'POST'
       })
 
+      toast.success('✅ Leçon complétée ! Bravo ! 🎉')
       onComplete?.()
       router.refresh()
     } catch (error) {
       console.error('Erreur lors du marquage comme complété:', error)
+      toast.error('❌ Erreur lors de la sauvegarde')
     } finally {
       setIsCompleting(false)
     }
