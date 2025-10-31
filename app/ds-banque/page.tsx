@@ -59,15 +59,10 @@ export default function DSBanquePage() {
       filtered = filtered.filter(ds => ds.niveau === selectedClasse)
     }
 
-    // Filtre par lycée
+    // Filtre par difficulté (remplace le filtre lycée)
     if (selectedLycee !== 'all') {
-      const top5Lycees = ['Louis-le-Grand', 'Henri IV', 'Hoche', 'Stanislas', 'Fénelon']
-      
-      if (selectedLycee === 'top5') {
-        filtered = filtered.filter(ds => top5Lycees.includes(ds.lycee))
-      } else if (selectedLycee === 'autres') {
-        filtered = filtered.filter(ds => !top5Lycees.includes(ds.lycee))
-      }
+      const difficulty = parseInt(selectedLycee)
+      filtered = filtered.filter(ds => ds.difficulty === difficulty)
     }
 
     setFilteredDS(filtered)
@@ -136,13 +131,23 @@ export default function DSBanquePage() {
 
         {/* En-tête */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-master-dark mb-2 flex items-center gap-3">
-            <FileText className="w-8 h-8 text-master-turquoise" />
+          <h1 className="text-2xl md:text-3xl font-bold text-master-dark mb-2 flex items-center gap-3">
+            <FileText className="w-7 h-7 md:w-8 md:h-8 text-master-turquoise" />
             Banque de DS
           </h1>
-          <p className="text-gray-600">
-            Accédez aux DS des meilleurs lycées de France : Louis-le-Grand, Henri IV, Hoche...
+          <p className="text-sm md:text-base text-gray-600">
+            DS de mathématiques calibrés sur le niveau des lycées parisiens
           </p>
+          
+          {/* Disclaimer légal */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-xs text-gray-700 leading-relaxed">
+              ⚖️ <span className="font-semibold">Note juridique</span> : Conformément aux droits d'auteur, 
+              tous les exercices présentés ont été <span className="font-semibold">substantiellement modifiés</span> par 
+              rapport aux sources d'inspiration, tout en conservant leur niveau de difficulté d'origine. 
+              Les DS proposés sont des créations pédagogiques dérivées, non affiliées aux établissements mentionnés.
+            </p>
+          </div>
         </div>
 
         {/* Statistiques */}
@@ -200,15 +205,18 @@ export default function DSBanquePage() {
               <option value="Terminale">Terminale</option>
             </select>
 
-            {/* Lycée */}
+            {/* Niveau de difficulté */}
             <select
               value={selectedLycee}
               onChange={(e) => setSelectedLycee(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-master-turquoise focus:border-transparent"
             >
-              <option value="all">Tous les lycées</option>
-              <option value="top5">Top 5 Paris</option>
-              <option value="autres">Autres</option>
+              <option value="all">Tous les niveaux</option>
+              <option value="1">⭐ Accessible</option>
+              <option value="2">⭐⭐ Solide</option>
+              <option value="3">⭐⭐⭐ Avancé</option>
+              <option value="4">⭐⭐⭐⭐ Expert</option>
+              <option value="5">⭐⭐⭐⭐⭐ Élite</option>
             </select>
           </div>
 
@@ -234,24 +242,37 @@ export default function DSBanquePage() {
           <div className="grid grid-cols-1 gap-4">
             {filteredDS.map((ds) => (
               <div key={ds.id} className="card hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-start gap-4 mb-3">
-                      <div className="p-3 bg-indigo-100 rounded-xl">
+                      <div className="p-3 bg-indigo-100 rounded-xl flex-shrink-0">
                         <FileText className="w-6 h-6 text-indigo-600" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-master-dark mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg md:text-xl font-bold text-master-dark mb-2 break-words">
                           {ds.title}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-2">
-                          <span className="flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
-                            {ds.lycee}
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-600 mb-2">
+                          {/* Badge de difficulté */}
+                          <span className={`flex items-center gap-1 px-2 md:px-3 py-1 rounded-full font-medium ${
+                            ds.difficulty === 1 ? 'bg-green-100 text-green-700' :
+                            ds.difficulty === 2 ? 'bg-blue-100 text-blue-700' :
+                            ds.difficulty === 3 ? 'bg-yellow-100 text-yellow-700' :
+                            ds.difficulty === 4 ? 'bg-orange-100 text-orange-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {'⭐'.repeat(ds.difficulty)}
+                            {' '}
+                            {ds.difficulty === 1 ? 'Accessible' :
+                             ds.difficulty === 2 ? 'Solide' :
+                             ds.difficulty === 3 ? 'Avancé' :
+                             ds.difficulty === 4 ? 'Expert' :
+                             'Élite'}
                           </span>
-                          <span className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
+                          <span className="flex items-center gap-1 px-2 md:px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium">
                             {ds.niveau}
                           </span>
-                          <span className="flex items-center gap-1 px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
+                          <span className="flex items-center gap-1 px-2 md:px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
                             {ds.chapter}
                           </span>
                           {ds.duration && (
@@ -262,18 +283,18 @@ export default function DSBanquePage() {
                           )}
                         </div>
                         {ds.description && (
-                          <p className="text-gray-600 text-sm mb-2">{ds.description}</p>
+                          <p className="text-gray-600 text-sm mb-2 line-clamp-2">{ds.description}</p>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex flex-col gap-2">
+                  {/* Actions - Verticales sur mobile, horizontales sur desktop */}
+                  <div className="flex flex-col gap-2 md:flex-shrink-0">
                     {ds.pdfUrl && (
                       <button
                         onClick={() => handleDownload(ds.id, ds.title, ds.pdfUrl)}
-                        className="flex items-center gap-2 px-4 py-2 bg-master-turquoise text-white rounded-lg hover:bg-master-turquoise-dark transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-master-turquoise text-white rounded-lg hover:bg-master-turquoise-dark transition-colors font-medium text-sm md:text-base whitespace-nowrap"
                       >
                         <Download className="w-4 h-4" />
                         Sujet
@@ -282,7 +303,7 @@ export default function DSBanquePage() {
                     {ds.correctionPdfUrl && (
                       <button
                         onClick={() => handleDownload(ds.id, `${ds.title} - Corrigé`, ds.correctionPdfUrl)}
-                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium text-sm md:text-base whitespace-nowrap"
                       >
                         <Download className="w-4 h-4" />
                         Corrigé

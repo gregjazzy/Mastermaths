@@ -18,6 +18,9 @@ model User {
   isSubscribed          Boolean         @default(false)
   stripeCustomerId      String?         @unique
   subscriptionId        String?
+  subscriptionType      String?         // "MONTHLY" or "ANNUAL"
+  subscriptionStartDate DateTime?       // Date de début d'abonnement
+  subscriptionEndDate   DateTime?       // Date de fin d'abonnement
   currentTitle          String          @default("Apprenti Mathématicien")
   totalMasteryPoints    Int             @default(0)
   monthlyMasteryPoints  Int             @default(0)
@@ -39,6 +42,7 @@ model User {
   performances          Performance[]
   sessions              Session[]
   user_badges           user_badges[]
+  orientationBilans     OrientationBilan[]
 
   @@map("users")
 }
@@ -316,10 +320,10 @@ model DSBanque {
   id          String   @id @default(cuid())
   title       String
   description String?
-  lycee       String   // Ex: "Louis-le-Grand", "Henri IV"
   niveau      String   // Ex: "Terminale", "Première"
   chapter     String   // Ex: "Suites numériques", "Limites"
-  difficulty  Int      @default(1) // 1 à 5
+  difficulty  Int      @default(3) // 1 à 5 (niveau de difficulté)
+  level       String   @default("Standard") // "Standard", "Avancé", "Expert", "Élite"
   duration    Int?     // Durée en minutes
   pdfUrl      String?  // URL du PDF
   correctionPdfUrl String? // URL du corrigé
@@ -330,7 +334,7 @@ model DSBanque {
   downloads   DSDownload[]
 
   @@index([niveau])
-  @@index([lycee])
+  @@index([difficulty])
   @@index([chapter])
   @@map("ds_banque")
 }
@@ -366,5 +370,24 @@ model Live {
   @@index([scheduledAt])
   @@index([isActive])
   @@map("lives")
+}
+
+// ========== ORIENTATION BILAN ==========
+
+model OrientationBilan {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  questionnaire  Json     // Toutes les réponses du questionnaire
+  analyse        Json     // Analyse structurée de l'IA (Passage 1)
+  resultat       String   @db.Text // Message humanisé final (Passage 2)
+  
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime // createdAt + 1 an
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("orientation_bilans")
 }
 

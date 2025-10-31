@@ -3,8 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Navbar from '@/components/Navbar'
-import VerticalTimelineCourseNav from '@/components/VerticalTimelineCourseNav'
-import LessonViewer from '@/components/LessonViewer'
+import LessonPageClient from '@/components/LessonPageClient'
 
 export default async function LessonPage({
   params,
@@ -157,36 +156,15 @@ export default async function LessonPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <Navbar />
-      
-      {/* Layout avec sidebar timeline */}
-      <div className="flex">
-        {/* Sidebar Timeline - Fixe à gauche */}
-        <div className="hidden lg:block w-96 h-screen sticky top-0 border-r-2 border-gray-200 shadow-lg">
-          <VerticalTimelineCourseNav 
-            course={courseData}
-            currentLessonId={params.lessonId}
-          />
-        </div>
-
-        {/* Contenu principal */}
-        <div className="flex-1">
-          <div className="max-w-5xl mx-auto px-4 py-8">
-            {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-600">
-              {lesson.subChapter.chapter.course.title} → {lesson.subChapter.chapter.title} → {lesson.subChapter.title}
-            </div>
-            
-            {/* Titre */}
-            <h1 className="text-3xl font-bold mb-6 text-master-dark">{lesson.title}</h1>
-            
-            {/* Viewer de leçon */}
-            <LessonViewer lessonId={params.lessonId} />
-          </div>
-        </div>
-      </div>
-    </div>
+      <LessonPageClient
+        courseData={courseData}
+        lessonId={params.lessonId}
+        breadcrumb={`${lesson.subChapter.chapter.course.title} → ${lesson.subChapter.chapter.title} → ${lesson.subChapter.title}`}
+        lessonTitle={lesson.title}
+      />
+    </>
   )
 }
 

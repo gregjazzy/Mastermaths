@@ -11,9 +11,12 @@ Le projet est **presque entièrement terminé** avec toutes les fonctionnalités
 **🌐 URL de production** : https://mastermathsfr.netlify.app
 
 **🆕 Dernières fonctionnalités (31 Octobre 2025)** :
+- ✅ **Bilan d'Orientation IA** : Questionnaire exhaustif + analyse Gemini 1.5 Pro (triple validation) + sauvegarde auto + RGPD 🎯
+- ✅ **Compatibilité mobile optimisée** : Navigation Timeline mobile, layouts responsive, touch-friendly 📱
 - ✅ **Navbar moderne** : Dropdowns "Apprendre" & "Outils" avec menu mobile organisé
-- ✅ **Banque DS** : DS de Top 5 lycées Paris avec filtres (classe, lycée) et download tracking
+- ✅ **Banque DS** : DS niveau lycées parisiens avec filtres (classe, difficulté) et download tracking
 - ✅ **Lives hebdo** : Planning par classe avec liens EverWebinar et statuts
+- ✅ **Interfaces admin** : Gestion Lives & DS avec formulaires complets
 - ✅ **Recommandations** : Widget intelligent (prochaine leçon + révisions suggérées)
 - ✅ **Microinteractions** : Toasts, count-up animations, progress bar
 - ✅ **Design professionnel** : Refonte complète avec typographie premium (Inter/Poppins)
@@ -22,7 +25,12 @@ Le projet est **presque entièrement terminé** avec toutes les fonctionnalités
 - ✅ **Optimisation performance** : Index SQL + Next.js moderne (80% plus rapide) 🚀
 
 **📝 Documentation** :
+- **AMELIORATIONS_FINALES_BILAN.md** 🆕⭐ → Résumé des améliorations finales (sauvegarde + RGPD)
+- **SYSTEME_BILAN_ORIENTATION.md** 🆕⭐ → Guide complet Bilan d'Orientation IA
+- **AMELIORATIONS_MOBILE_31OCT2025.md** ⭐ → Améliorations compatibilité mobile
+- **ANALYSE_COMPATIBILITE_MOBILE.md** → Analyse complète UX mobile
 - **NOUVELLES_FONCTIONNALITES_31OCT2025.md** ⭐ → Guide des dernières fonctionnalités
+- **INTERFACE_ADMIN_LIVES_DS.md** → Admin Lives & DS
 - **HANDOVER.md** → Vue d'ensemble et guide de transition  
 - **OPTIMISATION_PERFORMANCE_31OCT2025.md** → Optimisations performance
 
@@ -44,6 +52,7 @@ Créer un fichier `.env` à la racine :
 DATABASE_URL="postgresql://postgres:***@db.zqgjhtafyuivnmgyqcix.supabase.co:5432/postgres"
 NEXTAUTH_SECRET="2nV1Jo3Sq2Lcp3YLFoLuqxk1rAf7aShtkRdj43i4AAg="
 NEXTAUTH_URL="http://localhost:3002"
+GEMINI_API_KEY="your_gemini_api_key_here"  # Requis pour le Bilan d'Orientation
 ```
 
 ⚠️ **Note** : La base de données Supabase est déjà configurée. Utilisez les identifiants fournis.

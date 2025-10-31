@@ -113,7 +113,7 @@ export default function Navbar() {
                         <FileText className="w-5 h-5 text-indigo-600" />
                         <div>
                           <div className="font-medium text-gray-900">Banque de DS</div>
-                          <div className="text-xs text-gray-500">Top 5 lycées Paris</div>
+                          <div className="text-xs text-gray-500">Niveau lycées parisiens</div>
                         </div>
                       </Link>
                       <Link 
@@ -206,15 +206,15 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              {/* Bouton Premium */}
+            <div className="flex items-center gap-2 md:gap-4">
+              {/* Bouton Premium - Visible sur tous les écrans */}
               {user?.status !== 'PREMIUM' && (
                 <Link 
                   href="/upgrade" 
-                  className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-master-turquoise to-master-turquoise-dark text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all"
+                  className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-master-turquoise to-master-turquoise-dark text-white px-3 md:px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base"
                 >
                   <Crown className="w-4 h-4" />
-                  Passer à Premium
+                  <span className="hidden sm:inline">Passer à </span>Premium
                 </Link>
               )}
 
@@ -317,7 +317,7 @@ export default function Navbar() {
                     <FileText className="w-5 h-5" />
                     <div>
                       <div className="font-medium">Banque de DS</div>
-                      <div className="text-xs text-gray-500">Top 5 lycées Paris</div>
+                      <div className="text-xs text-gray-500">Niveau lycées parisiens</div>
                     </div>
                   </Link>
                   <Link 

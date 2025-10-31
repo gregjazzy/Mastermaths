@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, FileText, List, Award, Plus, Settings } from 'lucide-react'
+import { BookOpen, FileText, List, Award, Plus, Settings, Video } from 'lucide-react'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -172,11 +172,39 @@ export default function AdminDashboard() {
             </div>
           </Link>
 
+          {/* Gérer les Lives */}
+          <Link href="/admin/lives" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center">
+                <Video className="w-8 h-8 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-master-dark mb-1">Lives Hebdo</h3>
+                <p className="text-sm text-gray-600">Programmer les lives</p>
+              </div>
+              <Plus className="w-6 h-6 text-gray-400" />
+            </div>
+          </Link>
+
+          {/* Gérer la Banque DS */}
+          <Link href="/admin/ds-banque" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-8 h-8 text-indigo-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-master-dark mb-1">Banque DS</h3>
+                <p className="text-sm text-gray-600">Gérer les DS</p>
+              </div>
+              <Plus className="w-6 h-6 text-gray-400" />
+            </div>
+          </Link>
+
           {/* Utilisateurs */}
           <Link href="/admin/users" className="card hover:shadow-lg transition-all border-2 border-transparent hover:border-master-turquoise">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center">
-                <Settings className="w-8 h-8 text-red-600" />
+              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Settings className="w-8 h-8 text-gray-600" />
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-lg text-master-dark mb-1">Utilisateurs</h3>

@@ -104,11 +104,11 @@ export default function LivesPage() {
 
         {/* En-tête */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-master-dark mb-2 flex items-center gap-3">
-            <Video className="w-8 h-8 text-red-600" />
+          <h1 className="text-2xl md:text-3xl font-bold text-master-dark mb-2 flex items-center gap-3">
+            <Video className="w-7 h-7 md:w-8 md:h-8 text-red-600" />
             Lives Hebdomadaires
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm md:text-base text-gray-600">
             Rejoignez nos cours en direct chaque semaine. Sessions interactives avec Q&A en temps réel.
           </p>
         </div>
@@ -174,48 +174,48 @@ export default function LivesPage() {
                     return (
                       <div
                         key={live.id}
-                        className={`p-6 rounded-xl border-2 transition-all ${
+                        className={`p-4 md:p-6 rounded-xl border-2 transition-all ${
                           upcoming
                             ? 'border-red-500 bg-red-50 hover:shadow-lg'
                             : 'border-gray-200 bg-white opacity-75'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-4">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-3">
+                            <div className="flex items-center gap-2 md:gap-3 mb-3 flex-wrap">
                               {upcoming && (
-                                <span className="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                                <span className="px-2 md:px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                                   À VENIR
                                 </span>
                               )}
                               {!upcoming && (
-                                <span className="px-3 py-1 bg-gray-400 text-white text-xs font-bold rounded-full">
+                                <span className="px-2 md:px-3 py-1 bg-gray-400 text-white text-xs font-bold rounded-full">
                                   TERMINÉ
                                 </span>
                               )}
                             </div>
 
-                            <h3 className="text-xl font-bold text-master-dark mb-2">
+                            <h3 className="text-lg md:text-xl font-bold text-master-dark mb-2 break-words">
                               {live.title}
                             </h3>
 
                             {live.description && (
-                              <p className="text-gray-600 mb-4">{live.description}</p>
+                              <p className="text-sm md:text-base text-gray-600 mb-4 line-clamp-2">{live.description}</p>
                             )}
 
-                            <div className="flex flex-wrap gap-4 text-sm">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 md:gap-4 text-xs md:text-sm">
                               <div className="flex items-center gap-2 text-gray-600">
-                                <Calendar className="w-4 h-4 text-red-600" />
-                                <span className="font-medium">{formatDate(live.scheduledAt)}</span>
+                                <Calendar className="w-4 h-4 text-red-600 flex-shrink-0" />
+                                <span className="font-medium line-clamp-1">{formatDate(live.scheduledAt)}</span>
                               </div>
 
                               <div className="flex items-center gap-2 text-gray-600">
-                                <Clock className="w-4 h-4 text-red-600" />
+                                <Clock className="w-4 h-4 text-red-600 flex-shrink-0" />
                                 <span>{live.duration} minutes</span>
                               </div>
 
                               <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium text-xs">
+                                <span className="px-2 md:px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium text-xs">
                                   {live.theme}
                                 </span>
                               </div>
@@ -226,9 +226,9 @@ export default function LivesPage() {
                           {upcoming && (
                             <button
                               onClick={() => handleJoinLive(live.everwebinarUrl, live.title)}
-                              className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold shadow-lg"
+                              className="flex items-center justify-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold shadow-lg text-sm md:text-base whitespace-nowrap w-full md:w-auto"
                             >
-                              <ExternalLink className="w-5 h-5" />
+                              <ExternalLink className="w-4 h-4 md:w-5 md:h-5" />
                               Rejoindre
                             </button>
                           )}
