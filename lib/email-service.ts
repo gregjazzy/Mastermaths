@@ -596,5 +596,92 @@ export class EmailService {
       html
     })
   }
+
+  /**
+   * Envoie un email de confirmation de réception du questionnaire d'orientation
+   */
+  static async sendOrientationQuestionnaireReceived(
+    userEmail: string,
+    userName: string,
+    additionalEmails: string[] = []
+  ) {
+    const allEmails = [userEmail, ...additionalEmails.filter(e => e && e !== userEmail)]
+
+    const subject = `✅ Questionnaire d'orientation reçu - ${userName}`
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+          .icon { font-size: 80px; text-align: center; margin: 20px 0; }
+          .info-box { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #667eea; }
+          .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+          .highlight { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; text-align: center; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✅ Questionnaire bien reçu !</h1>
+          </div>
+          
+          <div class="content">
+            <div class="icon">📋</div>
+            
+            <h2>Bonjour ${userName},</h2>
+            
+            <p>Nous avons bien <strong>reçu votre questionnaire d'orientation</strong>. Merci pour le temps que vous avez consacré à le remplir avec attention.</p>
+            
+            <div class="highlight">
+              <h3 style="margin: 0 0 10px 0;">⚙️ Génération en cours...</h3>
+              <p style="margin: 0; font-size: 16px;">Votre Bilan d'Orientation Personnalisé est actuellement en cours de génération par notre IA experte.</p>
+            </div>
+            
+            <div class="info-box">
+              <h3>🎯 Ce que vous allez recevoir :</h3>
+              <ul style="margin: 10px 0; padding-left: 20px;">
+                <li><strong>Synthèse de votre profil</strong> académique et trajectoire</li>
+                <li><strong>Analyse Performance vs. Ambition</strong> avec recommandations ciblées</li>
+                <li><strong>Diagnostic méthodologique</strong> adapté à votre style d'apprentissage</li>
+                <li><strong>Plan d'action concret</strong> avec objectifs SMART</li>
+                <li><strong>Scénarios d'orientation</strong> (Plans A, B, C) réalistes et personnalisés</li>
+              </ul>
+            </div>
+            
+            <div class="info-box">
+              <h3>⏱️ Délai de génération :</h3>
+              <p>Votre bilan sera prêt dans <strong>1 à 2 minutes</strong>. Vous recevrez un <strong>nouvel email</strong> dès qu'il sera disponible.</p>
+            </div>
+            
+            <p style="text-align: center; margin: 30px 0; font-size: 16px; color: #666;">
+              💡 <em>Vous pouvez fermer cet email en toute sécurité. Nous vous préviendrons dès que votre bilan sera prêt !</em>
+            </p>
+            
+            <p>Merci pour votre confiance.</p>
+            
+            <p><strong>L'équipe Master Maths</strong> 🎓</p>
+          </div>
+          
+          <div class="footer">
+            <p>Master Maths - Excellence en Mathématiques</p>
+            <p>Ce questionnaire restera archivé dans votre espace personnel pendant 1 an.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+
+    return this.sendEmail({
+      to: allEmails,
+      subject,
+      html
+    })
+  }
 }
 

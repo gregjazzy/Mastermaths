@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
+import { EmailService } from '@/lib/email-service'
 
 const prisma = new PrismaClient()
 
@@ -46,6 +47,19 @@ export async function POST(request: NextRequest) {
         expiresAt: expiresAt,
       },
     })
+
+    // ========== ENVOI EMAIL DE CONFIRMATION DE RÉCEPTION ==========
+    
+    try {
+      await EmailService.sendOrientationQuestionnaireReceived(
+        user.email,
+        user.name || 'Étudiant',
+        user.emailsNotification || []
+      )
+    } catch (emailError) {
+      console.error('Erreur envoi email confirmation:', emailError)
+      // On continue même si l'email échoue
+    }
 
     // ========== LANCER LA GÉNÉRATION EN ARRIÈRE-PLAN ==========
     
