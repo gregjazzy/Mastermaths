@@ -1,10 +1,69 @@
 # 🎯 HANDOVER - Master Maths LMS Platform
 
-**Dernière mise à jour : 1er Novembre 2025 - 02h00**
+**Dernière mise à jour : 1er Novembre 2025 - 23h45**
 
 ---
 
-## 🆕 MISES À JOUR DU 1ER NOVEMBRE 2025
+## 🆕 MISES À JOUR DU 1ER NOVEMBRE 2025 (SOIRÉE - 23h45)
+
+### ⚠️ **Configuration Email SMTP en cours**
+
+Le système d'envoi d'emails pour les notifications d'orientation est en cours de configuration.
+
+#### **Progression :**
+
+**Tentatives effectuées :**
+1. ❌ **Microsoft 365** (`smtp.office365.com`) :
+   - SMTP AUTH activé via PowerShell (`Set-TransportConfig`, `Set-CASMailbox`)
+   - Port 587 et 465 testés
+   - **Problème** : Authentification multifacteur bloque SMTP même avec app password
+   - **Abandonné** : Trop de restrictions Microsoft 365
+
+2. ❌ **Brevo** (Sendinblue) :
+   - Credentials obtenus
+   - **Problème** : Nécessite vérification DNS du domaine pour utiliser `notifications@master-maths.com`
+   - **Non finalisé** : En attente de configuration DNS
+
+3. 🟡 **Zoho Mail** (`smtp.zoho.com`) - **EN COURS** :
+   - Migration du compte `notifications@master-maths.com` de Microsoft 365 vers Zoho
+   - Configuration Netlify mise à jour :
+     ```
+     SMTP_HOST=smtp.zoho.com
+     SMTP_PORT=587
+     SMTP_USER=notifications@master-maths.com
+     SMTP_PASSWORD=[mot de passe Zoho]
+     SMTP_FROM=Master Maths <notifications@master-maths.com>
+     ```
+   - **Erreur actuelle** : `553 Sender is not allowed to relay emails`
+   - **Action requise** : Activer SMTP dans les paramètres Zoho Mail
+
+#### **Prochaines étapes :**
+
+**Option A : Finaliser Zoho (RECOMMANDÉ)**
+1. Se connecter à https://mail.zoho.com/
+2. **Settings** → **Mail Accounts** → `notifications@master-maths.com`
+3. Activer **"IMAP/POP Access"** ou **"Enable SMTP"**
+4. OU créer un **"App Password"** dans **Security** → **App Passwords**
+5. Tester via : https://www.master-maths.com/api/test-email
+
+**Option B : Finaliser Brevo**
+1. Vérifier le domaine `master-maths.com` dans Brevo
+2. Ajouter les enregistrements DNS (SPF, DKIM, DMARC)
+3. Utiliser la clé SMTP Brevo (conservée localement)
+
+#### **Fichiers modifiés :**
+- `app/api/test-email/route.ts` : Endpoint de test avec logs de debug
+- Variables Netlify SMTP_* mises à jour plusieurs fois
+
+#### **État actuel :**
+- ✅ Endpoint de test fonctionnel : `/api/test-email`
+- ✅ Configuration Netlify à jour avec Zoho
+- ⏳ En attente activation SMTP dans Zoho
+- 📧 Emails d'orientation seront opérationnels dès activation
+
+---
+
+## 🆕 MISES À JOUR DU 1ER NOVEMBRE 2025 (MATIN)
 
 ### ✅ **Système de Génération Asynchrone des Bilans d'Orientation**
 
