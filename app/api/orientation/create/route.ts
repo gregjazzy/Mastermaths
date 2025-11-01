@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     // ========== PASSAGE 1 : GÉNÉRATION DU BILAN COMPLET (5 SECTIONS) ==========
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
+      model: 'models/gemini-pro',
       generationConfig: {
         maxOutputTokens: 8192,
         temperature: 0.7,
