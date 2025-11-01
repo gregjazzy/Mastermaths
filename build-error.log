@@ -1,0 +1,30 @@
+
+> master-maths@1.0.0 build
+> prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v6.18.0) to ./node_modules/@prisma/client in 96ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+   ▲ Next.js 14.0.4
+   - Environments: .env
+
+   Creating an optimized production build ...
+
+> Build error occurred
+Error: You cannot use different slug names for the same dynamic path ('bilanId' !== 'id').
+    at handleSlug (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:94:31)
+    at UrlNode._insert (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:131:17)
+    at UrlNode._insert (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:142:40)
+    at UrlNode._insert (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:142:40)
+    at UrlNode._insert (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:142:40)
+    at UrlNode.insert (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:13:14)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:165:46
+    at Array.forEach (<anonymous>)
+    at getSortedRoutes (/Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/shared/lib/router/utils/sorted-routes.js:165:21)
+    at /Users/gregorymittelette/Documents/MasterMaths/node_modules/next/dist/build/index.js:476:65

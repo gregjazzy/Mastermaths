@@ -8,7 +8,7 @@ interface NotesTableauProps {
 }
 
 export function NotesTableau({ annee, formData, setFormData }: NotesTableauProps) {
-  const [activeT rimestre, setActiveTrimestre] = useState<'t1' | 't2' | 't3'>('t1')
+  const [activeTrimestre, setActiveTrimestre] = useState<'t1' | 't2' | 't3'>('t1')
   
   const data = formData[annee] || { t1: {}, t2: {}, t3: {} }
   const currentData = data[activeTrimestre] || {}

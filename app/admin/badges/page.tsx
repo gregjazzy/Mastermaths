@@ -155,7 +155,7 @@ export default function BadgesAdminPage() {
       animationColor: 'gold',
       glowIntensity: 'medium',
       useCustomCSS: false,
-      customCSS: null
+      customCSS: ''
     })
   }
 
