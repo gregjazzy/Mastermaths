@@ -67,8 +67,12 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: result.success,
-      message: 'Email de test envoyé avec succès à gregjazzy@gmail.com',
+      message: result.success 
+        ? 'Email de test envoyé avec succès à gregjazzy@gmail.com'
+        : 'Échec de l\'envoi de l\'email',
       messageId: result.messageId,
+      error: result.success ? undefined : (result.error as any)?.message || 'Erreur inconnue',
+      errorDetails: result.success ? undefined : String(result.error),
       timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
