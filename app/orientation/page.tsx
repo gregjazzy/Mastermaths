@@ -123,6 +123,8 @@ export default function OrientationPage() {
   }
 
   const handleSubmit = async () => {
+    console.log('🚀 handleSubmit appelé')
+    console.log('📋 formData:', formData)
     setSubmitting(true)
     const loadingToast = toast.loading('Envoi du questionnaire en cours...')
 
