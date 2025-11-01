@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { EmailService } from '@/lib/email-service'
 
+// Force cette route à être dynamique (pas de pré-génération statique)
+export const dynamic = 'force-dynamic'
+
 /**
  * Endpoint de test pour vérifier la configuration email
  * GET /api/test-email
