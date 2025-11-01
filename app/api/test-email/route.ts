@@ -7,6 +7,16 @@ import { EmailService } from '@/lib/email-service'
  */
 export async function GET(request: NextRequest) {
   try {
+    console.log('=== TEST EMAIL ROUTE ===')
+    console.log('Timestamp:', new Date().toISOString())
+    console.log('SMTP Config:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER,
+      from: process.env.SMTP_FROM,
+      hasPassword: !!process.env.SMTP_PASSWORD
+    })
+    
     // Test d'envoi d'email
     const result = await EmailService.sendEmail({
       to: 'gregjazzy@gmail.com',
