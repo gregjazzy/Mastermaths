@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { sendEmail } from '@/lib/email'
 
 const prisma = new PrismaClient()
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
@@ -163,52 +162,11 @@ ${JSON.stringify(questionnaire, null, 2)}
       },
     })
 
-    // ========== ENVOI EMAIL ==========
-    
-    try {
-      await sendEmail({
-        to: bilan.user.email,
-        subject: '✅ Votre Bilan d\'Orientation est prêt !',
-        html: `
-          <h2>Bonjour ${bilan.user.name || 'cher étudiant'},</h2>
-          
-          <p>Excellente nouvelle ! Votre <strong>Bilan d'Orientation Personnalisé</strong> a été généré avec succès. 🎓</p>
-          
-          <p>Notre équipe d'experts en orientation a analysé en profondeur votre profil académique, vos aspirations et vos soft skills pour vous proposer un plan d'action concret et personnalisé.</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXTAUTH_URL || 'https://www.master-maths.com'}/orientation/resultat/${bilanId}" 
-               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                      color: white; 
-                      padding: 15px 30px; 
-                      text-decoration: none; 
-                      border-radius: 8px; 
-                      font-weight: bold; 
-                      display: inline-block;">
-              📊 Consulter mon Bilan
-            </a>
-          </div>
-          
-          <p><strong>Ce que vous trouverez dans votre bilan :</strong></p>
-          <ul>
-            <li>✅ Synthèse de votre profil et trajectoire académique</li>
-            <li>✅ Analyse de l'adéquation entre votre performance et vos ambitions</li>
-            <li>✅ Diagnostic méthodologique et comportemental</li>
-            <li>✅ Recommandations pédagogiques prioritaires</li>
-            <li>✅ Scénarios d'orientation (Plans A, B, C)</li>
-          </ul>
-          
-          <p>Ce bilan reste accessible pendant 1 an dans votre espace personnel.</p>
-          
-          <p>Bonne lecture et bon succès dans votre parcours ! 🚀</p>
-          
-          <p>L'équipe Master Maths</p>
-        `,
-      })
-    } catch (emailError) {
-      console.error('Erreur envoi email:', emailError)
-      // On continue même si l'email échoue
-    }
+    // ========== PAS D'EMAIL IMMÉDIAT ==========
+    // L'email sera envoyé 5 jours après la création par un cron job
+    // Voir /api/cron/send-orientation-bilans
+
+    console.log(`✅ Bilan ${bilanId} généré avec succès. Email programmé dans 5 jours.`)
 
     return NextResponse.json({
       success: true,

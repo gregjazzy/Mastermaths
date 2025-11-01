@@ -639,28 +639,23 @@ export class EmailService {
             <p>Nous avons bien <strong>reçu votre questionnaire d'orientation</strong>. Merci pour le temps que vous avez consacré à le remplir avec attention.</p>
             
             <div class="highlight">
-              <h3 style="margin: 0 0 10px 0;">⚙️ Génération en cours...</h3>
-              <p style="margin: 0; font-size: 16px;">Votre Bilan d'Orientation Personnalisé est actuellement en cours de génération par notre IA experte.</p>
+              <h3 style="margin: 0 0 10px 0;">✅ Questionnaire bien reçu</h3>
+              <p style="margin: 0; font-size: 16px;">Nous avons bien reçu votre questionnaire d'orientation complet.</p>
             </div>
             
             <div class="info-box">
-              <h3>🎯 Ce que vous allez recevoir :</h3>
+              <h3>🎯 Prochaines étapes :</h3>
+              <p>Votre <strong>Bilan d'Orientation Personnalisé</strong> vous sera envoyé par email sous <strong>5 jours maximum</strong>.</p>
+              <p>Ce délai nous permet d'effectuer :</p>
               <ul style="margin: 10px 0; padding-left: 20px;">
-                <li><strong>Synthèse de votre profil</strong> académique et trajectoire</li>
-                <li><strong>Analyse Performance vs. Ambition</strong> avec recommandations ciblées</li>
-                <li><strong>Diagnostic méthodologique</strong> adapté à votre style d'apprentissage</li>
-                <li><strong>Plan d'action concret</strong> avec objectifs SMART</li>
-                <li><strong>Scénarios d'orientation</strong> (Plans A, B, C) réalistes et personnalisés</li>
+                <li>La <strong>revue approfondie</strong> de votre dossier académique</li>
+                <li>L'<strong>analyse détaillée</strong> de vos éléments (notes, classements, soft skills)</li>
+                <li>L'<strong>étude personnalisée</strong> de votre profil et de vos aspirations</li>
               </ul>
             </div>
             
-            <div class="info-box">
-              <h3>⏱️ Délai de génération :</h3>
-              <p>Votre bilan sera prêt dans <strong>1 à 2 minutes</strong>. Vous recevrez un <strong>nouvel email</strong> dès qu'il sera disponible.</p>
-            </div>
-            
             <p style="text-align: center; margin: 30px 0; font-size: 16px; color: #666;">
-              💡 <em>Vous pouvez fermer cet email en toute sécurité. Nous vous préviendrons dès que votre bilan sera prêt !</em>
+              💡 <em>Pas d'inquiétude ! Vous recevrez un email dès que votre bilan sera prêt à consulter.</em>
             </p>
             
             <p>Merci pour votre confiance.</p>
