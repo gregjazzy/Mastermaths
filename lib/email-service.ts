@@ -636,11 +636,13 @@ export class EmailService {
             
             <h2>Bonjour ${userName},</h2>
             
-            <p>Nous avons bien <strong>reçu votre questionnaire d'orientation</strong>. Merci pour le temps que vous avez consacré à le remplir avec attention.</p>
+            <p>Nous vous remercions d'avoir pris le temps de remplir notre questionnaire d'orientation avec autant d'attention.</p>
+            
+            <p>Nous avons bien <strong>reçu votre questionnaire d'orientation complet</strong> et nous vous en remercions sincèrement.</p>
             
             <div class="highlight">
               <h3 style="margin: 0 0 10px 0;">✅ Questionnaire bien reçu</h3>
-              <p style="margin: 0; font-size: 16px;">Nous avons bien reçu votre questionnaire d'orientation complet.</p>
+              <p style="margin: 0; font-size: 16px;">Votre dossier est désormais entre les mains de nos experts en orientation.</p>
             </div>
             
             <div class="info-box">
@@ -649,16 +651,18 @@ export class EmailService {
               <p>Ce délai nous permet d'effectuer :</p>
               <ul style="margin: 10px 0; padding-left: 20px;">
                 <li>La <strong>revue approfondie</strong> de votre dossier académique</li>
-                <li>L'<strong>analyse détaillée</strong> de vos éléments (notes, classements, soft skills)</li>
-                <li>L'<strong>étude personnalisée</strong> de votre profil et de vos aspirations</li>
+                <li>L'<strong>analyse détaillée</strong> de vos éléments (notes, classements, activités extrascolaires)</li>
+                <li>L'<strong>étude personnalisée</strong> de votre profil et de vos aspirations professionnelles</li>
               </ul>
             </div>
             
             <p style="text-align: center; margin: 30px 0; font-size: 16px; color: #666;">
-              💡 <em>Pas d'inquiétude ! Vous recevrez un email dès que votre bilan sera prêt à consulter.</em>
+              💡 <em>Vous n'avez rien d'autre à faire. Vous recevrez un email dès que votre bilan sera prêt à consulter.</em>
             </p>
             
-            <p>Merci pour votre confiance.</p>
+            <p>Nous restons à votre disposition pour toute question.</p>
+            
+            <p>Cordialement,</p>
             
             <p><strong>L'équipe Master Maths</strong> 🎓</p>
           </div>

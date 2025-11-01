@@ -73,37 +73,42 @@ export async function POST(request: NextRequest) {
                 </div>
                 
                 <div class="content">
-                  <h2>Bonjour ${bilan.user.name || 'cher étudiant'},</h2>
+                  <h2>Bonjour ${bilan.user.name || 'Madame, Monsieur'},</h2>
                   
-                  <p>Excellente nouvelle ! Votre <strong>Bilan d'Orientation Personnalisé</strong> a été finalisé par notre équipe d'experts. 🎓</p>
+                  <p>Nous sommes ravis de vous informer que votre <strong>Bilan d'Orientation Personnalisé</strong> a été finalisé par notre équipe d'experts en orientation scolaire et professionnelle. 🎓</p>
                   
-                  <p>Nous avons analysé en profondeur votre profil académique, vos aspirations et vos soft skills pour vous proposer un plan d'action concret et personnalisé.</p>
+                  <p>Suite à votre demande, nous avons procédé à une analyse approfondie de votre profil académique, de vos aspirations et de vos compétences pour vous proposer un plan d'action concret et personnalisé.</p>
                   
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="${process.env.NEXTAUTH_URL || 'https://www.master-maths.com'}/orientation/resultat/${bilan.id}" 
                        class="button">
-                      📊 Consulter mon Bilan
+                      📊 Consulter mon Bilan d'Orientation
                     </a>
                   </div>
                   
                   <div class="info-box">
-                    <h3>📋 Ce que vous trouverez dans votre bilan :</h3>
+                    <h3>📋 Votre bilan comprend :</h3>
                     <ul style="margin: 10px 0; padding-left: 20px;">
-                      <li><strong>Synthèse de votre profil</strong> et trajectoire académique</li>
-                      <li><strong>Analyse Performance vs. Ambition</strong> avec recommandations ciblées</li>
-                      <li><strong>Diagnostic méthodologique</strong> adapté à votre style d'apprentissage</li>
-                      <li><strong>Plan d'action concret</strong> avec objectifs SMART</li>
-                      <li><strong>Scénarios d'orientation</strong> (Plans A, B, C) réalistes et personnalisés</li>
+                      <li><strong>Synthèse de votre profil</strong> académique et analyse de votre trajectoire</li>
+                      <li><strong>Évaluation Performance vs. Ambition</strong> avec recommandations ciblées</li>
+                      <li><strong>Diagnostic méthodologique</strong> personnalisé adapté à votre style d'apprentissage</li>
+                      <li><strong>Plan d'action concret</strong> avec objectifs mesurables et atteignables</li>
+                      <li><strong>Scénarios d'orientation détaillés</strong> (Plans A, B, C) réalistes pour votre profil</li>
                     </ul>
                   </div>
                   
                   <p style="text-align: center; margin: 20px 0; color: #666;">
-                    💡 <em>Ce bilan reste accessible pendant 1 an dans votre espace personnel.</em>
+                    💡 <em>Ce bilan reste accessible pendant 1 an dans votre espace personnel. Vous pouvez le consulter à tout moment.</em>
                   </p>
                   
-                  <p>Bonne lecture et bon succès dans votre parcours ! 🚀</p>
+                  <p>Nous restons à votre entière disposition pour toute question ou précision concernant votre bilan d'orientation.</p>
                   
-                  <p><strong>L'équipe Master Maths</strong></p>
+                  <p>Nous vous souhaitons beaucoup de succès dans votre parcours ! 🚀</p>
+                  
+                  <p>Cordialement,</p>
+                  
+                  <p><strong>L'équipe Master Maths</strong><br>
+                  <em>Excellence en Orientation Scolaire</em></p>
                 </div>
                 
                 <div class="footer">
