@@ -29,31 +29,15 @@ export async function GET(request: NextRequest) {
 
     // ========== VÉRIFICATIONS D'ÉLIGIBILITÉ ==========
 
-    // 1. Vérifier si l'utilisateur a un abonnement ANNUEL
-    if (user.subscriptionType !== 'ANNUAL') {
+    // 1. Vérifier si l'utilisateur a un abonnement payant (MONTHLY ou ANNUAL)
+    if (!user.subscriptionType || (user.subscriptionType !== 'MONTHLY' && user.subscriptionType !== 'ANNUAL')) {
       return NextResponse.json({
         eligible: false,
-        message: `Le bilan d'orientation personnalisé est réservé aux abonnés annuels.\n\nVous avez actuellement un abonnement ${user.subscriptionType === 'MONTHLY' ? 'mensuel' : 'gratuit'}.\n\nMettez à niveau votre abonnement pour débloquer cet outil exclusif.`,
+        message: `Le bilan d'orientation personnalisé est réservé aux abonnés payants.\n\nVous avez actuellement un compte gratuit.\n\nSouscrivez à un abonnement (mensuel ou annuel) pour débloquer cet outil exclusif.`,
       })
     }
 
-    // 2. Vérifier la période de rétractation (14 jours)
-    if (user.subscriptionStartDate) {
-      const subscriptionDate = new Date(user.subscriptionStartDate)
-      const now = new Date()
-      const daysSinceSubscription = Math.floor(
-        (now.getTime() - subscriptionDate.getTime()) / (1000 * 60 * 60 * 24)
-      )
-
-      if (daysSinceSubscription < 14) {
-        return NextResponse.json({
-          eligible: false,
-          message: `Vous êtes dans la période de rétractation (14 jours).\n\nLe bilan d'orientation sera disponible après cette période, soit à partir du ${new Date(subscriptionDate.getTime() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR', { dateStyle: 'long' })}.`,
-        })
-      }
-    }
-
-    // 3. Vérifier si l'utilisateur a déjà un bilan valide (< 1 an)
+    // 2. Vérifier si l'utilisateur a déjà un bilan valide (< 1 an)
     if (user.orientationBilans.length > 0) {
       const existingBilan = user.orientationBilans[0]
       const expiresAt = new Date(existingBilan.expiresAt)

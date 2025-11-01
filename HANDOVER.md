@@ -1,6 +1,78 @@
 # 🎯 HANDOVER - Master Maths LMS Platform
 
-**Dernière mise à jour : 31 Octobre 2025 - 23h00**
+**Dernière mise à jour : 1er Novembre 2025 - 02h00**
+
+---
+
+## 🆕 MISES À JOUR DU 1ER NOVEMBRE 2025
+
+### ✅ **Système de Génération Asynchrone des Bilans d'Orientation**
+
+Le système de bilan d'orientation a été complètement revu pour ne plus faire attendre l'utilisateur !
+
+#### **Avant (synchrone) :**
+- Client soumet → **Attente de 90 secondes** → Affichage du bilan
+
+#### **Après (asynchrone) :**
+- Client soumet → **Redirection immédiate** → Génération en arrière-plan → **Email de notification** → Client consulte
+
+**Fichiers créés/modifiés :**
+- `app/api/orientation/generate/route.ts` : **NOUVEAU** - Génération asynchrone (3 passages Gemini)
+- `app/orientation/resultat/[id]/page.tsx` : **NOUVEAU** - Page de résultat avec 3 états (PENDING/COMPLETED/FAILED)
+- `app/api/orientation/bilan/[id]/route.ts` : **NOUVEAU** - API pour récupérer un bilan
+- `app/api/orientation/create/route.ts` : **MODIFIÉ** - Crée le bilan en PENDING et lance génération
+- `prisma/schema.prisma` : **MODIFIÉ** - Ajout enum `BilanStatus` et champs `status`, `errorMessage`
+- `MIGRATION_BILAN_ASYNC.sql` : **NOUVEAU** - Script de migration SQL
+
+**Page de résultat (`/orientation/resultat/[id]`) :**
+- ✅ **PENDING** : Animation + message "Génération en cours..." + rafraîchissement auto (5s)
+- ✅ **COMPLETED** : Affichage du bilan Markdown + bouton Imprimer/PDF
+- ✅ **FAILED** : Message d'erreur + lien support
+
+**Email de notification :**
+- Envoyé automatiquement quand le bilan est prêt
+- Lien direct vers le bilan
+- Design moderne avec CTA clair
+
+**⚠️ MIGRATION SQL REQUISE :**
+```bash
+# Exécuter dans Supabase SQL Editor :
+# Voir fichier MIGRATION_BILAN_ASYNC.sql
+```
+
+---
+
+### ✅ **Éligibilité Bilan d'Orientation Modifiée**
+
+**Ancien système :**
+- Réservé aux abonnés ANNUAL uniquement
+- Période de rétractation de 14 jours obligatoire
+
+**Nouveau système :**
+- ✅ **Accès dès le premier paiement** (MONTHLY ou ANNUAL)
+- ✅ **Suppression de la période de 14 jours**
+- ✅ **Conservation de la limite : 1 bilan par an**
+
+**Fichiers modifiés :**
+- `app/api/orientation/eligibility/route.ts`
+- `app/api/orientation/create/route.ts`
+
+---
+
+### ✅ **Modèle Gemini Correct**
+
+Le modèle Gemini utilisé a été corrigé après tests :
+- ❌ `gemini-1.5-pro` → 404
+- ❌ `gemini-pro` → 404  
+- ❌ `gemini-1.5-flash` → 404
+- ✅ **`gemini-2.5-flash`** → Fonctionne !
+
+**Test réalisé avec script :**
+```javascript
+// test-gemini.js (supprimé après validation)
+// A testé tous les modèles disponibles
+// Résultat : gemini-2.5-flash valide
+```
 
 ---
 

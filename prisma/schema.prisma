@@ -382,14 +382,23 @@ model OrientationBilan {
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   questionnaire  Json     // Toutes les réponses du questionnaire
-  analyse        Json     // Analyse structurée de l'IA (Passage 1)
-  resultat       String   @db.Text // Message humanisé final (Passage 2)
+  analyse        Json?    // Analyse structurée de l'IA (Passage 1)
+  resultat       String?  @db.Text // Message humanisé final (Passage 2)
+  status         BilanStatus @default(PENDING) // PENDING, COMPLETED, FAILED
+  errorMessage   String?  // Message d'erreur si FAILED
   
   createdAt      DateTime @default(now())
   expiresAt      DateTime // createdAt + 1 an
   
   @@index([userId])
   @@index([createdAt])
+  @@index([status])
   @@map("orientation_bilans")
+}
+
+enum BilanStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
 

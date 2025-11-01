@@ -1,0 +1,242 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { sendEmail } from '@/lib/email'
+
+const prisma = new PrismaClient()
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+
+export async function POST(request: NextRequest) {
+  try {
+    const { bilanId } = await request.json()
+
+    if (!bilanId) {
+      return NextResponse.json({ error: 'bilanId manquant' }, { status: 400 })
+    }
+
+    // Récupérer le bilan
+    const bilan = await prisma.orientationBilan.findUnique({
+      where: { id: bilanId },
+      include: { user: true }
+    })
+
+    if (!bilan) {
+      return NextResponse.json({ error: 'Bilan introuvable' }, { status: 404 })
+    }
+
+    if (bilan.status === 'COMPLETED') {
+      return NextResponse.json({ message: 'Bilan déjà généré' }, { status: 200 })
+    }
+
+    const questionnaire = bilan.questionnaire as any
+
+    // ========== PASSAGE 1 : GÉNÉRATION DU BILAN COMPLET (5 SECTIONS) ==========
+
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-2.5-flash',
+      generationConfig: {
+        maxOutputTokens: 8192,
+        temperature: 0.7,
+      }
+    })
+
+    const prompt1 = `🎯 MISSION : Vous êtes un Conseiller d'Orientation Pédagogique Expert.
+
+Vous devez générer un Bilan Pédagogique et d'Orientation sur Mesure complet, professionnel, et humain. Analysez de manière critique les données fournies par l'élève et ses parents (performance académique, soft skills, ambitions, contexte international) pour produire un document structuré et actionnable.
+
+📥 DONNÉES D'ENTRÉE :
+${JSON.stringify(questionnaire, null, 2)}
+
+🔍 STRUCTURE DU BILAN REQUIS :
+
+Le Bilan doit être rédigé de manière claire, encourageante et nuancée, en évitant le langage générique. Il doit être séparé en 5 sections principales :
+
+**1. SYNTHÈSE DU PROFIL ET DE LA TRAJECTOIRE**
+
+- Synthèse Générale : Présenter l'élève (âge, genre, niveau) et résumer les principales forces et les domaines de vigilance identifiés.
+- Analyse de la Trajectoire : Décrire la dynamique de performance (progression vs. déclin) en Première et Terminale. Analyser le classement en classe pour évaluer la position relative de l'élève.
+
+**2. ADÉQUATION PERFORMANCE VS. AMBITION**
+
+- Analyse de l'Alignement : Évaluer de manière critique la cohérence entre la performance académique (notes, classement, tests SAT/TOEIC) et le niveau d'ambition post-bac (Top 5, Top 15, Prépa sélective, Étranger).
+- Bilan Linguistique et International : Valider l'adéquation du niveau de langues et des scores SAT/TOEFL avec les exigences des études à l'étranger ou des filières sélectives.
+- Identification des Écarts : Pointer, le cas échéant, les matières où un écart de niveau est le plus problématique pour l'orientation souhaitée.
+
+**3. DIAGNOSTIC MÉTHODOLOGIQUE ET COMPORTEMENTAL**
+
+- Habitudes de Travail : Évaluer l'équilibre de la charge de travail (semaine/week-end) et le niveau d'autonomie. Proposer des pistes méthodologiques basées sur le style d'apprentissage déclaré (Visuel, Auditif, Kinesthésique).
+- Soft Skills et Potentiel : Analyser les activités extrascolaires (niveau d'excellence, leadership, persévérance) pour identifier les compétences transférables et les valoriser dans la candidature (lettres de motivation, dossiers).
+
+**4. RECOMMANDATIONS PÉDAGOGIQUES PRIORITAIRES**
+
+- Proposer 3 à 5 actions concrètes et immédiates pour consolider le dossier. Ces actions doivent être spécifiques (Ex: "Augmenter le temps de travail personnel en Mathématiques de 2h/semaine", "Obtenir le niveau C1 en Anglais avant décembre", "Structurer un projet personnel lié à l'activité X").
+- Prioriser les matières faibles qui menacent l'objectif d'orientation.
+
+**5. SCÉNARIOS D'ORIENTATION (PLAN A, B, C)**
+
+- Plan A (Idéal) : Valider l'orientation la plus ambitieuse souhaitée et lister les conditions impératives à remplir.
+- Plan B (Sécurité) : Proposer une filière ou des établissements légèrement moins sélectifs, mais parfaitement alignés avec les intérêts de l'élève, si le Plan A s'avère trop risqué.
+- Conclusion : Rédiger une conclusion encourageante, centrée sur le potentiel et les prochaines étapes de la démarche d'orientation.
+
+**FORMAT DE RÉPONSE :**
+Rédigez un document complet en Markdown, structuré avec des titres clairs (##, ###), des listes à puces, et un ton professionnel mais bienveillant. Longueur cible : 1500-2000 mots.`
+
+    const result1 = await model.generateContent(prompt1)
+    const bilanInitial = result1.response.text()
+
+    // ========== PASSAGE 2 : REVUE PSYCHOPÉDAGOGIQUE ==========
+
+    const prompt2 = `🔍 REVUE 1 - FILTRE PSYCHOPÉDAGOGIQUE (Soft Skills et Nuances)
+
+Vous êtes un psychopédagogue expert. Relisez le bilan suivant et AMÉLIOREZ-LE selon ces critères :
+
+**BILAN INITIAL À AMÉLIORER :**
+${bilanInitial}
+
+**DONNÉES ORIGINALES (pour contexte) :**
+${JSON.stringify(questionnaire, null, 2)}
+
+**CRITÈRES DE REVUE :**
+
+1. **Ton et Motivation** : Est-ce que le langage est encourageant ? Les difficultés sont-elles présentées comme des défis à relever plutôt que des faiblesses insurmontables ?
+
+2. **Valorisation du Non-Académique** : Les soft skills (leadership, rigueur, créativité) tirés des activités extrascolaires sont-ils suffisamment mis en avant et connectés aux exigences de l'orientation souhaitée ?
+
+3. **Besoins Spécifiques** : Les recommandations prennent-elles en compte le style d'apprentissage et les éventuels besoins spécifiques (TDA/H, DYS) mentionnés ?
+
+**INSTRUCTIONS :**
+- Gardez la structure en 5 sections
+- Améliorez le ton pour le rendre plus encourageant et personnalisé
+- Renforcez les liens entre soft skills et orientation
+- Ajoutez de l'empathie sans perdre en professionnalisme
+- Retournez le bilan COMPLET et AMÉLIORÉ en Markdown`
+
+    const result2 = await model.generateContent(prompt2)
+    const bilanRevuePsycho = result2.response.text()
+
+    // ========== PASSAGE 3 : REVUE RÉALITÉ DU TERRAIN ==========
+
+    const prompt3 = `🔍 REVUE 2 - FILTRE RÉALITÉ DU TERRAIN / CONSEIL D'ADMISSION
+
+Vous êtes un conseiller d'admission universitaire avec 15 ans d'expérience. Relisez le bilan suivant et AFFINEZ-LE selon ces critères :
+
+**BILAN APRÈS REVUE PSYCHOPÉDAGOGIQUE :**
+${bilanRevuePsycho}
+
+**DONNÉES ORIGINALES (pour contexte) :**
+${JSON.stringify(questionnaire, null, 2)}
+
+**CRITÈRES DE REVUE :**
+
+1. **Faisabilité** : Les recommandations et les scénarios d'orientation sont-ils réalistes et actualisés par rapport aux exigences réelles de Parcoursup ou des admissions internationales ?
+
+2. **Cohérence des Chiffres** : La critique de l'alignement Performance/Ambition est-elle factuelle et basée uniquement sur les données objectives (notes, rangs, scores SAT) ?
+
+3. **Clarté des Actions** : Les actions sont-elles spécifiques, mesurables, atteignables, pertinentes et temporellement définies (SMART) ?
+
+**INSTRUCTIONS :**
+- Gardez la structure en 5 sections
+- Assurez-vous que TOUTES les recommandations sont concrètes et réalisables
+- Vérifiez que les Plans A/B/C sont réalistes compte tenu du profil
+- Ajoutez des échéances précises aux actions (Ex: "d'ici décembre 2025")
+- Retournez le bilan FINAL, COMPLET et OPTIMISÉ en Markdown`
+
+    const result3 = await model.generateContent(prompt3)
+    const bilanFinal = result3.response.text()
+
+    const resultatHumanise = bilanFinal
+    
+    const analyse = {
+      passagesEffectues: 3,
+      syntheseRapide: "Bilan complet généré avec triple validation (Initial + Psychopédagogique + Réalité du Terrain)",
+      timestamp: new Date().toISOString()
+    }
+
+    // ========== MISE À JOUR EN BASE ==========
+
+    await prisma.orientationBilan.update({
+      where: { id: bilanId },
+      data: {
+        analyse: analyse as any,
+        resultat: resultatHumanise,
+        status: 'COMPLETED',
+      },
+    })
+
+    // ========== ENVOI EMAIL ==========
+    
+    try {
+      await sendEmail({
+        to: bilan.user.email,
+        subject: '✅ Votre Bilan d\'Orientation est prêt !',
+        html: `
+          <h2>Bonjour ${bilan.user.name || 'cher étudiant'},</h2>
+          
+          <p>Excellente nouvelle ! Votre <strong>Bilan d'Orientation Personnalisé</strong> a été généré avec succès. 🎓</p>
+          
+          <p>Notre équipe d'experts en orientation a analysé en profondeur votre profil académique, vos aspirations et vos soft skills pour vous proposer un plan d'action concret et personnalisé.</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.NEXTAUTH_URL || 'https://www.master-maths.com'}/orientation/resultat/${bilanId}" 
+               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: white; 
+                      padding: 15px 30px; 
+                      text-decoration: none; 
+                      border-radius: 8px; 
+                      font-weight: bold; 
+                      display: inline-block;">
+              📊 Consulter mon Bilan
+            </a>
+          </div>
+          
+          <p><strong>Ce que vous trouverez dans votre bilan :</strong></p>
+          <ul>
+            <li>✅ Synthèse de votre profil et trajectoire académique</li>
+            <li>✅ Analyse de l'adéquation entre votre performance et vos ambitions</li>
+            <li>✅ Diagnostic méthodologique et comportemental</li>
+            <li>✅ Recommandations pédagogiques prioritaires</li>
+            <li>✅ Scénarios d'orientation (Plans A, B, C)</li>
+          </ul>
+          
+          <p>Ce bilan reste accessible pendant 1 an dans votre espace personnel.</p>
+          
+          <p>Bonne lecture et bon succès dans votre parcours ! 🚀</p>
+          
+          <p>L'équipe Master Maths</p>
+        `,
+      })
+    } catch (emailError) {
+      console.error('Erreur envoi email:', emailError)
+      // On continue même si l'email échoue
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Bilan généré avec succès',
+    })
+  } catch (error: any) {
+    console.error('Erreur lors de la génération du bilan:', error)
+    
+    // Marquer le bilan en FAILED
+    if (request.body) {
+      try {
+        const { bilanId } = await request.json()
+        await prisma.orientationBilan.update({
+          where: { id: bilanId },
+          data: {
+            status: 'FAILED',
+            errorMessage: error.message || 'Erreur inconnue',
+          },
+        })
+      } catch (updateError) {
+        console.error('Erreur mise à jour statut FAILED:', updateError)
+      }
+    }
+    
+    return NextResponse.json(
+      { error: error.message || 'Erreur serveur lors de la génération' },
+      { status: 500 }
+    )
+  }
+}
+
