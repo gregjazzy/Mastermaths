@@ -1,0 +1,197 @@
+/* 
+========================================
+Badge: Introduction au Second Degré
+Format: Carte Pokémon (250px x 350px)
+Animation: x² qui se développe
+========================================
+*/
+
+/* Container principal - Format carte Pokémon */
+position: relative;
+width: 250px;
+height: 350px;
+border-radius: 16px;
+background: linear-gradient(135deg, 
+  #667eea 0%, 
+  #764ba2 50%, 
+  #f093fb 100%
+);
+box-shadow: 
+  0 8px 32px rgba(102, 126, 234, 0.4),
+  0 0 0 4px rgba(255, 255, 255, 0.8),
+  0 0 0 8px #667eea,
+  inset 0 0 60px rgba(255, 255, 255, 0.1);
+overflow: hidden;
+padding: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: space-between;
+transform-style: preserve-3d;
+animation: card-float 4s ease-in-out infinite, holographic 3s linear infinite;
+
+/* Effet holographique (comme les cartes Pokémon brillantes) */
+&::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: shine 3s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+/* Zone centrale avec l'animation mathématique */
+&::after {
+  content: 'x²';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  font-size: 80px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.8),
+    0 0 40px rgba(102, 126, 234, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  font-family: 'Georgia', serif;
+  animation: expand-equation 4s ease-in-out infinite;
+  z-index: 10;
+}
+
+/* Animation de flottement de la carte */
+@keyframes card-float {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
+  }
+  50% {
+    transform: translateY(0px) rotateX(0deg) rotateY(5deg);
+  }
+  75% {
+    transform: translateY(-10px) rotateX(-5deg) rotateY(0deg);
+  }
+}
+
+/* Animation holographique */
+@keyframes holographic {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Animation de brillance */
+@keyframes shine {
+  0% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: -200% -200%;
+  }
+}
+
+/* Animation de l'équation x² qui se développe */
+@keyframes expand-equation {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.3;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.9;
+  }
+  60% {
+    content: '(a+b)²';
+    transform: translate(-50%, -50%) scale(1.0);
+    opacity: 0.8;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Bordure brillante animée */
+border: 3px solid transparent;
+background-clip: padding-box;
+position: relative;
+
+/* Particules mathématiques flottantes */
+&[data-particles]::before {
+  content: '+ − × ÷ = √';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 20px;
+  animation: particles-float 6s ease-in-out infinite;
+}
+
+@keyframes particles-float {
+  0%, 100% {
+    opacity: 0.2;
+    transform: translateY(0px);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-20px);
+  }
+}
+
+/* Effet de lueur pulsante */
+box-shadow: 
+  0 8px 32px rgba(102, 126, 234, 0.4),
+  0 0 0 4px rgba(255, 255, 255, 0.8),
+  0 0 0 8px #667eea,
+  0 0 60px rgba(118, 75, 162, 0.6),
+  inset 0 0 60px rgba(255, 255, 255, 0.1);
+animation: card-float 4s ease-in-out infinite, 
+           holographic 3s linear infinite,
+           glow-pulse 2s ease-in-out infinite;
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 8px 32px rgba(102, 126, 234, 0.4),
+      0 0 0 4px rgba(255, 255, 255, 0.8),
+      0 0 0 8px #667eea,
+      0 0 60px rgba(118, 75, 162, 0.6),
+      inset 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 8px 32px rgba(102, 126, 234, 0.6),
+      0 0 0 4px rgba(255, 255, 255, 1),
+      0 0 0 8px #667eea,
+      0 0 80px rgba(118, 75, 162, 0.8),
+      inset 0 0 80px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Effet de rotation 3D au survol (pour l'admin) */
+&:hover {
+  transform: rotateY(10deg) rotateX(10deg) scale(1.05);
+  transition: transform 0.3s ease-out;
+}
+

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { MasteryBadgeService } from '@/lib/mastery-badge-service'
+import { PremiumBadgeService } from '@/lib/premium-badge-service'
 export const dynamic = 'force-dynamic'
 
 /**
@@ -36,10 +37,24 @@ export async function POST(
     const body = await request.json()
     const { score } = body // Score du QCM de l'exercice (0-100)
 
-    // Vérifier que l'exercice existe
+    // Vérifier que l'exercice existe et récupérer les infos du chapitre
     const exercise = await prisma.exercise.findUnique({
       where: { id: params.exerciseId },
-      select: { id: true, title: true }
+      select: { 
+        id: true, 
+        title: true,
+        lessonId: true,
+        lesson: {
+          select: {
+            id: true,
+            subChapter: {
+              select: {
+                chapterId: true
+              }
+            }
+          }
+        }
+      }
     })
 
     if (!exercise) {
@@ -84,18 +99,36 @@ export async function POST(
 
     // Attribuer le badge de maîtrise si le score est >= 80
     let masteryBadge = null
+    let premiumBadge = null
+    
     if (score >= 80) {
       masteryBadge = await MasteryBadgeService.awardExerciseBadge(
         user.id,
         params.exerciseId,
         score
       )
+
+      // Vérifier si la leçon est maintenant complète (vidéo + QCM + tous exercices)
+      // et attribuer un badge Premium si applicable
+      if (exercise.lesson?.subChapter?.chapterId && exercise.lessonId) {
+        const chapterId = exercise.lesson.subChapter.chapterId
+        const lessonId = exercise.lessonId
+
+        // Vérifier si la leçon est complète
+        const isComplete = await PremiumBadgeService.isLessonFullyCompleted(user.id, lessonId)
+        
+        if (isComplete) {
+          // Attribuer le badge Premium approprié
+          premiumBadge = await PremiumBadgeService.checkAndAwardPremiumBadge(user.id, chapterId)
+        }
+      }
     }
 
     return NextResponse.json({
       success: true,
       performance,
-      masteryBadge
+      masteryBadge,
+      premiumBadge
     })
   } catch (error) {
     console.error('[EXERCISE COMPLETE ERROR]', error)

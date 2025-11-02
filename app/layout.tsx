@@ -7,6 +7,8 @@ import { authOptions } from '@/lib/auth'
 import SessionProvider from '@/components/SessionProvider'
 import { Toaster } from 'react-hot-toast'
 import ProgressBar from '@/components/ProgressBar'
+import { generateAllBadgesCSS } from '@/lib/badge-css-generator'
+import { prisma } from '@/lib/prisma'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -37,10 +39,31 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions)
 
+  // Récupérer les badges Premium avec CSS personnalisé
+  let badgesCSS = ''
+  try {
+    const premiumBadges = await prisma.badge.findMany({
+      where: { useCustomCSS: true },
+      select: { 
+        id: true, 
+        name: true, 
+        customCSS: true, 
+        useCustomCSS: true 
+      }
+    })
+    badgesCSS = generateAllBadgesCSS(premiumBadges)
+  } catch (error) {
+    console.error('Erreur lors du chargement des badges Premium:', error)
+  }
+
   return (
     <html lang="fr">
       <head>
         <link rel="icon" href="/images/master-maths-icon.png" type="image/png" />
+        {/* CSS des badges Premium */}
+        {badgesCSS && (
+          <style dangerouslySetInnerHTML={{ __html: badgesCSS }} />
+        )}
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${inter.className}`}>
         <SessionProvider session={session}>

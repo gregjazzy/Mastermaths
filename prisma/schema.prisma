@@ -1,50 +1,51 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
 model User {
-  id                    String          @id @default(cuid())
-  email                 String          @unique
+  id                    String              @id @default(cuid())
+  email                 String              @unique
   emailsNotification    String[]
   emailVerified         DateTime?
   hashedPassword        String?
   name                  String?
-  status                UserStatus      @default(FREE)
-  isSubscribed          Boolean         @default(false)
-  stripeCustomerId      String?         @unique
+  status                UserStatus          @default(FREE)
+  isSubscribed          Boolean             @default(false)
+  stripeCustomerId      String?             @unique
   subscriptionId        String?
-  subscriptionType      String?         // "MONTHLY" or "ANNUAL"
-  subscriptionStartDate DateTime?       // Date de début d'abonnement
-  subscriptionEndDate   DateTime?       // Date de fin d'abonnement
-  currentTitle          String          @default("Apprenti Mathématicien")
-  totalMasteryPoints    Int             @default(0)
-  monthlyMasteryPoints  Int             @default(0)
-  weeklyMasteryPoints   Int             @default(0)
+  currentTitle          String              @default("Apprenti Mathématicien")
+  totalMasteryPoints    Int                 @default(0)
+  monthlyMasteryPoints  Int                 @default(0)
+  weeklyMasteryPoints   Int                 @default(0)
   lastMonthlyReset      DateTime?
   lastWeeklyReset       DateTime?
-  currentStreak         Int             @default(0)
-  longestStreak         Int             @default(0)
-  lastConnectionDate    DateTime?       @db.Date
-  totalConnectionTime   Int             @default(0)
-  monthlyConnectionTime Int             @default(0)
-  weeklyConnectionTime  Int             @default(0)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  currentStreak         Int                 @default(0)
+  longestStreak         Int                 @default(0)
+  lastConnectionDate    DateTime?           @db.Date
+  totalConnectionTime   Int                 @default(0)
+  monthlyConnectionTime Int                 @default(0)
+  weeklyConnectionTime  Int                 @default(0)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  subscriptionEndDate   DateTime?
+  subscriptionStartDate DateTime?
+  subscriptionType      String?
   accounts              Account[]
   connectionLogs        ConnectionLog[]
   masteryBadges         MasteryBadge[]
   mentalMapProgress     MentalMapProgress[]
+  orientationBilans     OrientationBilan[]
   performances          Performance[]
   sessions              Session[]
   user_badges           user_badges[]
-  orientationBilans     OrientationBilan[]
 
   @@map("users")
 }
@@ -104,21 +105,21 @@ model Course {
 }
 
 model Chapter {
-  id                          String       @id @default(cuid())
+  id                          String              @id @default(cuid())
   title                       String
   description                 String?
-  order                       Int          @default(0)
+  order                       Int                 @default(0)
   courseId                    String
-  isDemoContent               Boolean      @default(false)
   mentalMapUrl                String?
   mentalMapTitle              String?
   mentalMapDescription        String?
   lyceesRepertoireUrl         String?
   lyceesRepertoireTitle       String?
   lyceesRepertoireDescription String?
-  createdAt                   DateTime     @default(now())
-  updatedAt                   DateTime     @updatedAt
-  course                      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt                   DateTime            @default(now())
+  updatedAt                   DateTime            @updatedAt
+  isDemoContent               Boolean             @default(false)
+  course                      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
   mentalMapProgress           MentalMapProgress[]
   subChapters                 SubChapter[]
 
@@ -133,9 +134,9 @@ model SubChapter {
   description   String?
   order         Int      @default(0)
   chapterId     String
-  isDemoContent Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  isDemoContent Boolean  @default(false)
   lessons       Lesson[]
   chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
@@ -150,12 +151,12 @@ model Lesson {
   subChapterId      String
   type              LessonType
   contentUrl        String?
-  isDemoContent     Boolean       @default(false)
   countForReporting Boolean       @default(true)
   isOptional        Boolean       @default(false)
   order             Int           @default(0)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  isDemoContent     Boolean       @default(false)
   exercises         Exercise[]
   subChapter        SubChapter    @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
   performances      Performance[]
@@ -171,12 +172,12 @@ model Exercise {
   title                 String
   lessonId              String
   order                 Int           @default(0)
-  isDemoContent         Boolean       @default(false)
   exerciseUrl           String?
   correctionVideoUrl    String?
   correctionDocumentUrl String?
   createdAt             DateTime      @default(now()) @db.Timestamp(6)
   updatedAt             DateTime      @default(now()) @updatedAt @db.Timestamp(6)
+  isDemoContent         Boolean       @default(false)
   lesson                Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   performances          Performance[]
   qcmQuestions          QcmQuestion[] @relation("ExerciseQcm")
@@ -230,16 +231,16 @@ model Performance {
 }
 
 model MentalMapProgress {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   userId     String
   chapterId  String
   conceptKey String
-  isChecked  Boolean  @default(false)
+  isChecked  Boolean   @default(false)
   checkedAt  DateTime?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chapter    Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  chapter    Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, chapterId, conceptKey])
   @@index([userId])
@@ -258,8 +259,13 @@ model Badge {
   masteryPoints         Int           @default(0)
   order                 Int           @default(0)
   criteria              Json?
+  type                  String?       @default("GENERAL") @db.VarChar(50)
+  chapterId             String?
+  customCSS             String?
+  useCustomCSS          Boolean?      @default(false)
   user_badges           user_badges[]
 
+  @@index([type])
   @@map("badges")
 }
 
@@ -299,6 +305,75 @@ model MasteryBadge {
   @@map("mastery_badges")
 }
 
+model DSBanque {
+  id               String       @id @default(cuid())
+  title            String
+  description      String?
+  niveau           String
+  chapter          String
+  difficulty       Int          @default(3)
+  duration         Int?
+  pdfUrl           String?
+  correctionPdfUrl String?
+  isPublic         Boolean      @default(true)
+  viewCount        Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  level            String       @default("Standard")
+  downloads        DSDownload[]
+
+  @@index([niveau])
+  @@index([difficulty])
+  @@index([chapter])
+  @@map("ds_banque")
+}
+
+model DSDownload {
+  id           String   @id @default(cuid())
+  userId       String
+  dsId         String
+  downloadedAt DateTime @default(now())
+  ds           DSBanque @relation(fields: [dsId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([dsId])
+  @@map("ds_downloads")
+}
+
+model Live {
+  id             String   @id @default(cuid())
+  title          String
+  description    String?
+  niveau         String
+  theme          String
+  scheduledAt    DateTime
+  duration       Int      @default(60)
+  everwebinarUrl String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([niveau])
+  @@index([scheduledAt])
+  @@index([isActive])
+  @@map("lives")
+}
+
+model OrientationBilan {
+  id            String   @id @default(cuid())
+  userId        String
+  questionnaire Json
+  analyse       Json
+  resultat      String
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("orientation_bilans")
+}
+
 enum UserStatus {
   FREE
   DEMO
@@ -315,90 +390,3 @@ enum LessonType {
   CARTOGRAPHIE
   METHODE
 }
-
-// ========== BANQUE DS ==========
-
-model DSBanque {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  niveau      String   // Ex: "Terminale", "Première"
-  chapter     String   // Ex: "Suites numériques", "Limites"
-  difficulty  Int      @default(3) // 1 à 5 (niveau de difficulté)
-  level       String   @default("Standard") // "Standard", "Avancé", "Expert", "Élite"
-  duration    Int?     // Durée en minutes
-  pdfUrl      String?  // URL du PDF
-  correctionPdfUrl String? // URL du corrigé
-  isPublic    Boolean  @default(true)
-  viewCount   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  downloads   DSDownload[]
-
-  @@index([niveau])
-  @@index([difficulty])
-  @@index([chapter])
-  @@map("ds_banque")
-}
-
-model DSDownload {
-  id        String   @id @default(cuid())
-  userId    String
-  dsId      String
-  ds        DSBanque @relation(fields: [dsId], references: [id], onDelete: Cascade)
-  downloadedAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([dsId])
-  @@map("ds_downloads")
-}
-
-// ========== LIVES ==========
-
-model Live {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  niveau      String   // Seconde, Première, Terminale
-  theme       String   // Ex: "Suites numériques", "Géométrie"
-  scheduledAt DateTime // Date et heure du live
-  duration    Int      @default(60) // Durée en minutes
-  everwebinarUrl String // Lien EverWebinar
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([niveau])
-  @@index([scheduledAt])
-  @@index([isActive])
-  @@map("lives")
-}
-
-// ========== ORIENTATION BILAN ==========
-
-model OrientationBilan {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  questionnaire  Json     // Toutes les réponses du questionnaire
-  analyse        Json?    // Analyse structurée de l'IA (Passage 1)
-  resultat       String?  @db.Text // Message humanisé final (Passage 2)
-  status         BilanStatus @default(PENDING) // PENDING, COMPLETED, FAILED
-  errorMessage   String?  // Message d'erreur si FAILED
-  
-  createdAt      DateTime @default(now())
-  expiresAt      DateTime // createdAt + 1 an
-  
-  @@index([userId])
-  @@index([createdAt])
-  @@index([status])
-  @@map("orientation_bilans")
-}
-
-enum BilanStatus {
-  PENDING
-  COMPLETED
-  FAILED
-}
-

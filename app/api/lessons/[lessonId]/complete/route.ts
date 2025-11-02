@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/access-control'
 import { MasteryBadgeService } from '@/lib/mastery-badge-service'
+import { PremiumBadgeService } from '@/lib/premium-badge-service'
 export const dynamic = 'force-dynamic'
 
 
@@ -58,6 +59,7 @@ export async function POST(
     let masteryBadge = null
     let chapterBadge = null
     let courseBadge = null
+    let premiumBadge = null
 
     if (score && score >= 80) {
       // Badge de leçon (Bronze/Argent/Or)
@@ -83,6 +85,17 @@ export async function POST(
           lesson.subChapter.chapterId
         )
 
+        // Vérifier si la leçon est maintenant complète (vidéo + QCM + tous exercices)
+        const isComplete = await PremiumBadgeService.isLessonFullyCompleted(user.id, lessonId)
+        
+        if (isComplete) {
+          // Attribuer le badge Premium approprié
+          premiumBadge = await PremiumBadgeService.checkAndAwardPremiumBadge(
+            user.id,
+            lesson.subChapter.chapterId
+          )
+        }
+
         // Vérifier si un badge de cours peut être débloqué
         const chapter = await prisma.chapter.findUnique({
           where: { id: lesson.subChapter.chapterId },
@@ -104,7 +117,8 @@ export async function POST(
       badges: {
         lesson: masteryBadge,
         chapter: chapterBadge,
-        course: courseBadge
+        course: courseBadge,
+        premium: premiumBadge
       }
     })
   } catch (error) {
