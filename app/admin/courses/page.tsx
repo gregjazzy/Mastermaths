@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Edit, Trash2, Save } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 interface Course {
   id: string
@@ -163,14 +164,14 @@ export default function CoursesAdminPage() {
               <div>
                 <label className="block text-sm font-medium mb-1">Description</label>
                 <textarea
-                  className="input"
-                  rows={4}
+                  className="input font-mono text-sm"
+                  rows={6}
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Description du cours...&#10;&#10;💡 Astuce: Appuyez sur Entrée pour faire des sauts de ligne"
+                  placeholder="Description du cours...&#10;&#10;**Gras**, *italique*&#10;- Liste à puces&#10;1. Liste numérotée"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  💡 Les sauts de ligne seront conservés dans l'affichage
+                  💡 Support Markdown : **gras**, *italique*, listes, sauts de ligne
                 </p>
               </div>
 
@@ -248,8 +249,8 @@ export default function CoursesAdminPage() {
                     </div>
                     
                     {course.description && (
-                      <div className="text-gray-600 mb-3 whitespace-pre-wrap">
-                        {course.description}
+                      <div className="text-gray-600 mb-3 prose prose-sm max-w-none">
+                        <ReactMarkdown>{course.description}</ReactMarkdown>
                       </div>
                     )}
                     

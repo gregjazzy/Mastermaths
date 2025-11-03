@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import CourseCard from '@/components/CourseCard'
 import Link from 'next/link'
 import { BookOpen, Lock } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions)
@@ -223,14 +224,11 @@ export default async function CoursesPage() {
                     <h3 className="text-xl font-bold text-gray-700 mb-2">
                       {course.title}
                     </h3>
-                    <p className="text-gray-500 text-sm mb-4">
-                      {course.description?.split('\n').map((line, i) => (
-                        <span key={i}>
-                          {line}
-                          {i < (course.description?.split('\n').length || 0) - 1 && <br />}
-                        </span>
-                      ))}
-                    </p>
+                    <div className="text-gray-500 text-sm mb-4 prose prose-sm max-w-none">
+                      {course.description && (
+                        <ReactMarkdown>{course.description}</ReactMarkdown>
+                      )}
+                    </div>
                     <Link 
                       href="/upgrade"
                       className="inline-flex items-center gap-2 text-master-turquoise hover:text-master-turquoise-dark font-semibold text-sm"

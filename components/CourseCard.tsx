@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { BookOpen, Clock, BarChart3, CheckCircle2, PlayCircle } from 'lucide-react'
 import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 interface CourseCardProps {
   course: {
@@ -126,10 +127,14 @@ export default function CourseCard({
 
         {/* Contenu de la carte */}
         <div className="p-6 flex-1 flex flex-col">
-          <div className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1 prose prose-sm max-w-none">
-            {course.description?.split('\n').map((line, i) => (
-              <p key={i} className="mb-1">{line || '\u00A0'}</p>
-            )) || <p>Découvrez ce cours complet et progressez à votre rythme.</p>}
+          <div className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1 prose prose-sm max-w-none [&>p]:mb-1 [&>ul]:mb-1 [&>ol]:mb-1 [&>strong]:font-bold [&>em]:italic">
+            {course.description ? (
+              <ReactMarkdown>
+                {course.description}
+              </ReactMarkdown>
+            ) : (
+              <p>Découvrez ce cours complet et progressez à votre rythme.</p>
+            )}
           </div>
 
           {/* Statistiques */}
