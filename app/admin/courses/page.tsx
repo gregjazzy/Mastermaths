@@ -250,7 +250,7 @@ export default function CoursesAdminPage() {
                     </div>
                     
                     {course.description && (
-                      <div className="text-gray-600 mb-3 prose prose-sm max-w-none">
+                      <div className="text-gray-600 mb-3 prose prose-sm max-w-none [&>p]:mb-3 [&>p]:leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkBreaks]}>{course.description}</ReactMarkdown>
                       </div>
                     )}
