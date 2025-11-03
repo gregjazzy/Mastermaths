@@ -7,6 +7,7 @@ import CourseCard from '@/components/CourseCard'
 import Link from 'next/link'
 import { BookOpen, Lock } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
 
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions)
@@ -226,7 +227,7 @@ export default async function CoursesPage() {
                     </h3>
                     <div className="text-gray-500 text-sm mb-4 prose prose-sm max-w-none">
                       {course.description && (
-                        <ReactMarkdown>{course.description}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{course.description}</ReactMarkdown>
                       )}
                     </div>
                     <Link 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Edit, Trash2, Save } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
 
 interface Course {
   id: string
@@ -171,7 +172,7 @@ export default function CoursesAdminPage() {
                   placeholder="Description du cours...&#10;&#10;**Gras**, *italique*&#10;- Liste à puces&#10;1. Liste numérotée"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  💡 Support Markdown : **gras**, *italique*, listes, sauts de ligne
+                  💡 Markdown : **gras**, *italique*, listes. Un simple Entrée = saut de ligne ✅
                 </p>
               </div>
 
@@ -250,7 +251,7 @@ export default function CoursesAdminPage() {
                     
                     {course.description && (
                       <div className="text-gray-600 mb-3 prose prose-sm max-w-none">
-                        <ReactMarkdown>{course.description}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{course.description}</ReactMarkdown>
                       </div>
                     )}
                     
