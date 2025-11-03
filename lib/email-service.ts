@@ -10,14 +10,32 @@ let transporter: any = null
 
 function getTransporter() {
   if (!transporter) {
+    const port = parseInt(process.env.SMTP_PORT || '587')
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com'
+    // Port 465 nécessite secure: true (SSL), port 587 utilise STARTTLS
+    const secure = port === 465
+    
+    // Configuration spécifique pour Zoho Mail avec App Password
+    const isZoho = host.includes('zoho')
+    
     transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
+      host: host,
+      port: port,
+      secure: secure,
+      // Options supplémentaires pour Zoho et autres serveurs SMTP stricts
+      requireTLS: !secure, // STARTTLS obligatoire pour port 587
       auth: process.env.SMTP_USER ? {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       } : undefined,
+      // Options spécifiques Zoho pour App Password
+      tls: isZoho ? {
+        ciphers: 'SSLv3',
+        rejectUnauthorized: false, // Nécessaire pour certains serveurs Zoho
+      } : undefined,
+      // Options de debug
+      logger: false,
+      debug: false,
     })
   }
   return transporter

@@ -1,4 +1,4 @@
--- Mise à jour des badges avec leur CSS personnalisé
+non tu m ouvre l-- Mise à jour des badges avec leur CSS personnalisé
 
 -- Badge: APPRENTI
 UPDATE badges SET "customCSS" = 'body {
