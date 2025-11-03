@@ -128,7 +128,7 @@ export default function CourseCard({
 
         {/* Contenu de la carte */}
         <div className="p-6 flex-1 flex flex-col">
-          <div className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1 prose prose-sm max-w-none [&>p]:mb-1 [&>ul]:mb-1 [&>ol]:mb-1 [&>strong]:font-bold [&>em]:italic">
+          <div className="text-gray-600 text-sm mb-4 flex-1 prose prose-sm max-w-none [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2 [&>strong]:font-bold [&>em]:italic [&>br]:block">
             {course.description ? (
               <ReactMarkdown remarkPlugins={[remarkBreaks]}>
                 {course.description}
