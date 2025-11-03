@@ -223,8 +223,13 @@ export default async function CoursesPage() {
                     <h3 className="text-xl font-bold text-gray-700 mb-2">
                       {course.title}
                     </h3>
-                    <p className="text-gray-500 text-sm mb-4 line-clamp-2">
-                      {course.description}
+                    <p className="text-gray-500 text-sm mb-4">
+                      {course.description?.split('\n').map((line, i) => (
+                        <span key={i}>
+                          {line}
+                          {i < (course.description?.split('\n').length || 0) - 1 && <br />}
+                        </span>
+                      ))}
                     </p>
                     <Link 
                       href="/upgrade"

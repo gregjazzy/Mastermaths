@@ -164,11 +164,14 @@ export default function CoursesAdminPage() {
                 <label className="block text-sm font-medium mb-1">Description</label>
                 <textarea
                   className="input"
-                  rows={3}
+                  rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Description du cours..."
+                  placeholder="Description du cours...&#10;&#10;💡 Astuce: Appuyez sur Entrée pour faire des sauts de ligne"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  💡 Les sauts de ligne seront conservés dans l'affichage
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -245,7 +248,9 @@ export default function CoursesAdminPage() {
                     </div>
                     
                     {course.description && (
-                      <p className="text-gray-600 mb-3">{course.description}</p>
+                      <div className="text-gray-600 mb-3 whitespace-pre-wrap">
+                        {course.description}
+                      </div>
                     )}
                     
                     <p className="text-sm text-gray-500">

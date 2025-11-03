@@ -126,9 +126,11 @@ export default function CourseCard({
 
         {/* Contenu de la carte */}
         <div className="p-6 flex-1 flex flex-col">
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
-            {course.description || 'Découvrez ce cours complet et progressez à votre rythme.'}
-          </p>
+          <div className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1 prose prose-sm max-w-none">
+            {course.description?.split('\n').map((line, i) => (
+              <p key={i} className="mb-1">{line || '\u00A0'}</p>
+            )) || <p>Découvrez ce cours complet et progressez à votre rythme.</p>}
+          </div>
 
           {/* Statistiques */}
           <div className="grid grid-cols-3 gap-3 mb-4">
