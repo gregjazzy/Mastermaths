@@ -42,6 +42,8 @@ export async function POST(request: NextRequest) {
       data: {
         userId: user.id,
         questionnaire: questionnaire as any,
+        analyse: {}, // Vide en attendant la génération
+        resultat: '', // Vide en attendant la génération
         status: 'PENDING',
         createdAt: now,
         expiresAt: expiresAt,

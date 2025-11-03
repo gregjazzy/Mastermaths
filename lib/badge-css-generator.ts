@@ -6,8 +6,8 @@
 interface Badge {
   id: string
   name: string
-  customCSS?: string
-  useCustomCSS?: boolean
+  customCSS?: string | null
+  useCustomCSS?: boolean | null
 }
 
 /**

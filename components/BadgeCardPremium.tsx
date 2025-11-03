@@ -9,7 +9,7 @@ interface BadgeCardPremiumProps {
   chapterName: string
   unlocked: boolean
   earnedAt?: Date
-  customCSS?: string
+  customCSS?: string | null
   onClick?: () => void
 }
 
