@@ -360,17 +360,20 @@ model Live {
 }
 
 model OrientationBilan {
-  id            String   @id @default(cuid())
+  id            String            @id @default(cuid())
   userId        String
   questionnaire Json
   analyse       Json
   resultat      String
-  createdAt     DateTime @default(now())
+  status        BilanStatus       @default(PENDING)
+  errorMessage  String?
+  createdAt     DateTime          @default(now())
   expiresAt     DateTime
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
+  @@index([status])
   @@map("orientation_bilans")
 }
 
@@ -378,6 +381,12 @@ enum UserStatus {
   FREE
   DEMO
   PREMIUM
+}
+
+enum BilanStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
 
 enum LessonType {
