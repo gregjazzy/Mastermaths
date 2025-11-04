@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Edit, Trash2, Save } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
 
 interface Chapter {
   id: string
   courseId: string
   title: string
+  description: string | null
   order: number
   isDemoContent: boolean
   mentalMapUrl: string | null
@@ -35,6 +38,7 @@ export default function ChaptersAdminPage() {
   const [formData, setFormData] = useState({
     courseId: '',
     title: '',
+    description: '',
     order: 1,
     isDemoContent: false,
     mentalMapUrl: '',
@@ -95,6 +99,7 @@ export default function ChaptersAdminPage() {
     setFormData({
       courseId: chapter.courseId,
       title: chapter.title,
+      description: chapter.description || '',
       order: chapter.order,
       isDemoContent: chapter.isDemoContent,
       mentalMapUrl: chapter.mentalMapUrl || '',
@@ -125,6 +130,7 @@ export default function ChaptersAdminPage() {
     setFormData({
       courseId: '',
       title: '',
+      description: '',
       order: 1,
       isDemoContent: false,
       mentalMapUrl: '',
@@ -208,6 +214,20 @@ export default function ChaptersAdminPage() {
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   placeholder="Ex: Chapitre 1 - Les limites"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                  className="input font-mono text-sm"
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Description du chapitre...&#10;&#10;**Gras**, *italique*, listes"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  💡 Markdown : **gras**, *italique*, listes. Un simple Entrée = saut de ligne ✅
+                </p>
               </div>
 
               <div>
@@ -304,6 +324,12 @@ export default function ChaptersAdminPage() {
                     <p className="text-sm text-gray-600 mb-2">
                       📚 Cours: <span className="font-semibold">{chapter.course.title}</span>
                     </p>
+                    
+                    {chapter.description && (
+                      <div className="text-gray-600 mb-3 prose prose-sm max-w-none [&>p]:mb-2 [&>p]:leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{chapter.description}</ReactMarkdown>
+                      </div>
+                    )}
                     
                     <div className="flex gap-4 text-sm text-gray-500 mb-2">
                       {chapter.mentalMapUrl && (

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Edit, Trash2, Save } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkBreaks from 'remark-breaks'
 
 interface SubChapter {
   id: string
@@ -213,12 +215,15 @@ export default function SubChaptersAdminPage() {
               <div>
                 <label className="block text-sm font-medium mb-1">Description (optionnelle)</label>
                 <textarea
-                  className="input"
-                  rows={3}
+                  className="input font-mono text-sm"
+                  rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Description du sous-chapitre..."
+                  placeholder="Description du sous-chapitre...&#10;&#10;**Gras**, *italique*, listes"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  💡 Markdown : **gras**, *italique*, listes. Un simple Entrée = saut de ligne ✅
+                </p>
               </div>
 
               <div>
@@ -294,9 +299,9 @@ export default function SubChaptersAdminPage() {
                     </p>
                     
                     {subChapter.description && (
-                      <p className="text-sm text-gray-700 mt-2">
-                        {subChapter.description}
-                      </p>
+                      <div className="text-gray-600 mb-3 prose prose-sm max-w-none [&>p]:mb-2 [&>p]:leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{subChapter.description}</ReactMarkdown>
+                      </div>
                     )}
                   </div>
 
