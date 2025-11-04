@@ -132,14 +132,14 @@ model SubChapter {
   id             String   @id @default(cuid())
   title          String
   description    String?
-  appUrl         String?
-  appTitle       String?
-  appDescription String?
   order          Int      @default(0)
   chapterId      String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   isDemoContent  Boolean  @default(false)
+  appUrl         String?
+  appTitle       String?
+  appDescription String?
   lessons        Lesson[]
   chapter        Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
@@ -154,14 +154,14 @@ model Lesson {
   subChapterId      String
   type              LessonType
   contentUrl        String?
-  appTitle          String?
-  appDescription    String?
   countForReporting Boolean       @default(true)
   isOptional        Boolean       @default(false)
   order             Int           @default(0)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
   isDemoContent     Boolean       @default(false)
+  appTitle          String?
+  appDescription    String?
   exercises         Exercise[]
   subChapter        SubChapter    @relation(fields: [subChapterId], references: [id], onDelete: Cascade)
   performances      Performance[]
@@ -365,16 +365,16 @@ model Live {
 }
 
 model OrientationBilan {
-  id            String            @id @default(cuid())
+  id            String       @id @default(cuid())
   userId        String
   questionnaire Json
   analyse       Json
   resultat      String
-  status        BilanStatus       @default(PENDING)
-  errorMessage  String?
-  createdAt     DateTime          @default(now())
+  createdAt     DateTime     @default(now())
   expiresAt     DateTime
-  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status        BilanStatus? @default(PENDING)
+  errorMessage  String?
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
