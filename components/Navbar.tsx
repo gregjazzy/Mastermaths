@@ -61,7 +61,7 @@ export default function Navbar() {
                     src="/images/master-maths-logo.svg"
                     alt="Master Maths Logo"
                     fill
-                    className="object-contain drop-shadow-lg"
+                    className="object-contain"
                     priority
                     quality={100}
                     onError={(e) => {
