@@ -47,26 +47,58 @@ export default async function Home() {
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Maths : Objectif Excellence
-          </h1>
-          <h2 className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto">
-            La plateforme du Professeur de référence pour les familles exigeantes.
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/auth/register"
-              className="bg-white text-master-dark hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-xl hover:shadow-2xl"
-            >
-              Commencer gratuitement
-            </Link>
-            <Link 
-              href="/upgrade"
-              className="bg-master-turquoise hover:bg-master-turquoise-dark text-white px-8 py-4 rounded-lg font-bold text-lg transition-all"
-            >
-              Voir les offres
-            </Link>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Contenu texte */}
+            <div className="flex-1 text-center lg:text-left">
+              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+                Maths : Objectif Excellence
+              </h1>
+              <h2 className="text-xl md:text-2xl text-white/90 mb-8">
+                La plateforme du Professeur de référence pour les familles exigeantes.
+              </h2>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+                <Link 
+                  href="/auth/register"
+                  className="bg-white text-master-dark hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition-all shadow-xl hover:shadow-2xl"
+                >
+                  Commencer gratuitement
+                </Link>
+                <Link 
+                  href="/upgrade"
+                  className="bg-master-turquoise hover:bg-master-turquoise-dark text-white px-8 py-4 rounded-lg font-bold text-lg transition-all"
+                >
+                  Voir les offres
+                </Link>
+              </div>
+            </div>
+
+            {/* Photo et avis */}
+            <div className="flex-shrink-0">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div className="relative w-64 h-64 rounded-xl overflow-hidden shadow-2xl mb-4">
+                  <Image
+                    src="/images/prof-portrait.jpg"
+                    alt="Professeur Master Maths"
+                    fill
+                    className="object-cover"
+                    quality={95}
+                    priority
+                  />
+                </div>
+                {/* Étoiles et avis */}
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <div className="text-xl font-bold text-white">
+                    378 avis
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
