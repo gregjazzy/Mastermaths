@@ -149,7 +149,7 @@ export default async function Home() {
                 Support Prof & Communauté 💬
               </h3>
               <p className="text-white/80 text-sm">
-                Lives Q/R hebdomadaires et support continu via le Forum Discord pour une aide immédiate.
+                Lives hebdomadaires et support continu via le Forum Discord pour une aide immédiate.
               </p>
             </div>
           </div>
