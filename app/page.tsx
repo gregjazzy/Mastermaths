@@ -18,14 +18,15 @@ export default async function Home() {
       <header className="fixed top-0 w-full bg-white/10 backdrop-blur-md z-50 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Logo Master Maths - Plus gros et visible */}
-            <div className="relative w-16 h-16 bg-white rounded-xl shadow-lg p-2 flex-shrink-0">
+            {/* Logo Master Maths - Sans bordure */}
+            <div className="relative w-16 h-16 bg-white rounded-xl shadow-lg p-3 flex-shrink-0">
               <Image
                 src="/images/master-maths-logo.svg"
                 alt="Master Maths"
                 fill
                 className="object-contain"
                 priority
+                quality={100}
               />
             </div>
             <h1 className="text-3xl font-bold">
