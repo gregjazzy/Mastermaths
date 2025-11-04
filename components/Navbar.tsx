@@ -57,7 +57,7 @@ export default function Navbar() {
             <div className="flex items-center gap-8">
               <Link href="/cours" className="flex items-center gap-3">
                 {/* Logo Master Maths - Plus gros et visible */}
-                <div className="relative w-12 h-12 bg-white rounded-xl shadow-sm p-2 flex-shrink-0 border border-gray-100">
+                <div className="relative w-14 h-14 bg-white rounded-xl shadow-sm p-2 flex-shrink-0 border border-gray-100">
                   <Image
                     src="/images/master-maths-logo.svg"
                     alt="Master Maths Logo"

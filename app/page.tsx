@@ -19,7 +19,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Logo Master Maths - Plus gros et visible */}
-            <div className="relative w-14 h-14 bg-white rounded-xl shadow-lg p-2 flex-shrink-0">
+            <div className="relative w-16 h-16 bg-white rounded-xl shadow-lg p-2 flex-shrink-0">
               <Image
                 src="/images/master-maths-logo.svg"
                 alt="Master Maths"
