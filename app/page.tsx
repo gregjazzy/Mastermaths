@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, FileText, Library, Compass, Video, MessageCircle } from 'lucide-react'
+import { BookOpen, FileText, Trophy, Compass, Rocket, MessageCircle } from 'lucide-react'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -74,82 +74,82 @@ export default async function Home() {
       {/* Features */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Catalogue de cours */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <BookOpen className="w-8 h-8 text-white" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 1. Apprendre */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <BookOpen className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Catalogue de Cours 📖
+              <h3 className="text-xl font-bold text-white mb-3">
+                Catalogue & Fiches 📘
               </h3>
-              <p className="text-white/80">
-                Catalogue complet de cours et d'exercices vidéos corrigés organisés par chapitre et par méthode pour un apprentissage progressif et ciblé.
+              <p className="text-white/80 text-sm">
+                Cours et exercices vidéos structurés par chapitre et par méthode, avec accès aux synthèses et aux fiches de révision.
               </p>
             </div>
 
-            {/* Correction DS */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <FileText className="w-8 h-8 text-white" />
+            {/* 2. Évaluer */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <FileText className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-xl font-bold text-white mb-3">
                 Correction de DS 📝
               </h3>
-              <p className="text-white/80">
-                Correction détaillée de vos DS pour identifier précisément vos erreurs et les points à améliorer.
+              <p className="text-white/80 text-sm">
+                Correction précise de vos Devoirs Surveillés pour identifier les erreurs et les axes de progression.
               </p>
             </div>
 
-            {/* Banque de sujets */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <Library className="w-8 h-8 text-white" />
+            {/* 3. Entraîner */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <Trophy className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Banque de Sujets 📚
+              <h3 className="text-xl font-bold text-white mb-3">
+                Banque de Sujets d'Élite 🏆
               </h3>
-              <p className="text-white/80">
-                Accès à une banque exclusive de sujets issus des meilleurs lycées pour vous entraîner dans des conditions réelles.
+              <p className="text-white/80 text-sm">
+                Accès exclusif aux sujets des meilleurs lycées pour un entraînement intensif en conditions d'examen.
               </p>
             </div>
 
-            {/* Suivi personnalisé */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <Compass className="w-8 h-8 text-white" />
+            {/* 4. Suivre */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <Compass className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Suivi Personnalisé 🧭
+              <h3 className="text-xl font-bold text-white mb-3">
+                Roadmap & Suivi 🧭
               </h3>
-              <p className="text-white/80">
-                Bilan de progression et conseils d'orientation personnalisés pour vous aider à tracer votre parcours scolaire et professionnel.
+              <p className="text-white/80 text-sm">
+                Tableau de bord de progression pour une vision globale (roadmap) et un suivi personnalisé.
               </p>
             </div>
 
-            {/* Lives */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <Video className="w-8 h-8 text-white" />
+            {/* 5. Projeter */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <Rocket className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Lives Hebdomadaires 💬
+              <h3 className="text-xl font-bold text-white mb-3">
+                Orientation Post-Bac 🚀
               </h3>
-              <p className="text-white/80">
-                Lives hebdomadaires pour des sessions de révision, des questions-réponses et des approfondissements.
+              <p className="text-white/80 text-sm">
+                Conseils d'orientation post-bac personnalisés et analyse des métiers face aux enjeux de l'IA.
               </p>
             </div>
 
-            {/* Discord */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <MessageCircle className="w-8 h-8 text-white" />
+            {/* 6. Soutenir */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <MessageCircle className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Forum Discord 💬
+              <h3 className="text-xl font-bold text-white mb-3">
+                Support Prof 💬
               </h3>
-              <p className="text-white/80">
-                Accès à notre Forum Discord pour l'entraide, le support rapide et l'échange avec la communauté et les professeurs.
+              <p className="text-white/80 text-sm">
+                Lives Q/R hebdomadaires et support continu via le Forum Discord pour une aide immédiate.
               </p>
             </div>
           </div>
