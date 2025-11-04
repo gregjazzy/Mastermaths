@@ -15,7 +15,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { chapterId, title, description, order } = body
+    const { chapterId, title, description, appUrl, appTitle, appDescription, order } = body
 
     const subChapter = await prisma.subChapter.update({
       where: { id: params.id },
@@ -23,6 +23,9 @@ export async function PUT(
         chapterId,
         title,
         description: description || null,
+        appUrl: appUrl || null,
+        appTitle: appTitle || null,
+        appDescription: appDescription || null,
         order
       }
     })

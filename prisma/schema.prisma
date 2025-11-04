@@ -129,16 +129,19 @@ model Chapter {
 }
 
 model SubChapter {
-  id            String   @id @default(cuid())
-  title         String
-  description   String?
-  order         Int      @default(0)
-  chapterId     String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  isDemoContent Boolean  @default(false)
-  lessons       Lesson[]
-  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  title          String
+  description    String?
+  appUrl         String?
+  appTitle       String?
+  appDescription String?
+  order          Int      @default(0)
+  chapterId      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isDemoContent  Boolean  @default(false)
+  lessons        Lesson[]
+  chapter        Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@index([chapterId])
   @@index([order])
@@ -151,6 +154,8 @@ model Lesson {
   subChapterId      String
   type              LessonType
   contentUrl        String?
+  appTitle          String?
+  appDescription    String?
   countForReporting Boolean       @default(true)
   isOptional        Boolean       @default(false)
   order             Int           @default(0)

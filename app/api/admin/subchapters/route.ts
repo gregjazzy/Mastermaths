@@ -33,13 +33,16 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { chapterId, title, description, order } = body
+    const { chapterId, title, description, appUrl, appTitle, appDescription, order } = body
 
     const subChapter = await prisma.subChapter.create({
       data: {
         chapterId,
         title,
         description: description || null,
+        appUrl: appUrl || null,
+        appTitle: appTitle || null,
+        appDescription: appDescription || null,
         order: order || 1
       }
     })

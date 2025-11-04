@@ -40,6 +40,9 @@ export default function SubChaptersAdminPage() {
     chapterId: '',
     title: '',
     description: '',
+    appUrl: '',
+    appTitle: '',
+    appDescription: '',
     isDemoContent: false,
     order: 1
   })
@@ -101,6 +104,9 @@ export default function SubChaptersAdminPage() {
       chapterId: subChapter.chapterId,
       title: subChapter.title,
       description: subChapter.description || '',
+      appUrl: (subChapter as any).appUrl || '',
+      appTitle: (subChapter as any).appTitle || '',
+      appDescription: (subChapter as any).appDescription || '',
       isDemoContent: subChapter.isDemoContent,
       order: subChapter.order,
     })
@@ -130,6 +136,9 @@ export default function SubChaptersAdminPage() {
       chapterId: '',
       title: '',
       description: '',
+      appUrl: '',
+      appTitle: '',
+      appDescription: '',
       isDemoContent: false,
       order: 1
     })
@@ -224,6 +233,49 @@ export default function SubChaptersAdminPage() {
                 <p className="text-xs text-gray-500 mt-1">
                   💡 Markdown : **gras**, *italique*, listes. Un simple Entrée = saut de ligne ✅
                 </p>
+              </div>
+
+              {/* Section Lien vers Application externe */}
+              <div className="space-y-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                <h4 className="font-bold text-blue-900 flex items-center gap-2">
+                  🔗 Lien vers une application externe (optionnel)
+                </h4>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">URL de l'application</label>
+                  <input
+                    type="url"
+                    className="input font-mono text-sm"
+                    value={formData.appUrl}
+                    onChange={(e) => setFormData({...formData, appUrl: e.target.value})}
+                    placeholder="https://www.geogebra.org/calculator"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Exemple : GeoGebra, Desmos, Wolfram Alpha, etc.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Titre du lien</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.appTitle}
+                    onChange={(e) => setFormData({...formData, appTitle: e.target.value})}
+                    placeholder="GeoGebra Calculator"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Description du lien</label>
+                  <textarea
+                    className="input"
+                    rows={2}
+                    value={formData.appDescription}
+                    onChange={(e) => setFormData({...formData, appDescription: e.target.value})}
+                    placeholder="Outil interactif pour visualiser les fonctions..."
+                  />
+                </div>
               </div>
 
               <div>
