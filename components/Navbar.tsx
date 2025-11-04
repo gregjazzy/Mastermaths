@@ -55,25 +55,28 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
-              <Link href="/cours" className="flex items-center gap-1">
-                {/* Logo remplace le M de Master */}
-                <div className="relative w-8 h-8">
-                  <Image
-                    src="/images/master-maths-logo.svg"
-                    alt="Master Maths Logo"
-                    fill
-                    className="object-contain"
-                    priority
-                    onError={(e) => {
-                      // Fallback vers l'icône si l'image n'existe pas
-                      e.currentTarget.style.display = 'none'
-                      const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                      if (fallback) fallback.style.display = 'block'
-                    }}
-                  />
-                  <BookOpen className="w-8 h-8 text-master-turquoise hidden" />
+              <Link href="/cours" className="flex items-center">
+                {/* Logo intégré comme première lettre */}
+                <div className="flex items-baseline gap-0.5">
+                  <div className="relative w-12 h-12 -mb-1">
+                    <Image
+                      src="/images/master-maths-logo.svg"
+                      alt="M"
+                      fill
+                      className="object-contain"
+                      priority
+                      onError={(e) => {
+                        // Fallback vers l'icône si l'image n'existe pas
+                        e.currentTarget.style.display = 'none'
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                        if (fallback) fallback.style.display = 'block'
+                      }}
+                    />
+                    <BookOpen className="w-12 h-12 text-master-turquoise hidden" />
+                  </div>
+                  <span className="text-2xl font-bold text-master-dark">aster</span>
+                  <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
                 </div>
-                <span className="text-xl font-bold text-master-dark">aster Maths</span>
               </Link>
 
               {/* Menu Desktop */}
