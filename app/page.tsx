@@ -75,33 +75,59 @@ export default async function Home() {
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 1. Apprendre */}
+            {/* Ligne 1 - Position 1 : Catalogue & Fiches */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
                 <BookOpen className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Catalogue & Fiches 📘
+                Catalogue & Fiches de Révision 📘
               </h3>
               <p className="text-white/80 text-sm">
                 Cours et exercices vidéos structurés par chapitre et par méthode, avec accès aux synthèses et aux fiches de révision.
               </p>
             </div>
 
-            {/* 2. Évaluer */}
+            {/* Ligne 1 - Position 2 : Correction DS */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
                 <FileText className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Correction de DS 📝
+                Correction Détaillée des DS 📝
               </h3>
               <p className="text-white/80 text-sm">
                 Correction précise de vos Devoirs Surveillés pour identifier les erreurs et les axes de progression.
               </p>
             </div>
 
-            {/* 3. Entraîner */}
+            {/* Ligne 1 - Position 3 : Bilan & Roadmap */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <Compass className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">
+                Bilan Mensuel & Roadmap 🧭
+              </h3>
+              <p className="text-white/80 text-sm">
+                Bilan de progression mensuel détaillé, tableau de bord (roadmap) pour une vision globale et suivi personnalisé.
+              </p>
+            </div>
+
+            {/* Ligne 2 - Position 1 : Orientation */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
+                <Rocket className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">
+                Orientation Post-Bac & IA 🚀
+              </h3>
+              <p className="text-white/80 text-sm">
+                Conseils d'orientation post-bac personnalisés et analyse des métiers face aux enjeux de l'IA.
+              </p>
+            </div>
+
+            {/* Ligne 2 - Position 2 : Banque de sujets */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
                 <Trophy className="w-7 h-7 text-white" />
@@ -114,39 +140,13 @@ export default async function Home() {
               </p>
             </div>
 
-            {/* 4. Suivre */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
-                <Compass className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">
-                Roadmap & Suivi 🧭
-              </h3>
-              <p className="text-white/80 text-sm">
-                Tableau de bord de progression pour une vision globale (roadmap) et un suivi personnalisé.
-              </p>
-            </div>
-
-            {/* 5. Projeter */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-              <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
-                <Rocket className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">
-                Orientation Post-Bac 🚀
-              </h3>
-              <p className="text-white/80 text-sm">
-                Conseils d'orientation post-bac personnalisés et analyse des métiers face aux enjeux de l'IA.
-              </p>
-            </div>
-
-            {/* 6. Soutenir */}
+            {/* Ligne 2 - Position 3 : Support */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="w-14 h-14 bg-master-turquoise rounded-full flex items-center justify-center mb-4">
                 <MessageCircle className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Support Prof 💬
+                Support Prof & Communauté 💬
               </h3>
               <p className="text-white/80 text-sm">
                 Lives Q/R hebdomadaires et support continu via le Forum Discord pour une aide immédiate.
