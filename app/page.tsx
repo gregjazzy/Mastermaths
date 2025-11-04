@@ -17,25 +17,21 @@ export default async function Home() {
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/10 backdrop-blur-md z-50 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            {/* Logo superposé sur le M de Master - 2 couches */}
-            <div className="relative flex items-center">
-              {/* Couche 1 : Logo absolu - Plus gros */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-white rounded-lg p-2 z-10">
-                <Image
-                  src="/images/master-maths-logo.svg"
-                  alt="M"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              {/* Couche 2 : Texte avec espace pour le logo */}
-              <h1 className="text-3xl font-bold pl-12">
-                <span className="text-white">aster</span>
-                <span className="text-master-turquoise-light ml-2">Maths</span>
-              </h1>
+          <div className="flex items-center gap-3">
+            {/* Logo Master Maths - Plus gros et visible */}
+            <div className="relative w-14 h-14 bg-white rounded-xl shadow-lg p-2 flex-shrink-0">
+              <Image
+                src="/images/master-maths-logo.svg"
+                alt="Master Maths"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
+            <h1 className="text-3xl font-bold">
+              <span className="text-white">Master</span>
+              <span className="text-master-turquoise-light ml-2">Maths</span>
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="text-white hover:text-master-turquoise-light transition-colors">

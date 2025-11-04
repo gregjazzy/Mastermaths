@@ -55,28 +55,24 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
-              <Link href="/cours" className="flex items-center">
-                {/* Logo superposé sur le M de Master - 2 couches */}
-                <div className="relative flex items-center">
-                  {/* Couche 1 : Logo absolu - Avec fond blanc */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-lg p-1.5 z-10">
-                    <Image
-                      src="/images/master-maths-logo.svg"
-                      alt="M"
-                      fill
-                      className="object-contain"
-                      priority
-                      onError={(e) => {
-                        // Fallback vers l'icône si l'image n'existe pas
-                        e.currentTarget.style.display = 'none'
-                      }}
-                    />
-                  </div>
-                  {/* Couche 2 : Texte avec espace pour le logo */}
-                  <div className="flex items-center pl-[52px]">
-                    <span className="text-2xl font-bold text-master-dark">aster</span>
-                    <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
-                  </div>
+              <Link href="/cours" className="flex items-center gap-3">
+                {/* Logo Master Maths - Plus gros et visible */}
+                <div className="relative w-12 h-12 bg-white rounded-xl shadow-sm p-2 flex-shrink-0 border border-gray-100">
+                  <Image
+                    src="/images/master-maths-logo.svg"
+                    alt="Master Maths Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                    onError={(e) => {
+                      // Fallback vers l'icône si l'image n'existe pas
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div className="flex items-center">
+                  <span className="text-2xl font-bold text-master-dark">Master</span>
+                  <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
                 </div>
               </Link>
 
