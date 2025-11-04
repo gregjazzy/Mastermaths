@@ -52,8 +52,7 @@ export default async function Home() {
             Maîtrisez les mathématiques
           </h2>
           <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto">
-            Une plateforme complète avec vidéos de cours, QCM interactifs, 
-            corrections détaillées et suivi de performance personnalisé
+            La plateforme d'excellence en Maths pour le lycée par le Prof des familles exigeantes
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
