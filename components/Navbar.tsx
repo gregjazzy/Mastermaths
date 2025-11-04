@@ -59,7 +59,7 @@ export default function Navbar() {
                 {/* Logo Master Maths */}
                 <div className="relative w-10 h-10">
                   <Image
-                    src="/images/master-maths-logo.jpg"
+                    src="/images/master-maths-logo.svg"
                     alt="Master Maths Logo"
                     fill
                     className="object-contain"

@@ -21,7 +21,7 @@ export default async function Home() {
             {/* Logo Master Maths */}
             <div className="relative w-10 h-10 bg-white rounded-lg p-1">
               <Image
-                src="/images/master-maths-logo.jpg"
+                src="/images/master-maths-logo.svg"
                 alt="Master Maths"
                 fill
                 className="object-contain"

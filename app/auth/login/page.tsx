@@ -58,7 +58,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <div className="relative w-20 h-20 bg-gradient-to-br from-master-dark to-master-turquoise rounded-2xl p-3">
               <Image
-                src="/images/master-maths-logo.jpg"
+                src="/images/master-maths-logo.svg"
                 alt="Master Maths Logo"
                 fill
                 className="object-contain p-2"
