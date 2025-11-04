@@ -23,6 +23,8 @@ export async function PUT(
       order, 
       vimeoVideoId,
       contentUrl,
+      appTitle,
+      appDescription,
       countForReporting, 
       isOptional 
     } = body
@@ -35,6 +37,8 @@ export async function PUT(
         type,
         order,
         contentUrl: vimeoVideoId || contentUrl || null,
+        appTitle: appTitle || null,
+        appDescription: appDescription || null,
         countForReporting: countForReporting !== undefined ? countForReporting : true,
         isOptional: isOptional || false
       }

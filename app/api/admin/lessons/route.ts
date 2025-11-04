@@ -54,6 +54,8 @@ export async function POST(request: Request) {
       order, 
       vimeoVideoId,
       contentUrl,
+      appTitle,
+      appDescription,
       countForReporting, 
       isOptional 
     } = body
@@ -65,6 +67,8 @@ export async function POST(request: Request) {
         type,
         order: order || 1,
         contentUrl: vimeoVideoId || contentUrl || null,
+        appTitle: appTitle || null,
+        appDescription: appDescription || null,
         countForReporting: countForReporting !== undefined ? countForReporting : true,
         isOptional: isOptional || false
       }

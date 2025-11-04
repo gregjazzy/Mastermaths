@@ -5,6 +5,7 @@ import VerticalTimelineCourseNav from './VerticalTimelineCourseNav'
 import LessonViewer from './LessonViewer'
 import KnowledgeGraphButton from './KnowledgeGraphButton'
 import MindMapButton from './MindMapButton'
+import AppLinkButton from './AppLinkButton'
 import { Menu, X } from 'lucide-react'
 
 interface Exercise {
@@ -50,6 +51,12 @@ interface LessonPageClientProps {
   lessonId: string
   breadcrumb: string
   lessonTitle: string
+  subChapterAppUrl?: string | null
+  subChapterAppTitle?: string | null
+  subChapterAppDescription?: string | null
+  lessonAppUrl?: string | null
+  lessonAppTitle?: string | null
+  lessonAppDescription?: string | null
 }
 
 export default function LessonPageClient({
@@ -57,6 +64,12 @@ export default function LessonPageClient({
   lessonId,
   breadcrumb,
   lessonTitle,
+  subChapterAppUrl,
+  subChapterAppTitle,
+  subChapterAppDescription,
+  lessonAppUrl,
+  lessonAppTitle,
+  lessonAppDescription,
 }: LessonPageClientProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
@@ -141,6 +154,26 @@ export default function LessonPageClient({
                   chapterId={currentChapter.id}
                   chapterTitle={currentChapter.title}
                   hasMap={true}
+                />
+              )}
+              
+              {/* Lien app du sous-chapitre */}
+              {subChapterAppUrl && (
+                <AppLinkButton
+                  url={subChapterAppUrl}
+                  title={subChapterAppTitle}
+                  description={subChapterAppDescription}
+                  source="subchapter"
+                />
+              )}
+              
+              {/* Lien app de la leçon */}
+              {lessonAppUrl && (
+                <AppLinkButton
+                  url={lessonAppUrl}
+                  title={lessonAppTitle}
+                  description={lessonAppDescription}
+                  source="lesson"
                 />
               )}
             </div>

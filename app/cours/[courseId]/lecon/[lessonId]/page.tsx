@@ -34,11 +34,16 @@ export default async function LessonPage({
       title: true,
       type: true,
       contentUrl: true,
+      appTitle: true,
+      appDescription: true,
       isDemoContent: true,
       subChapter: {
         select: {
           id: true,
           title: true,
+          appUrl: true,
+          appTitle: true,
+          appDescription: true,
           isDemoContent: true,
           chapter: {
             select: {
@@ -163,6 +168,12 @@ export default async function LessonPage({
         lessonId={params.lessonId}
         breadcrumb={`${lesson.subChapter.chapter.course.title} → ${lesson.subChapter.chapter.title} → ${lesson.subChapter.title}`}
         lessonTitle={lesson.title}
+        subChapterAppUrl={lesson.subChapter.appUrl}
+        subChapterAppTitle={lesson.subChapter.appTitle}
+        subChapterAppDescription={lesson.subChapter.appDescription}
+        lessonAppUrl={lesson.contentUrl}
+        lessonAppTitle={lesson.appTitle}
+        lessonAppDescription={lesson.appDescription}
       />
     </>
   )

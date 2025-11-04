@@ -59,6 +59,8 @@ export default function LessonsAdminPage() {
     isDemoContent: false,
     vimeoVideoId: '',
     contentUrl: '',
+    appTitle: '',
+    appDescription: '',
     countForReporting: true,
     isOptional: false,
   })
@@ -122,6 +124,8 @@ export default function LessonsAdminPage() {
       isDemoContent: lesson.isDemoContent,
       vimeoVideoId: lesson.vimeoVideoId || '',
       contentUrl: '',
+      appTitle: (lesson as any).appTitle || '',
+      appDescription: (lesson as any).appDescription || '',
       countForReporting: lesson.countForReporting ?? true,
       isOptional: lesson.isOptional ?? false,
     })
@@ -155,6 +159,8 @@ export default function LessonsAdminPage() {
       isDemoContent: false,
       vimeoVideoId: '',
       contentUrl: '',
+      appTitle: '',
+      appDescription: '',
       countForReporting: true,
       isOptional: false,
     })
@@ -320,6 +326,36 @@ export default function LessonsAdminPage() {
                     <p className="font-semibold">💡 Hébergez votre document :</p>
                     <p>• <strong>Google Drive</strong> : Téléversez → Clic droit → Obtenir le lien</p>
                     <p>• <strong>Dropbox</strong> : Partagez → Copiez le lien</p>
+                  </div>
+                  
+                  {/* Section App externe pour METHODE/CARTOGRAPHIE */}
+                  <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg space-y-3">
+                    <h4 className="font-bold text-blue-900">🔗 Lien vers une application (optionnel)</h4>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Titre du lien</label>
+                      <input
+                        type="text"
+                        className="input"
+                        value={formData.appTitle}
+                        onChange={(e) => setFormData({...formData, appTitle: e.target.value})}
+                        placeholder="GeoGebra Calculator"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Description</label>
+                      <textarea
+                        className="input"
+                        rows={2}
+                        value={formData.appDescription}
+                        onChange={(e) => setFormData({...formData, appDescription: e.target.value})}
+                        placeholder="Outil interactif pour..."
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        💡 L'URL sera le contentUrl ci-dessus
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
