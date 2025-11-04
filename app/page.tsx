@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, FileText, Trophy, Compass, Rocket, MessageCircle } from 'lucide-react'
+import { BookOpen, FileText, Trophy, Compass, Rocket, MessageCircle, Star } from 'lucide-react'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -151,6 +151,54 @@ export default async function Home() {
               <p className="text-white/80 text-sm">
                 Lives hebdomadaires et support continu via le Forum Discord pour une aide immédiate.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Professeur & Avis */}
+      <section className="py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/20">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              {/* Photo du professeur */}
+              <div className="flex-shrink-0">
+                <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl">
+                  <Image
+                    src="/images/prof-portrait.jpg"
+                    alt="Professeur Master Maths"
+                    fill
+                    className="object-cover"
+                    quality={95}
+                  />
+                </div>
+              </div>
+
+              {/* Contenu */}
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Votre Professeur de Référence
+                </h3>
+                <p className="text-xl text-white/90 mb-6">
+                  Expert en mathématiques, je vous accompagne vers l'excellence avec une pédagogie éprouvée et des résultats concrets.
+                </p>
+                
+                {/* Avis et étoiles */}
+                <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <div className="text-2xl font-bold text-white">
+                    378 avis
+                  </div>
+                </div>
+                
+                <p className="text-white/80 mt-4 italic">
+                  "Une approche qui transforme les résultats"
+                </p>
+              </div>
             </div>
           </div>
         </div>
