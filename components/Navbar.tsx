@@ -58,8 +58,8 @@ export default function Navbar() {
               <Link href="/cours" className="flex items-center">
                 {/* Logo superposé sur le M de Master - 2 couches */}
                 <div className="relative flex items-center">
-                  {/* Couche 1 : Logo absolu */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 z-10">
+                  {/* Couche 1 : Logo absolu - Plus gros */}
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 z-10">
                     <Image
                       src="/images/master-maths-logo.svg"
                       alt="M"
@@ -73,7 +73,7 @@ export default function Navbar() {
                     />
                   </div>
                   {/* Couche 2 : Texte avec espace pour le logo */}
-                  <div className="flex items-center pl-8">
+                  <div className="flex items-center pl-10">
                     <span className="text-2xl font-bold text-master-dark">aster</span>
                     <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
                   </div>

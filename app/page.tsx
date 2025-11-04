@@ -20,8 +20,8 @@ export default async function Home() {
           <div className="flex items-center">
             {/* Logo superposé sur le M de Master - 2 couches */}
             <div className="relative flex items-center">
-              {/* Couche 1 : Logo absolu */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-lg p-1.5 z-10">
+              {/* Couche 1 : Logo absolu - Plus gros */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-white rounded-lg p-2 z-10">
                 <Image
                   src="/images/master-maths-logo.svg"
                   alt="M"
@@ -31,7 +31,7 @@ export default async function Home() {
                 />
               </div>
               {/* Couche 2 : Texte avec espace pour le logo */}
-              <h1 className="text-3xl font-bold pl-9">
+              <h1 className="text-3xl font-bold pl-12">
                 <span className="text-white">aster</span>
                 <span className="text-master-turquoise-light ml-2">Maths</span>
               </h1>
