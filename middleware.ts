@@ -15,6 +15,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
+  // Vérifier si l'utilisateur est admin pour accéder à /admin
+  if (isAuth && isAdmin) {
+    const isUserAdmin = (token as any).isAdmin as boolean
+    if (!isUserAdmin) {
+      console.log('❌ MIDDLEWARE: Non-admin user trying to access admin, redirecting to /cours')
+      return NextResponse.redirect(new URL('/cours', request.url))
+    }
+    console.log('✅ MIDDLEWARE: Admin user, allowing access to admin panel')
+    return NextResponse.next()
+  }
+
   // Rediriger vers login si pas authentifié et essaie d'accéder à une page protégée
   if (!isAuth && (isDashboard || isCourse)) {
     return NextResponse.redirect(new URL('/auth/login', request.url))

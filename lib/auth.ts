@@ -41,7 +41,8 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           status: user.status,
-          isSubscribed: user.isSubscribed
+          isSubscribed: user.isSubscribed,
+          isAdmin: user.isAdmin
         }
       }
     })
@@ -52,6 +53,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
         token.status = (user as any).status
         token.isSubscribed = (user as any).isSubscribed
+        token.isAdmin = (user as any).isAdmin
       }
       return token
     },
@@ -60,10 +62,12 @@ export const authOptions: NextAuthOptions = {
         const userId = token.id as string
         const userStatus = token.status
         const userIsSubscribed = token.isSubscribed
+        const userIsAdmin = token.isAdmin
         
         ;(session.user as any).id = userId
         ;(session.user as any).status = userStatus
         ;(session.user as any).isSubscribed = userIsSubscribed
+        ;(session.user as any).isAdmin = userIsAdmin
       }
       return session
     }

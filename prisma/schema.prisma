@@ -18,6 +18,7 @@ model User {
   hashedPassword        String?
   name                  String?
   status                UserStatus          @default(FREE)
+  isAdmin               Boolean             @default(false)
   isSubscribed          Boolean             @default(false)
   stripeCustomerId      String?             @unique
   subscriptionId        String?
