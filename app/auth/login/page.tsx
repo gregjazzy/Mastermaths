@@ -54,14 +54,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-master-dark via-master-blue to-master-turquoise flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          {/* Logo Master Maths */}
+          {/* Logo Master Maths - Plus gros */}
           <div className="flex justify-center mb-4">
-            <div className="relative w-20 h-20 bg-gradient-to-br from-master-dark to-master-turquoise rounded-2xl p-3">
+            <div className="relative w-28 h-28 bg-gradient-to-br from-master-dark to-master-turquoise rounded-2xl p-4">
               <Image
                 src="/images/master-maths-logo.svg"
                 alt="Master Maths Logo"
                 fill
-                className="object-contain p-2"
+                className="object-contain p-3"
                 priority
               />
             </div>

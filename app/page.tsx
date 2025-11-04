@@ -17,9 +17,9 @@ export default async function Home() {
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/10 backdrop-blur-md z-50 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Logo Master Maths */}
-            <div className="relative w-10 h-10 bg-white rounded-lg p-1">
+          <div className="flex items-center gap-2">
+            {/* Logo plus gros remplace le M de Master */}
+            <div className="relative w-10 h-10 bg-white rounded-lg p-1.5">
               <Image
                 src="/images/master-maths-logo.svg"
                 alt="Master Maths"
@@ -29,7 +29,7 @@ export default async function Home() {
               />
             </div>
             <h1 className="text-2xl font-bold text-white">
-              Master Maths
+              <span className="text-white">aster Maths</span>
             </h1>
           </div>
           <div className="flex items-center gap-4">

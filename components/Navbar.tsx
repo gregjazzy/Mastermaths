@@ -55,9 +55,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
-              <Link href="/cours" className="flex items-center gap-3">
-                {/* Logo Master Maths */}
-                <div className="relative w-10 h-10">
+              <Link href="/cours" className="flex items-center gap-1">
+                {/* Logo remplace le M de Master */}
+                <div className="relative w-8 h-8">
                   <Image
                     src="/images/master-maths-logo.svg"
                     alt="Master Maths Logo"
@@ -71,9 +71,9 @@ export default function Navbar() {
                       if (fallback) fallback.style.display = 'block'
                     }}
                   />
-                  <BookOpen className="w-10 h-10 text-master-turquoise hidden" />
+                  <BookOpen className="w-8 h-8 text-master-turquoise hidden" />
                 </div>
-                <span className="text-xl font-bold text-master-dark">Master Maths</span>
+                <span className="text-xl font-bold text-master-dark">aster Maths</span>
               </Link>
 
               {/* Menu Desktop */}
