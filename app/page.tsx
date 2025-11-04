@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, TrendingUp, Award } from 'lucide-react'
+import { BookOpen, FileText, Library, Compass, Video, MessageCircle } from 'lucide-react'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -74,43 +74,82 @@ export default async function Home() {
       {/* Features */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Catalogue de cours */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
               <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
                 <BookOpen className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                Cours structurés
+                Catalogue de Cours 📖
               </h3>
               <p className="text-white/80">
-                Une arborescence claire : Cours → Chapitres → Sous-chapitres → Leçons. 
-                Navigation intuitive pour un apprentissage progressif.
+                Catalogue complet de cours et d'exercices vidéos corrigés organisés par chapitre et par méthode pour un apprentissage progressif et ciblé.
               </p>
             </div>
 
+            {/* Correction DS */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
               <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <TrendingUp className="w-8 h-8 text-white" />
+                <FileText className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                Suivi détaillé
+                Correction de DS 📝
               </h3>
               <p className="text-white/80">
-                Suivez votre progression vidéo par vidéo, QCM par QCM. 
-                Visualisez vos forces et identifiez les points à améliorer.
+                Correction détaillée de vos DS pour identifier précisément vos erreurs et les points à améliorer.
               </p>
             </div>
 
+            {/* Banque de sujets */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
               <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
-                <Award className="w-8 h-8 text-white" />
+                <Library className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                Corrections vidéo
+                Banque de Sujets 📚
               </h3>
               <p className="text-white/80">
-                Des vidéos de correction automatiquement déclenchées quand vous en avez besoin. 
-                Comprenez vos erreurs et progressez rapidement.
+                Accès à une banque exclusive de sujets issus des meilleurs lycées pour vous entraîner dans des conditions réelles.
+              </p>
+            </div>
+
+            {/* Suivi personnalisé */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
+                <Compass className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Suivi Personnalisé 🧭
+              </h3>
+              <p className="text-white/80">
+                Bilan de progression et conseils d'orientation personnalisés pour vous aider à tracer votre parcours scolaire et professionnel.
+              </p>
+            </div>
+
+            {/* Lives */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
+                <Video className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Lives Hebdomadaires 💬
+              </h3>
+              <p className="text-white/80">
+                Lives hebdomadaires pour des sessions de révision, des questions-réponses et des approfondissements.
+              </p>
+            </div>
+
+            {/* Discord */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+              <div className="w-16 h-16 bg-master-turquoise rounded-full flex items-center justify-center mb-6">
+                <MessageCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Forum Discord 💬
+              </h3>
+              <p className="text-white/80">
+                Accès à notre Forum Discord pour l'entraide, le support rapide et l'échange avec la communauté et les professeurs.
               </p>
             </div>
           </div>
