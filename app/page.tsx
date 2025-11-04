@@ -18,9 +18,10 @@ export default async function Home() {
       <header className="fixed top-0 w-full bg-white/10 backdrop-blur-md z-50 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            {/* Logo intégré comme M de Master */}
-            <div className="flex items-baseline gap-0.5">
-              <div className="relative w-12 h-12 bg-white rounded-lg p-1.5 -mb-1">
+            {/* Logo superposé sur le M de Master - 2 couches */}
+            <div className="relative flex items-center">
+              {/* Couche 1 : Logo absolu */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-lg p-1.5 z-10">
                 <Image
                   src="/images/master-maths-logo.svg"
                   alt="M"
@@ -29,7 +30,8 @@ export default async function Home() {
                   priority
                 />
               </div>
-              <h1 className="text-3xl font-bold">
+              {/* Couche 2 : Texte avec espace pour le logo */}
+              <h1 className="text-3xl font-bold pl-9">
                 <span className="text-white">aster</span>
                 <span className="text-master-turquoise-light ml-2">Maths</span>
               </h1>

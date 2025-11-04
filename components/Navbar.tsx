@@ -56,9 +56,10 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/cours" className="flex items-center">
-                {/* Logo intégré comme première lettre */}
-                <div className="flex items-baseline gap-0.5">
-                  <div className="relative w-12 h-12 -mb-1">
+                {/* Logo superposé sur le M de Master - 2 couches */}
+                <div className="relative flex items-center">
+                  {/* Couche 1 : Logo absolu */}
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 z-10">
                     <Image
                       src="/images/master-maths-logo.svg"
                       alt="M"
@@ -68,14 +69,14 @@ export default function Navbar() {
                       onError={(e) => {
                         // Fallback vers l'icône si l'image n'existe pas
                         e.currentTarget.style.display = 'none'
-                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                        if (fallback) fallback.style.display = 'block'
                       }}
                     />
-                    <BookOpen className="w-12 h-12 text-master-turquoise hidden" />
                   </div>
-                  <span className="text-2xl font-bold text-master-dark">aster</span>
-                  <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
+                  {/* Couche 2 : Texte avec espace pour le logo */}
+                  <div className="flex items-center pl-8">
+                    <span className="text-2xl font-bold text-master-dark">aster</span>
+                    <span className="text-2xl font-bold text-master-turquoise ml-2">Maths</span>
+                  </div>
                 </div>
               </Link>
 
