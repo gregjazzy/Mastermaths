@@ -14,6 +14,12 @@ interface QcmQuestion {
   isMultipleChoice: boolean
   explanation: string | null
   order: number
+  questionImageUrl?: string | null
+  questionPdfUrl?: string | null
+  questionVideoUrl?: string | null
+  explanationImageUrl?: string | null
+  explanationPdfUrl?: string | null
+  explanationVideoUrl?: string | null
 }
 
 export default function QcmExerciseAdminPage({ params }: { params: { exerciseId: string } }) {
@@ -30,7 +36,13 @@ export default function QcmExerciseAdminPage({ params }: { params: { exerciseId:
     correctAnswers: [] as number[],
     isMultipleChoice: false,
     explanation: '',
-    order: 1
+    order: 1,
+    questionImageUrl: '',
+    questionPdfUrl: '',
+    questionVideoUrl: '',
+    explanationImageUrl: '',
+    explanationPdfUrl: '',
+    explanationVideoUrl: ''
   })
 
   useEffect(() => {
@@ -100,7 +112,13 @@ export default function QcmExerciseAdminPage({ params }: { params: { exerciseId:
       correctAnswers: question.correctAnswers || [],
       isMultipleChoice: question.isMultipleChoice,
       explanation: question.explanation || '',
-      order: question.order
+      order: question.order,
+      questionImageUrl: question.questionImageUrl || '',
+      questionPdfUrl: question.questionPdfUrl || '',
+      questionVideoUrl: question.questionVideoUrl || '',
+      explanationImageUrl: question.explanationImageUrl || '',
+      explanationPdfUrl: question.explanationPdfUrl || '',
+      explanationVideoUrl: question.explanationVideoUrl || ''
     })
     setShowForm(true)
   }
@@ -131,7 +149,13 @@ export default function QcmExerciseAdminPage({ params }: { params: { exerciseId:
       correctAnswers: [],
       isMultipleChoice: false,
       explanation: '',
-      order: questions.length + 1
+      order: questions.length + 1,
+      questionImageUrl: '',
+      questionPdfUrl: '',
+      questionVideoUrl: '',
+      explanationImageUrl: '',
+      explanationPdfUrl: '',
+      explanationVideoUrl: ''
     })
     setEditingQuestion(null)
     setShowForm(false)
@@ -263,6 +287,80 @@ export default function QcmExerciseAdminPage({ params }: { params: { exerciseId:
                   onChange={(e) => setFormData({...formData, explanation: e.target.value})}
                   placeholder="Expliquez pourquoi c'est la bonne réponse..."
                 />
+              </div>
+
+              {/* Médias pour l'énoncé */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-3">📸 Médias pour l'énoncé</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL de l'image</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.questionImageUrl}
+                      onChange={(e) => setFormData({ ...formData, questionImageUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL du PDF</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.questionPdfUrl}
+                      onChange={(e) => setFormData({ ...formData, questionPdfUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL de la vidéo</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.questionVideoUrl}
+                      onChange={(e) => setFormData({ ...formData, questionVideoUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Médias pour l'explication */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-3">📚 Médias pour l'explication</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL de l'image</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.explanationImageUrl}
+                      onChange={(e) => setFormData({ ...formData, explanationImageUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL du PDF</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.explanationPdfUrl}
+                      onChange={(e) => setFormData({ ...formData, explanationPdfUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">URL de la vidéo</label>
+                    <input
+                      type="url"
+                      className="input"
+                      value={formData.explanationVideoUrl}
+                      onChange={(e) => setFormData({ ...formData, explanationVideoUrl: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Ordre */}

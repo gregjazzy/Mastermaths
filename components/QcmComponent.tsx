@@ -15,6 +15,12 @@ interface QcmQuestion {
   isMultipleChoice: boolean
   explanation?: string
   order: number
+  questionImageUrl?: string | null
+  questionPdfUrl?: string | null
+  questionVideoUrl?: string | null
+  explanationImageUrl?: string | null
+  explanationPdfUrl?: string | null
+  explanationVideoUrl?: string | null
 }
 
 interface QcmComponentProps {
@@ -280,6 +286,43 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
               </div>
             </div>
 
+            {/* Médias pour l'énoncé */}
+            {(question.questionImageUrl || question.questionPdfUrl || question.questionVideoUrl) && (
+              <div className="mb-4 space-y-3">
+                {question.questionImageUrl && (
+                  <div className="rounded-lg overflow-hidden border border-gray-200">
+                    <img 
+                      src={question.questionImageUrl} 
+                      alt="Énoncé" 
+                      className="w-full h-auto"
+                    />
+                  </div>
+                )}
+                {question.questionPdfUrl && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    <a 
+                      href={question.questionPdfUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline flex items-center gap-2"
+                    >
+                      📄 Voir le PDF de l'énoncé
+                    </a>
+                  </div>
+                )}
+                {question.questionVideoUrl && (
+                  <div className="rounded-lg overflow-hidden border border-gray-200">
+                    <iframe
+                      src={question.questionVideoUrl}
+                      className="w-full aspect-video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="space-y-3">
               {question.options.map((option, optionIndex) => {
                 const isSelected = question.isMultipleChoice
@@ -335,12 +378,47 @@ export default function QcmComponent({ lessonId, exerciseId, onComplete }: QcmCo
               })}
             </div>
 
-            {submitted && question.explanation && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-900">
-                  <span className="font-semibold">Explication : </span>
-                  {question.explanation}
-                </p>
+            {submitted && (question.explanation || question.explanationImageUrl || question.explanationPdfUrl || question.explanationVideoUrl) && (
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                {question.explanation && (
+                  <p className="text-sm text-blue-900">
+                    <span className="font-semibold">Explication : </span>
+                    {question.explanation}
+                  </p>
+                )}
+                
+                {/* Médias pour l'explication */}
+                {question.explanationImageUrl && (
+                  <div className="rounded-lg overflow-hidden border border-blue-300">
+                    <img 
+                      src={question.explanationImageUrl} 
+                      alt="Explication" 
+                      className="w-full h-auto"
+                    />
+                  </div>
+                )}
+                {question.explanationPdfUrl && (
+                  <div className="bg-white border border-blue-300 rounded-lg p-3">
+                    <a 
+                      href={question.explanationPdfUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline flex items-center gap-2"
+                    >
+                      📄 Voir le PDF de l'explication
+                    </a>
+                  </div>
+                )}
+                {question.explanationVideoUrl && (
+                  <div className="rounded-lg overflow-hidden border border-blue-300">
+                    <iframe
+                      src={question.explanationVideoUrl}
+                      className="w-full aspect-video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

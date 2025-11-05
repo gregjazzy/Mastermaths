@@ -17,7 +17,21 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { question, options, correctAnswer, correctAnswers, isMultipleChoice, explanation, order } = body
+    const { 
+      question, 
+      options, 
+      correctAnswer, 
+      correctAnswers, 
+      isMultipleChoice, 
+      explanation, 
+      order,
+      questionImageUrl,
+      questionPdfUrl,
+      questionVideoUrl,
+      explanationImageUrl,
+      explanationPdfUrl,
+      explanationVideoUrl
+    } = body
 
     const qcmQuestion = await prisma.qcmQuestion.update({
       where: { id: params.questionId },
@@ -28,7 +42,13 @@ export async function PUT(
         correctAnswers: isMultipleChoice ? correctAnswers : [],
         isMultipleChoice: isMultipleChoice || false,
         explanation: explanation || null,
-        order
+        order,
+        questionImageUrl: questionImageUrl || null,
+        questionPdfUrl: questionPdfUrl || null,
+        questionVideoUrl: questionVideoUrl || null,
+        explanationImageUrl: explanationImageUrl || null,
+        explanationPdfUrl: explanationPdfUrl || null,
+        explanationVideoUrl: explanationVideoUrl || null
       }
     })
 

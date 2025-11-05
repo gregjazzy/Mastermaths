@@ -35,7 +35,21 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { question, options, correctAnswer, correctAnswers, isMultipleChoice, explanation, order } = body
+    const { 
+      question, 
+      options, 
+      correctAnswer, 
+      correctAnswers, 
+      isMultipleChoice, 
+      explanation, 
+      order,
+      questionImageUrl,
+      questionPdfUrl,
+      questionVideoUrl,
+      explanationImageUrl,
+      explanationPdfUrl,
+      explanationVideoUrl
+    } = body
 
     // Validation
     if (!question || !options || options.length < 2) {
@@ -68,7 +82,13 @@ export async function POST(
         correctAnswers: isMultipleChoice ? correctAnswers : [],
         isMultipleChoice: isMultipleChoice || false,
         explanation: explanation || null,
-        order: order || 1
+        order: order || 1,
+        questionImageUrl: questionImageUrl || null,
+        questionPdfUrl: questionPdfUrl || null,
+        questionVideoUrl: questionVideoUrl || null,
+        explanationImageUrl: explanationImageUrl || null,
+        explanationPdfUrl: explanationPdfUrl || null,
+        explanationVideoUrl: explanationVideoUrl || null
       }
     })
 
